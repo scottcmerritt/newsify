@@ -1,6 +1,8 @@
 module Newsify
 class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	  self.table_name = 'sources'
+	  is_impressionable if defined?(is_impressionable)
+
 	  def self.model_name
   		ActiveModel::Name.new("Newsify::Source", nil, "Source")
 	end

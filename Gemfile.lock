@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/scottcmerritt/impressionist.git
+  revision: c31b58a8c3fb460f8618f62cf32ab04e556aac7f
+  specs:
+    impressionist (2.0.01)
+      friendly_id
+      nokogiri (~> 1)
+      rails (>= 3.2.15)
+
 PATH
   remote: .
   specs:
@@ -92,6 +101,8 @@ GEM
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
+    friendly_id (5.4.2)
+      activerecord (>= 4.0.0)
     gapic-common (0.5.0)
       faraday (~> 1.3)
       google-protobuf (~> 3.14)
@@ -226,6 +237,7 @@ PLATFORMS
 
 DEPENDENCIES
   google-cloud-language
+  impressionist!
   kaminari
   newsify!
   sqlite3

@@ -22,10 +22,15 @@
 </h4>
 <div class="d-flex justify-content-between px-2">
 	<% if @source.respond_to?(:impressionist_count) %>
-	<div><i class="fa fa-eye"></i> <%= @source.impressionist_count %></div>
+		<% begin %>
+		<%= tag.span safe_join([icon(icon: "eye")," ", @source.impressionist_count]) %>
+		<% rescue Exception => e %>
+		<span>Error:<%= e %></span>
+		<% end %>
+
 	<% end %>
-	<%= tag.span @source.created_at_wtime, class:"ml-auto badge badge-light text-secondary" %>
-	</div>
+	<%= tag.span @source.created_at_wtime, class:"ms-auto ml-auto badge badge-light text-secondary" %>
+</div>
 <% unless @source.group_id.nil? %>
 <div>
 [GROUP: <%= @source.is_group ? "YES" : @source.group_id  %>] <%= @source.similar_sources.nil? ? 0 : @source.similar_sources.length %> similar articles

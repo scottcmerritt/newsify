@@ -7,6 +7,8 @@ gemspec
 gem 'kaminari'
 gem 'google-cloud-language'
 
+gem 'impressionist', git: 'https://github.com/scottcmerritt/impressionist.git'
+
 group :development do
   gem 'sqlite3'
 end
