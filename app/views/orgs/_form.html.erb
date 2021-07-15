@@ -1,0 +1,17 @@
+<%= simple_form_for @org do |f| %>
+  <div class="row">
+  	<div class="col-6">
+	  <%= f.input :name, as: :string %>
+	  <%= f.input :is_network, as: :boolean, :label=>"Is network?" %>
+	  <%= f.input :is_news, as: :boolean, :label=>"News organization?" %>
+	  <%= f.input :is_group, as: :boolean, :label=>"Membership organization?" %>
+	  <%= f.input :approve_members, as: :boolean, :label=>"New members need to be approved?" %>
+	</div>
+	<div class="col-6">
+		<%= f.input :is_seller, as: :boolean, :label=>"Are you a bar or restaurant?" %>
+	</div>
+</div>
+  
+
+  <%= f.submit "Save", class: 'btn btn-success' %>
+<% end %>

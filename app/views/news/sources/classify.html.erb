@@ -1,0 +1,30 @@
+<div><%= @source.title %> <%= @source.description %></div>
+<div><%= @word_count %> words</div>
+[classification: <%= @classified %>]
+
+<%= @rows if true %>
+<% if false %>
+	<% @entities.each do |entity| %>
+	<%= entity.metadata['wikipedia_url'] %>
+	<% end %>
+<% end %>
+	<% unless @rows.nil? %>
+		<% @rows.each do |row| %>
+		<div>
+		<%= row.name %>: <%= row.wiki_url %> (<%= row.type %>)
+		</div>
+		<% end %>
+	<% end %>
+
+<% unless @classify.nil? %>
+	<% @classify[:categories].each do |row| %>
+		<div><%= row %></div>
+	<% end %>
+<% end %>
+
+<div>
+<% @source.topics.each do |item| %>
+<div><b><%= item.name %></b>: <%= item.score %></div>
+<% end %>
+
+</div>

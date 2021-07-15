@@ -1,0 +1,39 @@
+<% user = current_user if local_assigns[:user].nil? %>
+<% otype = object.otype_guessed if local_assigns[:otype].nil? %>
+<% no_wrap = false if local_assigns[:no_wrap].nil? %>
+<% user = nil if local_assigns[:user].nil? %>
+<% show_count = false if local_assigns[:show_count].nil? %>
+<% show_count_breakdown = false if local_assigns[:show_count_breakdown].nil? %>
+<% icons = {up: "heart",down:"heart-broken"} if local_assigns[:icons].nil? %>
+<% label = nil if local_assigns[:label].nil? %>
+<% font_sizes = {"sm"=>"fsz4","md"=>"fsz3","lg"=>"fsz1"} %>
+<% size = "sm" if local_assigns[:size].nil? %>
+<% font_class = font_sizes[size] %>
+<% wrap_class = "" if local_assigns[:wrap_class].nil? %>
+<% is_clicked_yes = user.nil? ? false : (vote_scope.nil? ? user.liked?(object) : user.voted_up_on?(object,vote_scope: vote_scope)) %>
+<% is_clicked_no = user.nil? ? false : (vote_scope.nil? ? user.disliked?(object) : user.voted_down_on?(object,vote_scope: vote_scope)) %>
+<% icon_colors = ["text-danger","text-secondary"] if local_assigns[:icon_colors].nil? %>
+
+<% unless no_wrap %>
+<div class="<%= font_class %> feedbackBtns d-flex align-items-center <%= wrap_class %>" data-oid="<%= object.id %>" data-otype="<%= otype %>" data-vscope="<%= vote_scope %>">
+<% end %>
+<%= tag.span label, class: "fsz4 mr-2" unless label.nil? %>
+<%= link_to(tag.i("",class: "fa fa-#{icons[:up]}"), newsify.vote_path(otype:otype,oid:object.id,vtype:"up",vscope:vote_scope,label:label), remote: true, method: :post, class: "voteBtn #{is_clicked_yes ? icon_colors[0] : icon_colors[1]}") %>
+<% if show_count_breakdown %>
+<span class="countVal countUp fsz6 px-1">
+<%= object.get_up_votes(vote_scope:vote_scope).count %>
+</span>
+<% end %>
+
+<%= link_to(tag.i("",class: "fa fa-#{icons[:down]}"), newsify.vote_path(otype:otype,oid:object.id,vtype:"down",vscope:vote_scope,label:label), remote: true, method: :post, class: "voteBtn ml-2 #{is_clicked_no ? icon_colors[0] : icon_colors[1]}") %>
+<% if show_count_breakdown %>
+<span class="countVal countDown fsz6 px-1">
+<%= object.get_down_votes(vote_scope:vote_scope).count %>
+</span>
+<% end %>
+<% if show_count %>
+<div class="fsz6 text-dark float-right px-2 feedbackCount"><%= object.find_votes_for.count %> <%= "opinion".pluralize(object.find_votes_for.count) %></div>
+<% end %>
+<% unless no_wrap %>
+</div>
+<% end %>

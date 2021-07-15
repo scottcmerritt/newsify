@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-6">
+		<h2>Import articles: (<%= Newsify::Source.count %>)</h2>
+
+		<%= form_for :news, url:newsify.sources_import_path, method: :get do |f| %>
+		<%= f.select(:term, @terms) %>
+		<%= f.submit %>
+		<% end %>
+		<% if @step == 2 %>
+			<div class="alert alert-success mt-2">
+				News sources successfuly imported
+				<%= link_to "Group similar stories",sources_similar_path, class: "btn btn-primary btn-sm mx-1" rescue "Similar stories link error" %>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-6">
+		<h4>Recent imports</h4>
+		<% Newsify::Import.order("id desc").limit(50).each do |import| %>
+		<div class="bg-white p-1 border-bottom d-flex justify-content-between">
+			<div>
+				<span class="badge badge-info"><%= import.import_sources.count rescue "Error:import_sources.count" %></span>
+
+			<b><%= link_to import.keyword,newsify.sources_imported_path(import_id: import.id) %></b> by <% if import.user.nil? %>Auto importer<% else %><%= link_to import.user.respond_to?(:username) ? import.user.username : import.user.email, newsify.user_path(import.user) %><% end %>
+			</div>
+			<div class="justify-content-end"><%= time_ago_in_words import.created_at %> ago
+			<span import-id="<%= import.id %>"><%= link_to "Classify", newsify.sources_import_classify_path(import_id: import.id), remote: true rescue "Classify:Error" %></span>
+
+			[<%= import.import_pct %>]
+			<%= import.import_pct.blank? ? "Not started" : (import.import_pct == 100 ? "100%" : "#{num_format(import.import_pct*100,1)}%") rescue "Error.import_pct" %>
+			</div>
+		</div>
+		<% end %>
+
+	</div>
+</div>

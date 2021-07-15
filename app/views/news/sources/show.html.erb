@@ -1,0 +1,17 @@
+<%= Item.by_google_category("/News/Politics").name %>
+<%= render :partial=>"show",:source=>@source %>
+<% if false %>
+<div class="container">
+<h2 class="d-flex">Source<%= link_to "Edit",edit_source_path(@source) if @source.can_edit? (current_user) %>
+	
+	<%= link_to "Back", sources_path, class: "ml-auto" %>
+</h2>
+<%= @source.createdby if false %>
+<p>
+<%= @source.title %>
+</p>
+</div>
+ <%= render :partial=>"/util/auto_table",:locals=>{:title=>@source.title,:rows=>[@source]} %>
+
+<%= @source.to_json %>
+<% end %>

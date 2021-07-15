@@ -1,0 +1,34 @@
+<% room = nil if local_assigns[:room].nil? %>
+<% show_member_status = false if local_assigns[:show_member_status].nil? %>
+<% show_guest_status = false if local_assigns[:show_guest_status].nil? %>
+<% show_remove_button = is_admin? ? true : false %>
+<% show_removed = false if local_assigns[:show_removed].nil? %>
+<% change_role = false if local_assigns[:change_role].nil? %>
+<% if show_removed %>
+<div class="alert alert-danger p-1 px-2">
+	<h6 class="d-flex justify-content-between">
+		<div>Removed <span class="badge badge-primary"><%= org.former_members.length %></span></div>
+		</h6>
+	<div class="members members-active">
+		<%= render partial: "community/orgs/members", locals: {members: org.former_members,org:org,room:room,show_remove_button:false,show_add_button:true,show_guest_status:show_guest_status,change_role:change_role} %>
+	</div>
+</div>
+<% end %>
+<div class="alert alert-info p-1 px-2">
+	<h6 class="d-flex justify-content-between">
+		<div>Members <span class="badge badge-primary"><%= org.member_count %></span></div>
+
+		<%= link_to "#{org.former_members.length} removed", room_removed_path(id:room), class: "badge badge-danger fsz6" unless room.nil?%>
+	</h6>
+	<div class="members members-active">
+		<%= render partial: "community/orgs/members", locals: {members: org.members,org:org,room:room,show_remove_button:show_remove_button,show_guest_status:show_guest_status,change_role:change_role} %>
+	</div>
+</div>
+<% unless org.pending_member_count == 0 %>
+<div class="alert alert-warning p-1 px-2" org-id="<%= org.id %>">
+	<h6>Applicants <span class="badge badge-primary"><%= org.pending_member_count %></span></h6>
+	<div class="members members-pending">
+		<%= render partial: "community/orgs/members", locals: {org:org,members: org.pending_members,show_member_status: show_member_status,show_remove_button:show_remove_button,room:room,change_role:change_role} %>
+	</div>
+</div>
+<% end %>

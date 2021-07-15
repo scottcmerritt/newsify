@@ -1,0 +1,13 @@
+document.querySelector('.org-status[data-user="<%= @pending_member.id %>"][data-org="<%= @org.id %>"]').innerHTML = '<%= escape_javascript(render(partial:'community/orgs/join_status',:locals=>{:org=>@org,:user=>@pending_member})) %>'
+document.querySelector('.members-all[data-org="<%= @org.id %>"]').innerHTML = '<%= escape_javascript(render(partial: "community/orgs/members_all",locals:{org: @org,show_member_status:@show_member_status})) %>'
+if (typeof bindPage == "function") { 
+bindPage()
+}
+
+<% if false %>
+$('.org-status[data-user="<%= @pending_member.id %>"][data-org="<%= @org.id %>"]').html('<%= escape_javascript(render(partial:'community/orgs/join_status',:locals=>{:org=>@org,:user=>@pending_member})) %>')
+$('.members-all[data-org="<%= @org.id %>"]').html('<%= escape_javascript(render(partial: "community/orgs/members_all",locals:{org: @org,show_member_status:@show_member_status})) %>')
+if (typeof bindPage == "function") { 
+bindPage()
+}
+<% end %>

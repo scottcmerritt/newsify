@@ -1,0 +1,40 @@
+<div class="bg-white mt-2 p-1 d-flex">
+	<span class="fsz4 p-1"><%= org.name.blank? ? "[No name]" : org.name %></span>
+  <% if org.joinable? && !current_user.nil? %>
+  <div class="org-status ms-auto ml-auto" data-user="<%= current_user.id %>" data-org="<%= org.id %>">
+    <%= render partial: "community/orgs/join_status",:locals=>{org: org} %>
+  </div>
+  <% end %>
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-1">
+  <div class="container-fluid">
+
+	<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <%= link_to "Home", newsify.item_path(org.item), class: "nav-link" unless org.item.nil? %>
+        </li>
+        <li class="nav-item">
+            <%= link_to "Members", org, class: "nav-link" %>
+        </li>
+        <% if org.surge_enabled? %>
+		<li class="nav-item">
+		<%= link_to "Menu", surge_menu_path(org_id:org.id),class: "nav-link"  %>
+		</li>
+		<% if !org.checked_in?(current_user) %>
+		<li class="nav-item">
+			<%= link_to "Check in", surge_checkin_path(org_id:org.id), class: "nav-link" %>
+		</li>
+		<% end %>
+
+		<% end %>
+
+
+
+        <% if is_admin? && defined?(surge_home_path) %>
+        	<li class="nav-item">
+        	<a class="nav-link" href="<%= surge_home_path %>">Add partner</a>
+        </li>
+		<% end %>
+</ul>
+</div>
+</nav>

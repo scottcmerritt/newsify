@@ -1,0 +1,5 @@
+<% room = nil if local_assigns[:room].nil? %>
+<% room_id = room.nil? ? nil : room.id %>
+<%= link_to "Accept",join_org_approve_path(:id=>org.id,:user_id=>user.id,:room_id=>room_id), method: :post, remote: true, class: "btn btn-success" %>
+
+<%= link_to "Nope",join_org_deny_path(:id=>org.id,:user_id=>user.id,:room_id=>room_id), method: :post, remote: true, class: "btn btn-danger" %>

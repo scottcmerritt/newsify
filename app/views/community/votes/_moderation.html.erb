@@ -1,0 +1,16 @@
+<% user = current_user if local_assigns[:user].nil? %>
+<% only_if_set = false if local_assigns[:only_if_set].nil? %>
+<% otype = nil if local_assigns[:otype].nil? %>
+<% vote = nil if local_assigns[:vote].nil? %>
+<% labels = nil if local_assigns[:labels].nil? %>
+<% wrap_css = "ml-auto bg-light" if local_assigns[:wrap_css].nil? %>
+<% row_wrap_css = nil if local_assigns[:row_wrap_css].nil? %>
+<% btn_wrap_css = nil if local_assigns[:btn_wrap_css].nil? %>
+<% vote_scopes = Community::Voting::VOTESCOPES_MODERATE if local_assigns[:vote_scopes].nil? %>
+<% if only_if_set %>
+	<%= render partial: "community/votes/upvote_toggles", locals: {object: object, vote_scopes:vote_scopes,icons: {up: "check-circle",down:"check-circle"},otype:otype,user:user,wrap_css:row_wrap_css,btn_wrap_css: btn_wrap_css,only_if_set: true, vote: vote,labels:labels} %>
+<% else %>
+<div class="<%= wrap_css %>">
+	<%= render partial: "community/votes/upvote_toggles", locals: {object: object, only_if_set: false,vote_scopes:vote_scopes,icons: {up: "check-circle",down:"check-circle"},otype:otype,user:user, vote: vote,labels:labels, wrap_css: row_wrap_css, btn_wrap_css: btn_wrap_css} %>
+</div>
+<% end %>

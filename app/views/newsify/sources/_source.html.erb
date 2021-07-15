@@ -1,0 +1,100 @@
+<% show = {votes:true,moderation:true,scores:false,interesting:false,added_by:true,similar_count:true} if local_assigns[:show].nil? %>
+<div source-id="<%= source.id %>" class="source summaryItem oliWrap oli oprofile border mb-2 p-0 posr">
+	<%= render partial: "community/votes/main", locals: {object: source, user: current_user} if show[:votes] rescue tag.div("[Voting not enabled") %>
+
+	<div class="oname d-flex align-items-center bg-white p-1 px-2">
+	<%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold" %>
+	
+	<%= tag.span source.created_at_wtime, class:"ms-auto ml-auto badge bg-light badge-light text-secondary align-items-middle" %>
+
+	</div>
+	<div class="border-top bg-white text-secondary">
+	
+		<div class="row">
+			<% if source.urltoimage.blank? %>
+			<div class="col-12"><div class="px-2"><%= source.description %></div></div>
+			<% else %>
+			<div class="col-sm-2 col-3"><img class="img-thumbnail m-1" src="<%= source.urltoimage %>"/></div>
+			<div class="col-sm-10 col-9"><%= source.description %></div>
+			<% end %>
+		</div>		
+
+		<div class="snapBtm w-100 bg-light">
+			<div class="row no-gutters" style="left:15px;">
+			<div class="col-5 bg-light">
+			<% if show[:added_by] %>
+			<div class="px-2">
+			<% user = User.find_by(id:source.createdby) %>
+			Added by <%= user.nil? ? "Auto importer" : link_to(user.respond_to?(:username) ? user.username : user.email, newsify.user_path(user)) %>
+			</div>
+			<% end %>
+			</div>
+			<div class="col-2">
+				<% summarized = source.is_summarized? user: current_user %>
+				<% if summarized[:by_you] %>
+				<%= link_to "You summarized", source %>
+				<% elsif summarized[:summarized] %>
+				<%= link_to "Summarized", source %>
+				<% end %>
+
+			</div>
+			<div class="col-5">
+				<div class="bg-light">
+					<% begin %>
+			<%= render partial: "community/votes/moderation", locals: {object: source, user: current_user,labels:Community::Voting::VOTESCOPE_LABELS} if show[:moderation]  %>
+			<% rescue Exception => e %>
+			ERROR: <%= e %>
+
+
+			<% end %>
+			</div>
+
+			</div>
+		</div>
+		
+		<div class="row w-100 bg-light no-gutters" style="left:15px;">
+			<div class="col-9" style="overflow-x: scroll;">
+				<% begin %>
+			<%= render partial: "newsify/sources/parts/items", locals: {source:source} %>
+			<% rescue Exception => e %>
+			ERROR: <%= e %>
+
+
+			<% end %>
+			</div>
+			<div class="col-3 pt-1">
+			<% begin %>
+				<%= render partial: "newsify/sources/parts/similar", locals: {source:source} if show[:similar_count] %>
+			<% rescue Exception => e %>
+			ERROR: <%= e %>
+			<% end %>
+			</div>
+		</div>
+		</div>
+
+		<% if show[:interesting] %>
+		<div class="justify-content-center p-1 px-3 border-top">
+		<%= render partial: "community/votes/up_down_vote", locals: {object: source, otype: @otype.singularize, vote_scope: Community::Voting::VOTESCOPE_INTERESTING,icons: {up: "heart",down:"heart-broken"}, user: current_user, show_count: false,label:"Interested?",size:"lg"} rescue "Error:voting" %>
+		</div>
+		<% end %>
+
+	
+
+		<% if show[:scores] %>
+		<div class="d-flex bg-primary-light justify-content-between">
+			 <div class="px-2">Net score: <%= num_format(source.net_score,4,",") if source.respond_to?(:net_score) %>, Time decay: <%= num_format(source.time_decay,4,",") if source.respond_to?(:time_decay) %>
+
+			Score: <%= num_format(source.cached_weighted_score,4,",") %>
+			</div>
+			<% unless @label.nil? %>
+				<div><%= @label %>: <%= source.public_send("cached_weighted_#{@label}_score") %></div>
+				<%= link_to raw("<i class='fa fa-users-cog'></i>"), feed_debug_path(otype: @otype, id: source.id), :remote=> true, method: :post %>
+			<% end %>
+		</div>
+		<% end %>
+
+
+		
+		<div class="d-none" id="debug_<%= @otype %>_<%= source.id %>"></div>
+	</div>
+</div>

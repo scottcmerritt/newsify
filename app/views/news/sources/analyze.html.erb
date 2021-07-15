@@ -1,0 +1,22 @@
+<div>Classified</div>
+<div><%= @classified %></div>
+<div>Entities</div>
+<div>
+	<% @entities.each do |row| %>
+	<div>
+		<%= row["name"] %> <%= row["type"] %> <%= row["salience"] %>
+	</div>
+	<% end %>
+
+</div>
+
+<div><%= @input %></div>
+
+<%= @response.entities.as_json unless @response.nil? %>
+
+<div>Classify</div>
+<% unless @classify.nil? %>
+<% @classify[:categories].each do |row| %>
+<div><%= row %></div>
+<% end %>
+<% end %>

@@ -11,9 +11,6 @@ module Newsify
       @engine_name = "newsify"
     end
 
-    def index
-      render json: "Here is the news plugin"
 
-    end
   end
 end

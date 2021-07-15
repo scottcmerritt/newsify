@@ -1,0 +1,148 @@
+<style>
+div.org {background:white;cursor:pointer;width:100%;border-top:solid 2px black;border-right:solid 1px black;position:relative;min-height:30px;}
+div.org .info {display:none;position:absolute;z-index:100;top:4px;right:4px;width:70px;height:20px;background:white;color:black;padding:3px;border:solid 1px black;border-radius:8px;font-size:9px;
+	text-align: center;
+}
+div.org:hover {background:red;color:white;}
+div.org:hover .info {display:block;}
+div.org div.title {width:300px;display:block;background:white;height:35px;}
+div.org div.title:hover {background:red;}
+div.org div.title a.orglink.ui-link {text-decoration:none;width:100%;height:35px;margin:0px;padding:4px 4px;position:relative;top:10px;overflow:hidden;left:0px;text-shadow:none;color:black;}
+div.org div.title:hover a.orglink.ui-link:hover {color:black;}
+div.org div.title a.orglink.ui-link:hover {color:black;background:none;}
+
+div.org div.title a.orglink.ui-link span.acount {background:black;color:white;padding:4px;border-radius:20px;height:40px;width:40px;font-size:10px;font-weight:normal;margin:4px 10px 4px 4px;text-align:center;}
+
+div.articles {min-width:500px;min-height:400px;overflow:scroll;}
+div.article {margin:4px;padding:7px 4px 4px 4px;border:solid 1px black;position:relative;}
+h4 {padding:2px;margin:0px;}
+div.article div.date {color:black;position:absolute;top:-5px;right:4px;padding:1px;width:125px;height:10px;font-size:9px;background:white;border-radius:6px;border:solid 1px black;line-height:10px;text-align:center;}
+</style>
+<div class="container f1">
+	<%= render :partial=>"/news/summaries/overview",:locals=>{:links=>@ui[:links][:data],:active=>@ui[:links][:active]} %>
+
+<div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-3">
+
+			<h4>Publishers (<%= num_format(@orgs.length, 0, ",") %>)</h4>
+
+		</div>
+		<div class="col-3">
+			<h4>Sources (<%= num_format(@sources,0,",") %>)</h4>
+			
+		</div>
+		<div class="col-3">
+			<h4>Authors (<%= num_format(@authors,0,",") %>)</h4>
+		</div>
+		<div class="col-3">
+			<h4><%= @sources_duplicates.is_a?(Integer) ? @sources_duplicates : num_format(@sources_duplicates.length,0,",") %> duplicate articles (<%= @with_hashkey_count %>)</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-5">
+
+	
+	
+
+	<a class="toggle" target-class="orgs" href="#">Orgs</a>
+
+	<div class="orgs" style="width:300px;height:400px;overflow-y:scroll;">
+
+		<% @orgs.each do |org| %>
+		<div class="org" org-id="<%= org.id %>">
+			<div class="info">
+			 by <%= @author_counts[org.id] %> ppl
+			</div>
+			<div class="title">
+			<a class="orglink" href="/orgs/<%= org.id %>" item-key="<%= org.newsapi_key %>">
+				<span class="stopic acount">
+				<%= org.article_count %>
+				</span> 
+				<%= org.name %></a>
+			</div>
+		</div>
+
+		<% if false %>
+		<div style="width:100%;">
+				<div style="margin-left:20px;">
+				<% org.authors.each do |author| %>
+				[<%= author.id %> <%= author.name %>]
+				<% end %>
+				</div>
+		</div>
+		<% end %>
+
+		<% end %>
+	</div>
+
+
+	<% if false %>
+		<h4>Orgs (author count)</h4>
+		<% @orgs_multiple_authors.each do |org| %>
+		<div>
+		<%= org.name %> (<%= org.author_count %>)
+		</div>
+		<% end %>
+	<% end %>
+
+	
+	<% if false %>
+	<% @authors.each do |author| %>
+	<%= author.id %> <%= author.name %><br/>
+	<% end %>
+	<% end %>
+
+	
+	<% if false %>
+	<% @sources.each do |source| %>
+	<div>
+		<div>
+			From: <a href="#"><%= source.org.name %></a>
+		</div>
+		<%= source.id %> <b><%= source.title %></b>
+		<% if false %>
+		<div style="margin-left:20px;">
+			<% source.authors.each do |author| %>
+			<%= author.name %> 
+			<% end %>
+		</div>
+		<% end %>
+	</div>
+	<% end %>
+	<% end %>
+
+	
+
+	</div>
+	<div class="col-7">
+			<div class="articles">[articles]</div>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+	 jQuery(document).ready(function($) {
+$("div.org").on("click",function(e) {
+	e.preventDefault();
+	e.stopPropagation();
+	var org_id = $(this).attr("org-id");
+	var url = '/orgs/articles';
+	$.ajax({ url: url,
+        type: 'POST',
+        dataType: 'html',
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {org_id: org_id},
+        success: function(response) {
+      		$("div.articles").html(response);
+
+        }
+    });
+
+
+});
+})
+</script>
+

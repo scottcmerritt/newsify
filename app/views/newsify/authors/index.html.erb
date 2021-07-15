@@ -1,0 +1,7 @@
+<h2>Authors <span class="badge badge-primary"><%= Author.count %></span></h2>
+<%= paginate @authors %>
+<% @authors.each do |author| %>
+<div class="bg-white p-1 m-1">
+<%=link_to author.name, author %>
+</div>
+<% end %>

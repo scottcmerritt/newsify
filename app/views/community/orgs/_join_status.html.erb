@@ -1,0 +1,9 @@
+<% org = @org if local_assigns[:org].nil? %>
+<% user = current_user if local_assigns[:user].nil? %>
+<% if org.is_member? user %>
+<%= link_to "Leave group",newsify.leave_org_path(:id=>org.id), method: :post, remote: true, class: "ml-auto btn btn-success" %>
+<% elsif org.is_pending? user %>
+<span class="ms-auto ml-auto badge bg-warning badge-warning text-dark">Pending</span>
+<% else %>
+<%= link_to "Join",newsify.join_org_path(:id=>org.id), method: :post, remote: true, class: "ms-auto ml-auto btn bg-success text-light btn-success" %>
+<% end %>

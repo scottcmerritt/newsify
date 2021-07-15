@@ -1,0 +1,46 @@
+<h6>Newsify orgs/show</h6>
+<h2 class="d-flex">Organization <%= link_to "Back", orgs_path, class: "ml-auto" %> </h2>
+<%= render partial: "community/orgs/org_header", locals: {org:@org} %>
+<div class="row">
+	<div class="col-6">
+		<% if @org.respond_to?(:interesting_votes) && !@org.interesting_votes(vote_flag:nil).nil? %>
+		<div class="alert alert-success">
+			<% vote_count = @org.interesting_votes(vote_flag:nil).count %>
+			Articles <%= @org.sources.count %>, Votes: <%= vote_count %>
+			<% unless vote_count == 0 %><b><%= @org.interesting_vote_pct %>% interested</b><% end %>
+		</div>
+		<% end %>
+		<div class="members-all" data-org="<%= @org.id %>">
+		<%= render partial: "community/orgs/members_all", locals: {org: @org, show_member_status: @show_member_status} %>
+		</div>
+
+	</div>
+
+	<div class="col-6">
+		<% unless @org.author_orgs.count == 0 %>
+		<div class="alert alert-success">
+		<h4>Authors <span class="badge badge-primary"><%= @org.author_orgs.count %></span></h4>
+		<% @org.author_orgs.each do |author_org| %>
+		<div class="bg-white p-1 m-1">
+		<%= link_to author_org.author.name, newsify.author_path(author_org.author) %>
+		</div>
+		<% end %>
+		</div>
+		<% end %>
+	</div>
+</div>
+<% unless @org.rooms.nil? || @org.rooms.length == 0 %>
+
+<%= render partial: 'rooms/rooms',locals: {rooms: @org.rooms, limit: 4, show_create: false,header_clickable: true,with_teams:current_user.my_teams} %>
+
+<% end %>
+
+<% if false %>
+<h2>Sources</h2>
+<%= paginate @author.source_authors.page(params[:page]) %>
+<% @author.source_authors.page(params[:page]).each do |source_author| %>
+<div class="bg-white p-1 m-1">
+<%=link_to source_author.source.title, source_author.source %>
+</div>
+<% end %>
+<% end %>

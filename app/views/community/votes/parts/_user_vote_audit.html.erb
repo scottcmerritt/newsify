@@ -1,0 +1,23 @@
+<% debug = false if local_assigns[:debug].nil? %>
+<% target_user = vote.voter %>
+<% begin %>
+<% target_object = vote.votable %>
+<% rescue %>
+	<div class="alert alert-danger">Object voted on (<%= vote.votable_type %> <%= vote.votable_id %>), not found!</div>
+<% end %>
+
+<% begin %>
+<% if !vote.vote_scope.nil? && debug %> 
+	Opinion on: (<%= vote.vote_scope %>) Value: <%= vote.vote_flag %>
+	<% end %>
+<% rescue %>
+	<div class="alert alert-danger">Vote type, or vote scope or vote_flag not found</div>
+<% end %>
+<% if target_object.nil? %>
+	<div class="alert alert-warning">Object not found, can't rate</div>
+<% else %>
+<div class="mx-2">
+<%= render partial: "community/votes/main", locals: {object: target_object, user: target_user, only_if_set: true, vote: vote} %>
+<%= render partial: "community/votes/moderation", locals: {object: target_object, user: target_user, only_if_set: true, vote: vote,labels:Community::Voting::VOTESCOPE_LABELS} %>
+</div>
+<% end %>

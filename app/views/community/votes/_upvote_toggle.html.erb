@@ -1,0 +1,28 @@
+<% user = current_user if local_assigns[:user].nil? %>
+<% up = "check-circle" if local_assigns[:up].nil? %>
+<% down = "check-circle" if local_assigns[:down].nil? %>
+<% remove = down if local_assigns[:remove].nil? %>
+<% otype = object.otype_guessed if local_assigns[:otype].nil? %>
+<% wrap_css = "fsz6 d-inline-block p-1 mx-0 mr-1 text-right" if local_assigns[:wrap_css].nil? %>
+<% link_css = "nodec" %>
+<% no_wrap = false if local_assigns[:no_wrap].nil? %>
+<% labels = {} if local_assigns[:labels].nil? %>
+<% vui = "toggle" if local_assigns[:vui].nil? %>
+<% with_label = false if local_assigns[:with_label].nil? %>
+<% label = with_label ? labels.has_key?(vote_scope) ? labels[vote_scope] : vote_scope.humanize : nil %>
+<% unless no_wrap %>
+<div class="feedbackBtns <%= wrap_css %>" data-oid="<%= object.id %>" data-otype="<%= otype %>" data-vscope="<%= vote_scope %>">
+<% end %>
+
+<% vote_status = user.nil? ? false : user.voted_as_when_voting_for(object,{vote_scope: vote_scope}) %>
+<% text_element = tag.span((labels.has_key?(vote_scope) ? labels[vote_scope] : vote_scope.humanize), class: "mr-1") %>
+<% if vote_status.nil? %>
+	<%= link_to(safe_join([text_element,tag.i("",class: "fa fa-#{up}")]), newsify.vote_path(otype:otype,oid:object.id,vtype:"up",vscope:vote_scope,label:label,vui:vui), remote: true, method: :post, class: "text-secondary #{link_css}") %>
+<% elsif vote_status %>
+<%= link_to(safe_join([text_element,tag.i("",class: "fa fa-#{remove}")]), newsify.vote_path(otype:otype,oid:object.id,vtype:"down",vscope:vote_scope,label:label,vui:vui), remote: true, method: :post, class: "text-success #{link_css}") %>
+<% else %>
+<%= link_to(safe_join([text_element,tag.i("",class: "fa fa-#{up}")]), newsify.vote_path(otype:otype,oid:object.id,vtype:"remove",vscope:vote_scope,label:label,vui:vui), remote: true, method: :post, class: "text-danger #{link_css}") %>
+<% end %>
+<% unless no_wrap %>
+</div>
+<% end %>

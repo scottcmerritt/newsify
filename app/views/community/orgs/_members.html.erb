@@ -1,0 +1,32 @@
+<% org = @org if local_assigns[:org].nil? %>
+<% room = nil if local_assigns[:room].nil? %>
+<% show_member_status = false if local_assigns[:show_member_status].nil? %>
+<% show_guest_status = false if local_assigns[:show_guest_status].nil? %>
+<% show_remove_button = false if local_assigns[:show_remove_button].nil? %>
+<% show_add_button = false if local_assigns[:show_add_button].nil? %>
+<% change_role = true if local_assigns[:change_role].nil? %>
+<% members.each do |user| %>
+<div class="bg-white p-1 my-1">
+	<div class="posr d-flex">
+	<%= link_to user.display_name_public, user %>
+
+
+	<%= link_to raw(tag.i("",class:"fa fa-times-circle")),newsify.remove_org_user_path(id:org.id,user_id:user.id,room_id:(@room.nil? ? nil : @room.id) ), method: :post, remote: true, class:"snapTop snapRight mx-1" if show_remove_button %>
+	<%= link_to raw(tag.i("",class:"fa fa-plus")),room_org_add_user_path(id:@room.id,org_id:org.id,user_id:user.id,show_removed:1), method: :post, remote: true, class:"snapTop snapRight mx-1" if show_add_button && !@room.nil? %>
+	</div>
+	<div class="d-flex">
+
+	<%= render partial: "rooms/parts/change_role", locals: {user:user, room: room} if room && change_role %>
+	
+	<% if show_member_status %>
+	<div class="org-status" data-user="<%= user.id %>" data-org="<%= org.id %>">
+		<%= render partial: "community/orgs/approve_deny_buttons",:locals=>{org: org,user: user, room: room} %>
+	</div>
+	<% end %>
+	<% if show_guest_status %>
+	<div><%= user.is_guest ? "Unregistered" : "" %></div>
+	<% end %>
+	</div>
+
+</div>
+<% end %>

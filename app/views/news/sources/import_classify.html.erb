@@ -1,0 +1,14 @@
+<div><%= @classified.length %> classified</div>
+<h4>Added topics</h4>
+<% unless @items.nil? %>
+<% @items.each do |item| %>
+	<% unless item.nil? %><div><%= item[:name] %>: <%= item[:type] %> <%= item[:wiki_url] %></div><% end %>
+<% end %>
+<% end %>
+<h4>Errors</h4>
+<% unless @errors.nil? %>
+<% @errors.each do |error| %>
+<div><%= error %></div>
+<% end %>
+<% end %>
+<%= @classified %>

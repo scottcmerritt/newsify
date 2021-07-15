@@ -1,0 +1,128 @@
+<script>
+	function refreshResults(postData) {
+
+		let url = '<%= @js_url %>'
+		let postType = 'GET'
+		let dataType = 'script'
+
+		$.ajax({ url: url,
+			    type: postType,
+			    dataType: dataType,
+			    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+			    data: postData,
+			    success: (response) => {
+			    	//console.log(response)
+			    	//alert('success')
+
+
+			    	//return resolve({response:response})
+			    },
+			    error: (response) => {
+			    	console.log('ERROR: likely a connection error with server: ' + url)
+			    	//return reject({msg:`ERROR ajaxPromise with server ${url} `,error:response})
+			    }
+			});
+
+	}
+	function ajaxPromise(url,postData,dataType,postType) {
+		postType = postType === undefined ? 'POST' : postType
+
+		dataType = dataType || this.defaultDataType
+		return new Promise((resolve, reject) => {
+			$.ajax({ url: url,
+			    type: postType,
+			    dataType: dataType,
+			    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+			    data: postData,
+			    success: (response) => {
+			    	//console.log(response)
+			    	//alert('success')
+
+
+			    	return resolve({response:response})
+			    },
+			    error: (response) => {
+			    	console.log('ERROR: likely a connection error with server: ' + url)
+			    	return reject({msg:`ERROR ajaxPromise with server ${url} `,error:response})
+			    }
+			});
+
+		})
+		
+	    return reject({msg:'ERROR with server or internet',error:'ERROR INFO'})
+	}
+
+
+
+	jQuery(document).ready(function($) {
+		var stepSlider = document.getElementById('slider-step');
+
+		noUiSlider.create(stepSlider, {
+		    start: <%= @recent_relevance %>,
+		    step: 1,
+		    range: {
+		        'min': 0,
+		        'max': 3
+		    }
+		});
+
+		var recencyValues = ['High','Med','Low','None']
+
+		var stepSliderValueElement = document.getElementById('slider-step-value');
+
+		stepSlider.noUiSlider.on('update', function (values, handle) {
+			//alert(handle)
+			console.log(handle)
+			console.log(values)
+			let newVal = parseInt(values[handle])
+		    stepSliderValueElement.innerHTML = recencyValues[newVal] //recencyValues[handle] //recencyValues[values[handle]];
+		    document.getElementById('filter_recency').value = newVal;
+		    
+		});
+
+		stepSlider.noUiSlider.on('change', function (values, handle) {
+			let postData = {recency: parseInt(values[handle])}
+
+			refreshResults(postData)
+		});
+
+})
+
+</script>
+	<%= render partial: "news/shared/menu",locals: {links: @menu_links,active_href: sources_path} unless @hide_news_menu %>
+
+<form>
+	<input id="filter_recency" type="hidden" name="recency" value=""/>
+
+	
+	<div class="row no-gutters mb-2">
+		<div class="col-2">
+			<% unless @hide_recency %>
+			<div class="p-1 d-flex"><span class="fsz6 font-weight-bold mr-1">Recency</span> <div class="p-1 px-2 fsz7 font-weight-bold badge badge-dark" id="slider-step-value"></div>
+		</div>
+			<div class="mx-2">
+				<div id="slider-step" class="slider-sm"></div>
+			</div>
+
+
+			<% end %>
+		</div>
+		<div class="col-6">
+			<div class="bg-white rounded p-1">
+			<%= render partial: "community/shared/labels_nav", locals: {selected: @label, show_moderation:false} %>
+			</div>
+		</div>
+		<div class="col-4">
+			<div class="bg-white rounded p-1">
+			<%= render partial: "community/shared/labels_nav", locals: {selected: @label, show_main:false} %>
+			</div>
+		</div>
+	</div>	
+
+
+
+</form>
+
+<div id="results">
+<%= render partial: "/news/sources/results" %>
+</div>

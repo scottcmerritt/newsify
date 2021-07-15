@@ -1,0 +1,17 @@
+<% paginate_params = { :controller => controller_name, :action => params[:action], _: nil, _method: nil, authenticity_token: nil, utf8: nil, format:"",recency: nil} %>
+<div class="d-flex">
+	<div><%= paginate @labeled, :params => paginate_params %>
+	</div>
+	<div class="justify-content-end ml-auto">
+		<%= link_to "Download", @export_link, class: "btn btn-sm btn-contrast" if @export_link %>
+	</div>
+</div>
+<div>Feed description: <%= @feed_type %></div>
+<%= render partial: "/community/shared/rating_counts", locals: {klass: @labeled.klass} %>
+
+<div class="summaries olist vertical">
+<% @labeled.each do |source| %>
+	<%= render partial: "/news/sources/source", locals: {source: source} %>
+<% end %>
+</div>
+<%= paginate @labeled, :params => paginate_params %>

@@ -1,0 +1,43 @@
+<script>
+jQuery(document).ready(function($) {
+	$('[data-toggle="tooltip"]').tooltip({sanitize:false,html:true,boundary:'window'})
+
+	 $('[data-toggle="popover"]').popover({sanitize:false,html:true,boundary:'window',trigger: 'focus'})
+})
+</script>
+<div>
+<%= @source_item.nil? ? "Item not found": @source_item.name %>
+</div>
+<div>Searched: <%= @search_term %></div>
+
+<div>Q names: <%= @query_names.to_json %></div>
+<div>Words: <%= @all_words.to_json %></div>
+<div>Q formats: <%= @q_fmts.to_json %></div>
+<% unless @images.blank? %>
+<div><a href="#" data-toggle="popover" title='<div class="bg-white d-block" style="width:400px"><%= @sql if true %></div>'>Query</a>
+</div>
+
+<% @images.each do |source| %>
+<div class="row">
+<div class="col-2">
+
+	<img class="img-fluid img-thumbnail" src="<%= source.image_url %>"/>
+
+
+</div>
+<div class="col-8">
+
+	<div class="border rounded p-1 mt-1">
+	<%= source.title %>
+	<p class="fsz6">
+	<%= source.description %>
+		</p>
+		<%= source.image_url %>
+
+	</div>
+
+</div>
+
+</div>
+<% end %>
+<% end %>

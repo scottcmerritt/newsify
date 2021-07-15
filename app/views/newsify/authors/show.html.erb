@@ -1,0 +1,17 @@
+<h2 class="d-flex">Author <%= link_to "Back", authors_path, class: "ml-auto" %> </h2>
+<div class="bg-white m-2 p-1">
+<%= @author.name %>
+</div>
+<% @author.author_orgs.each do |author_org| %>
+<div class="bg-white p-1 m-1">
+<%= link_to author_org.org.name, author_org.org %>
+</div>
+<% end %>
+
+<h2>Sources</h2>
+<%= paginate @author.source_authors.page(params[:page]) %>
+<% @author.source_authors.page(params[:page]).each do |source_author| %>
+<div class="bg-white p-1 m-1">
+<%=link_to source_author.source.title, source_author.source %>
+</div>
+<% end %>

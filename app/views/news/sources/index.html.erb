@@ -1,0 +1,7 @@
+<div class="container">
+<% if @auto_ui %>
+ <%= render :partial=>"/util/auto_table",:locals=>{:title=>"Sources",:rows=>@labeled} %>
+<% else %>
+<%= render partial: "/news/sources/index" %>
+<% end %>
+</div>

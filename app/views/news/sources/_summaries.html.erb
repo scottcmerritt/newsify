@@ -1,0 +1,18 @@
+<% if @source.summaries.nil? || @source.summaries.length == 0 %>
+<h4>No summaries yet</h4>
+<div>
+<a href="#">Add one</a> and help others get informed
+</div>
+<% end %>
+<%= simple_form_for @source.summary_sources.new, remote: true do |form| %>
+	<input type="hidden" name="source_id" value="<%= @source.id %>"/>
+	<div>
+		<textarea class="p-1" cols="50" rows="2" name="title" id="source_summary_title" placeholder="New summary"></textarea>
+	</div>
+
+	<input type="submit" value="Add"/>
+
+<% end %>
+<div id="source_summaries">
+<%= render partial: "news/summary_sources/list" %>
+</div>

@@ -1,0 +1,18 @@
+<% if @voting.vote_ui == "engage" %>
+<% selector = ".engageWrap[data-oid=\"#{@voting.vote_target.id}\"][data-otype=\"#{@voting.vote_target.otype_guessed}\"]" %>
+document.querySelector('<%= raw selector %>').innerHTML = ('<%= escape_javascript(render(partial: "community/user_profiles/engage", locals: {no_wrap:true,user:@voting.vote_target,size:'mini',font:'text-light',lbl_font:"text-white",socialize_mode:[current_user.socialize_mode]})) %>')
+<% else %>
+<% selector = ".feedbackBtns[data-oid=\"#{@voting.vote_target.id}\"][data-otype=\"#{@voting.vote_target.otype_guessed}\"][data-vscope=\"#{@voting.vote_scope}\"]" %>
+<% if @voting.vote_ui == "toggle" %>
+document.querySelector('<%= raw selector %>').innerHTML = ('<%= escape_javascript(render(partial:"community/votes/upvote_toggle",locals:@voting.upvote_render_params)) %>')
+<% else %>
+$("<%= raw selector %>").html('<%= escape_javascript(render(partial:"community/votes/up_down_vote",locals:@voting.updown_render_params)) %>')
+<% end %>
+<% if @show_user_audit_scores %>
+let el = document.querySelector("#manage_users")
+el.innerHTML = ("<%= escape_javascript(render(partial: 'community/users/index',locals: {title:'User vote history'})) %>")
+el.classList.remove("d-none") // .removeClass("d-none")
+
+//$("#manage_users_dd").dropdown("show")
+<% end %>
+<% end %>

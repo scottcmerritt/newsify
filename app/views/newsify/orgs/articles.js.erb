@@ -1,0 +1,11 @@
+<div class="container">
+<h5><a href="<%= browse_articles_url %>?org_id=<%= @org_id %>"><%= @sources.length %> articles</a> from <span class="stopic"><%= @org.name %>: <%= @org.org_url %></span></h5>
+<% @sources.each do |source| %>
+<div class="article">
+<%= link_to source.title, browse_article_path(:id=>source.source_id) %>
+<div class="stopic stopicSm snapRight snapAbove">
+<%= source.published_at.nil? ? source.created_at.strftime("%-m/%d/%Y %-I:%M %p") : source.published_at.strftime("%-m/%d/%Y %-I:%M %p") %>
+</div>
+</div>
+<% end %>
+</div>

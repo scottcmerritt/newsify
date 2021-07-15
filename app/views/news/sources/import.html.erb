@@ -1,0 +1,32 @@
+<div class="row">
+	<div class="col-6">
+		<h2>Import articles: (<%= Source.count %>)</h2>
+		<%= form_for :news, method: :get do |f| %>
+		<%= f.select(:term, @terms) %>
+		<%= f.submit %>
+		<% end %>
+		<% if @step == 2 %>
+			<div class="alert alert-success mt-2">
+				News sources successfuly imported
+				<%= link_to "Group similar stories",sources_similar_path, class: "btn btn-primary btn-sm mx-1" %>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-6">
+		<h4>Recent imports</h4>
+		<% Import.order("id desc").limit(50).each do |import| %>
+		<div class="bg-white p-1 border-bottom d-flex justify-content-between">
+			<div>
+				<span class="badge badge-info"><%= import.import_sources.count %></span>
+
+			<b><%= link_to import.keyword,sources_imported_path(import_id: import.id) %></b> by <% if import.user.nil? %>Auto importer<% else %><%= link_to import.user.username, import.user %><% end %>
+			</div>
+			<div class="justify-content-end"><%= time_ago_in_words import.created_at %> ago
+			<span import-id="<%= import.id %>"><%= link_to "Classify", sources_import_classify_path(import_id: import.id), remote: true %></span>
+			<%= import.import_pct == 100 ? "100%" : "#{num_format(import.import_pct*100,1)}%" %>
+			</div>
+		</div>
+		<% end %>
+
+	</div>
+</div>

@@ -1,0 +1,30 @@
+<% show_defaults = {room:false} %>
+<% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
+<% title = "Groups" if local_assigns[:title].nil? %>
+<% title_icon = "users" if local_assigns[:title_icon].nil? %>
+<h4 class="mainH listH bg-primary primary-b text-light"><%= icon_text title,title_icon, true %></h4>
+<%= tag.div paginate(groups), class: "mt-1" if local_assigns[:paginate] %>
+<% if groups.nil? || groups.length == 0 %>
+<div class="alert alert-info">Not a member of any <%= title.downcase %></div>
+<% else %>
+<% groups.each do |group| %>
+	<% group_member_count = group.respond_to?(:count) ? group.count : group.member_count %>
+	<% count_lbl = group_member_count.nil? ? "" : tag.span(group_member_count, class: "badge badge-info ml-auto mr-1 fsz5") %>
+
+    <%= link_to raw("<div class='group d-flex align-items-center'>#{icon_span(group.icon_guessed,{wrap_css:"mx-1 fsz3"})}<span class='name pl-1'>#{group.name}</span>#{count_lbl}</div>"), group_path(group), class: 'nav-link side-nav-link p-1 px-2' %>
+    <% if show[:room] %>
+    <% group.rooms.each do |room| %>
+    <% points_span = nil %>
+    <% if group.is_debate %>
+		<% room_org = group.room_org(room.id) %>
+		<% points = room_org.points(category:"interesting").to_i %>
+		<% points_span = tag.span "#{points} #{"point".pluralize(points)}", class: "badge badge-success ml-auto mr-1 p-1" %> 
+	<% end %>
+
+    <div class="ml-3 bg-light border">
+    	<%= render partial: "rooms/room", locals: {room: room,counts_css:"fsz6",font_css:"fsz7",icon_css:"fsz3",padding:"p-0 px-2",label_span:points_span} %>
+    </div>
+    <% end %>
+    <% end %>
+ <% end %>
+ <% end %>

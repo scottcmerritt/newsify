@@ -1,0 +1,203 @@
+<% source = @source if local_assigns[:source].nil? %>
+<% show = {votes:true,moderation:true,scores:false} if local_assigns[:show].nil? %>
+
+<div class="bg-white w-100 d-flex p-1">
+	<input id="saveSelected" type="button" value="Save Article Text" /> 
+	<input id="shareSelected" type="button" value="Share" /> 
+
+	<div class="ml-auto ms-auto">
+		<% if @source.summaries.nil? || @source.summaries.length == 0 %>
+		<a class="btn btn-sm bg-primary btn-primary" href="?summarize=1">Summarize</a>
+	<% else %>
+		Summaries: <%= @source.summaries.length %>
+		<% end %>
+	</div>
+</div>
+
+<h4 class="bg-white border-bottom p-2 my-1 d-flex align-items-center justify-content-between">
+	<%= tag.span @source.title %> 
+	
+	<a class="btn btn-primary btn-sm" href="<%= @source.url %>" target="_blank">Publisher link</a>
+
+</h4>
+<div class="d-flex justify-content-between px-2">
+	<% if @source.respond_to?(:impressionist_count) %>
+	<div><i class="fa fa-eye"></i> <%= @source.impressionist_count %></div>
+	<% end %>
+	<%= tag.span @source.created_at_wtime, class:"ml-auto badge badge-light text-secondary" %>
+	</div>
+<% unless @source.group_id.nil? %>
+<div>
+[GROUP: <%= @source.is_group ? "YES" : @source.group_id  %>] <%= @source.similar_sources.nil? ? 0 : @source.similar_sources.length %> similar articles
+<% unless @source.similar_sources.nil? %>
+<% @source.similar_sources.each do |source| %>
+<div class="ml-3">
+<%= link_to source.title, source %>
+
+</div>
+<% end %>
+<% end %>
+</div>
+<% end %>
+<%= render partial: "community/votes/main", locals: {object: @source, user: current_user} if show[:votes] rescue "No Voting" %>
+
+<% if params[:clean] %>
+<div><%= @testing %>, Purging: (<%= @purging %>)</div>
+<% end %>
+	<div class="row">
+		<div class="col-sm-3 col-5">
+			<% unless @source.urltoimage.nil? %>
+			<img class="img-thumbnail" src="<%= @source.urltoimage %>"/>
+			<% end %>
+		</div>
+		<div class="col-sm-9 col-7">
+			<%= tag.div @hashkey, style:"text-align:right;font-size:11px;" if is_admin? %>
+			<div>
+				<%= @source.description %>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="bg-white border-top p-1 mb-1">Organization
+					<% unless @source.org.nil? %><%= link_to @source.org.name,newsify.org_path(@source.org) %><% end %>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="bg-white border-top p-1 mb-1">Authors 
+					<% unless @source.authors.nil? %>
+					<% @source.authors.each do |author| %>
+					<%= link_to author.name, newsify.author_path(author), class: "p-1 m-1" %>
+					<% end %>
+					<%= link_to @source.org.name,newsify.org_path(@source.org) unless @source.org.nil? %><% end %>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+						<% Newsify::Source.topics(@source.id,{min_score: 0.05, max_score: 1.0}).each do |topic| %>
+						<span class="badge badge-light text-success">
+							<%= link_to topic.name, item_path(id:topic.id), class: "text-success" %></span>
+						<% end %>
+
+						<% Newsify::Source.topics(@source.id,{min_score: 0.0, max_score: 0.05}).each do |topic| %>
+						<span class="badge badge-light text-secondary">
+							<%= link_to topic.name, item_path(id:topic.id), class: "text-secondary" %>
+						</span>
+						<% end %>
+						
+				</div>
+			</div>
+
+		</div>
+	
+</div>
+
+<%= render partial: "/news/sources/source_content" rescue "Error.SourceContent" %>
+
+
+<% if false %>
+<% @source.content.each do |content| %>
+<div class="bg-white border p-2 m-1">
+	
+	<div class="font-weight-bold border-bottom p-1"><%= content.title %></div>
+	
+	<div class="text-secondary px-1 py-2">
+	<%= content.article %>
+	</div>
+		
+	<div class="border-top p-1">
+	<%= content.misc %>
+	</div>
+
+</div>
+<% end %>
+
+
+	
+<% unless false && @source.first_content.nil? %>
+<div id="article" source-id="<%= @source.id %>">
+<%= @source.first_content.article %>
+</div>
+<h4><a class='misc' href="#">All content from the article (click to see):</a></h4>
+<div class='misc' style='display:none;'>
+	<% if @output["best_guesses"] %>
+		<% @output["best_guesses"].each do |best_guess| %>
+		<div style="color:red;padding:5px;border:solid 1px black;margin:2px;">
+			<%= best_guess %>
+		</div>
+		<% end %>
+	<% end %>
+
+	<% if @output["results"] && @output["results"].is_a?( Array) %>
+	<% @output["results"].each do |result| %>
+	<div style="color:green;padding:5px;border:solid 1px black;margin:2px;">
+		<%= result %>
+	</div>
+	<% end %>
+
+	<% else %>
+	<div style="color:red;">
+	[Summary] <%= @output %>
+	</div>
+	<% end %>
+</div>
+<% end %>
+<% end %>
+
+<script type="text/javascript">
+$( document ).ready(function() {	
+
+	$('a.misc').on('click',function() {
+		$('div.misc').toggle();
+	});
+
+	$("#shareSelected").on('click',function() {
+		var source_id = $("#article").attr("source-id");
+		var guid = '<%= @hashkey %>';
+	    sharePost(source_id,guid,0);
+	});
+
+	$('#saveSelected').on('click', function(){
+    
+	    var text = "";
+	    if (window.getSelection) {
+	        text = window.getSelection().toString();
+	    } else if (document.selection && document.selection.type != "Control") {
+	        text = document.selection.createRange().text;
+	    }
+	    alert(text);   
+	    console.log('alert: saveSelected clicked, '+ text);
+	    $("#article").html(text);
+	    
+	    source_id = $("#article").attr("source-id");
+	    var url = '/article/save/' + source_id;
+		$.ajax({ url: url,
+		        type: 'POST',
+		        dataType:'script',
+		        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+		        data: {article: text },
+		        success: function(response) {
+		      		alert(response);
+		      		console.log('alert: inside article/save success function: ' + response);
+		        }
+		   	});
+
+        
+	});
+});
+
+function sharePost(source_id,guid,site_id) {
+	var url = '/article/share/' + source_id;
+		$.ajax({ url: url,
+		        type: 'POST',
+		        dataType:'script',
+		        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+		        data: {site: site_id,guid: guid },
+		        success: function(response) {
+		      		alert(response);
+		      		console.log('alert: inside article/share success function: ' + response);
+		        }
+		   	});
+
+}
+
+</script>

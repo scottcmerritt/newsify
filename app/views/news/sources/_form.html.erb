@@ -1,0 +1,8 @@
+<%= simple_form_for @source do |f| %>
+  
+  <%= f.input :title %>
+  <%= f.input :url, as: :string %>
+  <%= f.input :org_id, collection: Community::Org.where("is_network = ?",true), label_method: :name, value_method: :id, prompt: "Choose a network" %>
+
+  <%= f.submit "Save", class: 'btn btn-success' %>
+<% end %>

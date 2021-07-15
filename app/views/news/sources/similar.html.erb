@@ -1,0 +1,56 @@
+<% service_description = "Group similar articles based on their headlines and brief snippet of text" %>
+
+<% run_and_save = link_to "Run & save changes",sources_similar_path(run:1,save:1), class:"btn btn-sm btn-primary mx-1" %>
+
+<h4 class="mb-1">Similar <%= link_to "Imported", sources_import_path %></h4>
+<div class="alert alert-info">
+<%= tag.div service_description, class: "mt-1" unless params[:save] %>
+
+<% if params[:run] && params[:save] %>
+<%= link_to "Rate articles",sources_similar_path(run:1,save:1), class:"btn btn-sm btn-primary" %>
+
+<% elsif params[:run] %>
+<%= run_and_save %>
+<% else %>
+
+<%= link_to "Run",sources_similar_path(run:1,save:1), class:"btn btn-sm btn-primary mx-1" %>
+
+<%= run_and_save %>
+<% end %>
+</div>
+<% unless @new_group_ids.nil? %>
+<div>New groups: <%= @new_group_ids %></div>
+<% end %>
+<div class="row">
+<div class="col-6">
+<% if @similar.builder.nil? %>
+	<h4>Sources <%= @sources.length %></h4>
+	
+	<%= paginate @sources %>
+		<% @sources.each do |source| %>
+		<%= render partial: "news/sources/source",locals: {source: source} %>
+	<% end %>
+<% end %>
+<% unless @similar.builder.nil? %>
+<% @similar.builder.rows.each do |row| %>
+<div class="p-1 border-bottom">
+	<%= row[:item].title %> (<%= row[:pairs].length %>)
+	<% row[:pairs].each do |pair| %>
+	<div class="ml-3 pl-3 border-bottom fsz7">
+		<%= pair[:item].title %>
+		(<%= pair %>)
+	</div>
+	<% end %>
+</div>
+<% end %>
+<% end %>
+</div>
+<div class="col-6">
+	<h4>Source groups (<%= SourceGroup.count %>, <%= SourceGroup.distinct_groups %>)</h4>
+	<%= render partial: "util/auto_table",locals: {rows: @source_groups} %>
+	<h4>Grouped (<%= @grouped.total_count %>)</h4>
+	<% @grouped.each do |source| %>
+	<%= render partial: "news/sources/source", locals: {source:source} %>
+	<% end %>
+	</div>
+</div>

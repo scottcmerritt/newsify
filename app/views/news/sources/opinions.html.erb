@@ -1,0 +1,6 @@
+<div class="p-1 my-1">
+<%= link_to @source.title, @source %>
+</div>
+<% @source.opinions.each do |source_opinion| %>
+<%= render partial: "news/source_opinions/show", locals: {source_opinion:source_opinion} %>
+<% end %>

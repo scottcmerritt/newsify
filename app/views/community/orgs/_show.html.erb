@@ -1,0 +1,24 @@
+<% votes_interesting = org.interesting_votes(vote_flag:nil) %>
+
+<div class="bg-white p-1 m-1 d-flex justify-content-between">
+	<div class="d-flex">
+		<div style="width:60px;" class="bg-light text-dark mr-1 p-1 text-center"><b><%= org.sources.count %></b></div>
+		<%= link_to org.name, org_path(:id=>org.id), class: "fsz4" %><% unless votes_interesting.nil? || votes_interesting.count == 0 %>
+		<% end %>
+	</div>
+	<div style="width:140px;" class="d-flex align-items-center justify-content-end">
+		<% unless votes_interesting.nil? %>
+		<span class="badge badge-success mx-1"><b><%= org.interesting_vote_pct %>%</b></span>
+
+		<div class="border rounded" style="width:80px;">
+			<div class="bg-primary fsz6 px-1 text-center text-white">
+			<%= org.cached_content_score %>
+			</div>
+			<div class="fsz7 px-1 text-center">
+			<%= votes_interesting.count %> votes
+			</div>
+		</div>
+		<% end %>
+	</div>
+
+</div>
