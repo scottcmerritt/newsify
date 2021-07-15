@@ -2,7 +2,10 @@ module Newsify
 class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did not work with acts_as_votable
 	self.table_name = "summaries"
 	#has_paper_trail
-	#acts_as_votable
+	acts_as_votable
+	include Newsify::GenericObj
+	include Community::IconUtil, Community::VoteCacheable
+
 	#include GenericObj, TextUtil, NewsManager, IconUtil
 	#include VoteCacheable
 

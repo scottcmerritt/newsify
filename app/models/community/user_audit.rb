@@ -1,10 +1,10 @@
 module Community
 	class UserAudit < ActiveRecord::Base
 		self.table_name = "user_audits"
-		
+
 		acts_as_votable #cacheable_strategy: :update_columns
 		acts_as_voter
-		include IconUtil
+		include Community::IconUtil
 
 		def title
 			"A person review: #{self.vote.votable.class.name} ID: #{self.vote.votable.id} VID: #{self.vote.id}"

@@ -6,6 +6,9 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
   		ActiveModel::Name.new("Newsify::Item", nil, "Item")
 	end
 
+	acts_as_votable
+	include Community::VoteCacheable, Community::IconUtil
+
 =begin
   has_merit
 

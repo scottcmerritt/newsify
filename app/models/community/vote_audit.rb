@@ -2,7 +2,7 @@ module Community
 	class VoteAudit < ActiveRecord::Base
 		acts_as_votable #cacheable_strategy: :update_columns
 		acts_as_voter
-		include IconUtil
+		include Community::IconUtil
 
 		def title
 			"An opinion: #{self.vote.votable.class.name} ID: #{self.vote.votable.id} VID: #{self.vote.id}"

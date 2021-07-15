@@ -6,6 +6,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	end
 
 	  include Newsify::GenericObj, Newsify::NewsClassify
+	  include Community::IconUtil, Community::VoteCacheable
 	  acts_as_votable
 =begin	
 	

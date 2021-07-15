@@ -4,7 +4,7 @@ module Community
       		ActiveModel::Name.new("Community::Org", nil, "Org")
     	end
 
-    	include Membership
+    	include Community::IconUtil, Community::VoteCacheable, Community::Membership
 #		include IconUtil, VoteCacheable, Membership
 #		include HasBadge
 #		has_merit

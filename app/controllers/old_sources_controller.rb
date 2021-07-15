@@ -1,5 +1,5 @@
 class OldSourcesController < ApplicationController
-	include NewsGeneral, LabeledData, ClassifyNews, FlagNews
+	include Newsify::NewsGeneral, LabeledData, ClassifyNews, FlagNews
   before_action :load_entities, only: [:show,:edit,:update]
   before_action :load_feed_report, only: [:info,:index,:mine,:start,:scroll,:report,:labeled,:my_interests]
 

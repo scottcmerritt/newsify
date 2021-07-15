@@ -11,7 +11,7 @@ class OrgsController < ApplicationController
 	before_action :load_groups, only: [:index,:networks]
 	before_action :load_permissions, only: [:show,:join]
 
-	include NewsGeneral
+	include Newsify::NewsGeneral
 
 	#def self.controller_path
     #  "news/orgs" # change path from app/views/orgs to app/views/news/orgs

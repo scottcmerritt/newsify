@@ -1,6 +1,6 @@
 module Newsify
 class SummariesController < ApplicationController
-	include NewsGeneral
+	include Newsify::NewsGeneral
   	before_action :get_links
   	before_action :set_otype
 
