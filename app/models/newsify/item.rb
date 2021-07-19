@@ -10,6 +10,8 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	acts_as_votable
 	include Community::VoteCacheable, Community::IconUtil, Classify::ClassifyContent
 
+	has_many :content_topics
+
 =begin
   has_merit
 

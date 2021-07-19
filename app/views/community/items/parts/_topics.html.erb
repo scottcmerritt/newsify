@@ -1,6 +1,6 @@
 <% item = @item if local_assigns[:item].nil? %>
 <div class="d-flex flex-wrap">
 <% item.topics.each do |content_topic| %>
-	<%= link_to content_topic.item.name, content_topic.item, class: "#{default_badge_css} mb-1 fsz7 #{content_topic.score > 0.01 ? "text-success" : "text-danger"}" unless content_topic.item.nil? %>
+	<%= link_to content_topic.item.name, newsify.item_path(content_topic.item), class: "#{default_badge_css} mb-1 fsz7 #{content_topic.score > 0.01 ? "text-success" : "text-danger"}" unless content_topic.item.nil? %>
 <% end %>
 </div>

@@ -10,7 +10,7 @@ GIT
 PATH
   remote: .
   specs:
-    newsify (0.1.0)
+    newsify (0.1.01)
       acts_as_votable
       aylien_text_api
       custom_sort
