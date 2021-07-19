@@ -6,7 +6,7 @@ document.querySelector('<%= raw selector %>').innerHTML = ('<%= escape_javascrip
 <% if @voting.vote_ui == "toggle" %>
 document.querySelector('<%= raw selector %>').innerHTML = ('<%= escape_javascript(render(partial:"community/votes/upvote_toggle",locals:@voting.upvote_render_params)) %>')
 <% else %>
-$("<%= raw selector %>").html('<%= escape_javascript(render(partial:"community/votes/up_down_vote",locals:@voting.updown_render_params)) %>')
+document.querySelector('<%= raw selector %>').innerHTML = ('<%= escape_javascript(render(partial:"community/votes/up_down_vote",locals:@voting.updown_render_params)) %>')
 <% end %>
 <% if @show_user_audit_scores %>
 let el = document.querySelector("#manage_users")

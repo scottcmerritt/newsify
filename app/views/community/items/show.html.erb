@@ -1,0 +1,66 @@
+<% if false %>
+<script type="text/javascript">
+  var listTools = undefined;
+
+  // <%= raw @search_params.to_json %>
+  jQuery(document).ready(function($) {
+   	<% if false %>
+    listTools = new SoundTools(<%= @music_json_data.nil? ? '' : raw(@music_json_data.to_json) %>)
+	<% end %>
+	listTools = new SoundTools()
+	var audioObj = <%= raw(@audio_obj.to_json) %>;
+
+    listTools.renderAudioWavePreview(audioObj)
+})
+
+</script>
+<% end %>
+<%= render partial: "community/items/parts/header",locals: {show_import_link: true} %>
+
+	<% unless @classified.nil? %>
+		<% @classified.each do |row| %>
+		<div>
+		(<%= row.name %> <%= row.salience %>)
+		</div>
+		<% end %>
+	<% end %>
+
+<%= render partial: "community/items/parts/topics" unless @item.topics.empty? %>
+
+
+<div class="row">
+	<div class="col-7 py-2 images-xlg">
+		
+
+		<p class="d-flex bg-light px-2">
+			<div class="pb-2"><%= @item.wd_descr %></div>
+			<div class="py-1">
+				<% unless @item.wiki_img_url.blank? %>
+				<div class="float-left mr-2">
+				<img src="<%= @item.wiki_img_url %>" class="images-md img-circle border border-2">
+				</div>
+				<% end %>
+				<%= @item.wiki_text %>
+			</div>
+		</p>
+</div>
+	<div class="col-5">
+		<% if defined?(Room) %>
+		<%= render partial: "rooms/rooms",locals:{rooms: @item.rooms} rescue "[No rooms]" %>
+
+		<div id="discussedWithin">
+		<%= render partial: "rooms/parts/discussed_within", locals: {item:@item} %>
+		</div>
+		<% end %>
+
+		<%= render partial: "community/items/interested", locals: {data:@interested[:all],connections:@interested[:connections]} unless @interested.nil? %>
+
+	</div>
+</div>
+<%= my_paginate @labeled, page:params[:page] %>
+<%= render partial: "community/items/list", locals: {data:@labeled} rescue "[LIST ERROR]" %>
+<%= render partial: "audio/demo", locals: {item: @item} rescue "[No audio]" %>
+<% unless @categories.nil? || @categories.length == 0 %>
+<h4>Categories</h4>
+<%= render partial: "community/items/list", locals: {data:@categories} rescue "[LIST ERROR]" %>
+<% end %>

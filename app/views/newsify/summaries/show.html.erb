@@ -1,0 +1,98 @@
+<script>
+jQuery(document).ready(function($) {
+	$("#toggleDiff").on('click',function(e) {
+		e.preventDefault()
+		e.stopPropagation()
+		$(".diff li.del").css({'display':'table-row'}) //show()
+		$(this).hide() 
+	})
+
+})
+
+</script>
+<style>
+	<% require "diffy" # %>
+	<%= Diffy::CSS %>
+</style>
+<%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: newsify.summaries_path} %>
+
+
+<% if true %>
+<% if false %>
+<%= render :partial=>"/admin/classifying/js" if false %>
+<%= render :partial=>"/admin/classifying/css" if false %>
+<%= render :partial=>"/search/browse/popups" if false %>
+
+<%= render :partial=>"/admin/classifying/timer_reporti",:timer=>@custom_timer %>
+<% end %>
+
+<div class="admin container main_container" id="classifyPage">
+<%= render :partial=>"newsify/summaries/overview",:locals=>{:links=>@ui[:links][:data],:active=>@ui[:links][:active]} %>
+
+<div class="snapPage snapPageTop pageStatus pageLoadStatus d-none">
+Loading...
+</div>
+
+
+<div class="container">
+<%= @summary.createdby if false %>
+<div class="d-flex bg-white p-2 border-bottom">
+<%= @summary.title %> <%= link_to("Edit",newsify.edit_summary_path(@summary), class: "ms-auto ml-auto") if @summary.can_edit? (current_user) %>
+</div>
+</div>
+
+	
+<div class="row">
+	<div class="col-9">
+
+	</div>
+	<div class="col-3">
+
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-2">
+		
+	</div>
+	<div class="col-7">
+		<% @summary.sources.each do |source| %>
+			<%= render :partial=>"newsify/sources/parts/list_item",:locals=>{:source=>source} %>
+		<% end %>
+		
+		<%= render :partial=>"newsify/modules/tag_scores", :locals=>{:oid=>nil,:tags=>@topics,:tag_score_thresh=>0.01} %>
+
+	</div>
+	<div class="col-3"></div>
+</div>
+
+<h4>History</h4>
+
+
+<% unless !@summary.respond_to?(:paper_trail) || @summary.paper_trail.previous_version.nil? %>
+	<a id="toggleDiff" href="#">Show removed</a>
+	<style>
+		.diff li.del {display: none;}
+	</style>
+	<%= tag.div raw(@diffed) %>
+<% end %>
+<% unless false && @summary.nil? %>
+	<% if !@summary.respond_to?(:versions) || @summary.versions.empty? %>
+	<%= tag.div "No logged changes", class: "alert alert-info" %>
+	<% else %>
+	<% prev_updated_at = @summary.updated_at %>
+	<% @summary.versions.reverse.each do |version| %>
+
+	<div class="bg-white border m-1 px-1">
+		<div class="fsz6 d-flex p-1">
+	<%= past_tense_event version.event %> by <%= link_to User.find_by(id:version.whodunnit).username, version.whodunnit, class: "mx-1" %> <span class="ml-auto"><%= time_ago_in_words prev_updated_at %> ago</span>
+	</div>
+
+	<div><%= version.reify.title unless version.reify.nil? %></div>
+	</div>
+	<% prev_updated_at = version.reify.updated_at unless version.reify.nil? %>
+	<% end %>
+	<% end %>
+<% end %>
+
+<% end %>

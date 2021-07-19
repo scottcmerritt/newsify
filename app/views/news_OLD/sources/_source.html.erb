@@ -24,7 +24,7 @@
 			<% if show[:added_by] %>
 			<div class="px-2">
 			<% user = User.find_by(id:source.createdby) %>
-			Added by <%= user.nil? ? "Auto importer" : link_to(user.username, user) %>
+			Added by <%= user.nil? ? "Auto importer" : link_to(user.respond_to?(:username) ? user.username : user.email, user) %>
 			</div>
 			<% end %>
 			</div>
@@ -64,8 +64,12 @@
 			</div>
 			<div class="col-3 pt-1">
 				<% if show[:similar_count] %>
+				<% begin %>
 				<% unless source.similar_sources.nil? %>
 				<div class="ml-auto text-right" style="margin-right:30px;"><%= tag.span "#{source.similar_sources.count} similar", class: "d-flex-inline badge badge-primary rounded border" %></div>
+				<% end %>
+				<% rescue Exception=>e %>
+				[similar_count error]
 				<% end %>
 				<% end %>
 			</div>

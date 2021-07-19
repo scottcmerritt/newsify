@@ -1,0 +1,8 @@
+<% active_href = nil if local_assigns[:active_href].nil? %>
+<ul class="nav nav-pills nav-justified bg-light my-1">
+	<% links.each do |link| %>
+	<li class="nav-item">
+  		<%= nav_link link[:label],link[:href],link[:count],link[:href] == active_href,"rounded-0" rescue "[invalid link]" %>
+  	</li>
+	<% end %>
+ </ul>

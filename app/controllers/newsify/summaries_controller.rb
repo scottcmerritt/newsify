@@ -6,19 +6,16 @@ class SummariesController < ApplicationController
 
 	before_action :load_entities, only: [:index,:show,:edit,:update]
 
-	def self.controller_path
-      "news/summaries" # change path from app/views/ideas to app/views/tasks
-  	end
+	#def self.controller_path
+    #  "news/summaries" # change path from app/views/ideas to app/views/tasks
+  	#end
 
 	def index
-		@room = Room.find_by(id:params[:room_id])
+		@room = Room.find_by(id:params[:room_id]) if defined?(Room)
 		@summaries = Summary.all
-
 		@query = "%#{params[:q]}%" if params[:q]
 
 		@summaries = @summaries.where("LOWER(title) LIKE ?",@query) unless @query.nil?
-
-
 		@summaries = @summaries.order("id DESC")
 
 		@summaries = @summaries.page(params[:page])
@@ -55,7 +52,7 @@ class SummariesController < ApplicationController
 		
 		# :include_diff_info=>false
 
-		@diffed = Diffy::Diff.new(@summary.paper_trail.previous_version.title, @summary.title,:include_diff_info=>false).to_s(:html) unless @summary.paper_trail.previous_version.nil?
+		@diffed = Diffy::Diff.new(@summary.paper_trail.previous_version.title, @summary.title,:include_diff_info=>false).to_s(:html) unless !@summary.respond_to?(:paper_trail) || @summary.paper_trail.previous_version.nil?
 
 		@custom_timer = {}
 		st = Time.now

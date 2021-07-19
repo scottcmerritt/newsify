@@ -220,7 +220,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
       data.each do |entity|
         #new_row = {name: entity.name,:type=>entity.type,:salience=>entity.salience,:wiki_url=>entity.metadata['wikipedia_url']}
         wiki_url = entity.metadata['wikipedia_url'].to_s if entity.metadata['wikipedia_url']
-        row = EntityRow.new({name: entity.name.to_s,type: entity.type.to_s,salience: entity.salience,wiki_url: wiki_url})
+        row = Newsify::EntityRow.new({name: entity.name.to_s,type: entity.type.to_s,salience: entity.salience,wiki_url: wiki_url})
         rows.push row
       end
       self.add_entity_rows rows: rows, min_salience: min_salience
@@ -238,7 +238,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 		item = Item.by_google_category label
 		SourceTopic.create(source_id:self.id,item_id:item.id,score:score,classifier:classifier,category: true) unless item.nil? || SourceTopic.where(source_id:self.id,item_id:item.id).exists?
 	end
-	def add_entity_rows rows: [], min_salience: 0.3
+	def add_entity_rows rows:, min_salience: 0.3
 		ignore_itypes = ["NUMBER"]
 		classifier = SourceTopic::CLASSIFIERS.find_index("Google:entities")
 		item_keys = {}
@@ -284,7 +284,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 		guesses = {}
 		interests_hash = ItemInterest.by_user user, limit: 2000, as_hash: true if interests_hash.nil?
 		scope_name = "interesting"
-		GuessScope.where("user_id = ? AND scope = ?",user.id,scope_name).delete_all
+		Community::GuessScope.where("user_id = ? AND scope = ?",user.id,scope_name).delete_all
 		
 		sources.each do |source|
 			score = 0
@@ -300,7 +300,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 			source.guess_score = score
 			guesses[source.id] = score
 			reason = top_items.length == 0 ? nil : ({"items":top_items.sort_by{|item,v| -v} }).to_json.to_s
-			GuessScope.create(target_type:"Source",target_id:source.id,user_id:user.id,published_at:source.published_at,score:score,scope:scope_name,guesser_id:guesser_id, reason: reason)
+			Community::GuessScope.create(target_type:"Source",target_id:source.id,user_id:user.id,published_at:source.published_at,score:score,scope:scope_name,guesser_id:guesser_id, reason: reason)
 		end
 		sources = sources.sort_by {|source| -source.guess_score }
 

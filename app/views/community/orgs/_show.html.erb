@@ -2,7 +2,7 @@
 
 <div class="bg-white p-1 m-1 d-flex justify-content-between">
 	<div class="d-flex">
-		<div style="width:60px;" class="bg-light text-dark mr-1 p-1 text-center"><b><%= org.sources.count %></b></div>
+		<div style="width:60px;" class="bg-light text-dark mr-1 me-1 p-1 text-center"><b><%= org.sources.count %></b></div>
 		<%= link_to org.name, org_path(:id=>org.id), class: "fsz4" %><% unless votes_interesting.nil? || votes_interesting.count == 0 %>
 		<% end %>
 	</div>

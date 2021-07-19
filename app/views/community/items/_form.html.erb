@@ -1,0 +1,42 @@
+<%= simple_form_for @item do |f| %>
+  
+<% if false %>
+  <%= form.association :item, collection: Item.order(:name), label: "Category", prompt: "Choose a Topic" %>
+<% end %>
+
+  <%= f.submit "Save", class: 'btn btn-success' %>
+  <%= link_to "Cancel", @item, class: "mx-1 btn btn-danger" %>
+
+<div class="form-row">
+    <div class="col-sm-6">
+    	<%= f.input :name %>
+        <%= render partial: "shared/icon_selector", locals: {form: f} %>
+    </div>
+    <div class="col-sm-6">
+    	 <%= f.input :itype, collection: @itypes, label: "Type" %>
+         <%= f.input :parent_id, collection: @parents, label: "Category" %>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="col-sm-6">
+        <%= f.input :wiki_url, label: "Wikipedia url" %>
+
+    </div>
+    <div class="col-sm-6">
+    	 
+         <%= f.input :wiki_img_url, label: "Wikipedia image url" %>
+    </div>
+</div>
+
+<%= f.input :wiki_text, label: "Details", input_html: {rows: 8} %>
+<div class="form-row">
+    <div class="col-sm-6">
+        <%= f.input :url, label: "Url or audio file" %>
+    </div>
+
+</div>
+  
+  <%= f.submit "Save", class: 'btn btn-success' %>
+  <%= link_to "Cancel", @item, class: "mx-1 btn btn-danger" %>
+<% end %>

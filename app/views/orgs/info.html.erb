@@ -19,7 +19,7 @@ h4 {padding:2px;margin:0px;}
 div.article div.date {color:black;position:absolute;top:-5px;right:4px;padding:1px;width:125px;height:10px;font-size:9px;background:white;border-radius:6px;border:solid 1px black;line-height:10px;text-align:center;}
 </style>
 <div class="container f1">
-	<%= render :partial=>"/news/summaries/overview",:locals=>{:links=>@ui[:links][:data],:active=>@ui[:links][:active]} %>
+	<%= render :partial=>"newsify/summaries/overview",:locals=>{:links=>@ui[:links][:data],:active=>@ui[:links][:active]} %>
 
 <div>
 

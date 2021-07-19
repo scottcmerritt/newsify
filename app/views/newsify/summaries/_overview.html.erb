@@ -1,0 +1,37 @@
+<ul class="m-2 nav nav-pills bg-white border my-1">
+	<% link_count = 0 %>
+	<% links.each do |link| %>
+	<% disabled = link.has_key?(:disabled) %>
+	<% has_links = link.has_key?(:links) && link[:links].length>0 %>
+
+		<li class="nav-item <% if has_links %>dropdown<% end %>">
+	    <a class="nav-link<% if active == link_count %> active<% end %><% if disabled %> disabled<% end %><% if has_links %> dropdown-toggle<% end %>" <% if has_links %>data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"<% end %><% if disabled %> tabindex="-1" aria-disabled="true"<% end %> href="<%= link[:url] %>"><%= link[:name] %></a>
+	    <% if has_links %>
+
+	    <div class="dropdown-menu">
+	    	<% link[:links].each do |l| %>
+	    	<% if l.has_key?(:divider) %>
+	    	<div class="dropdown-divider"></div>
+	    	<% else %>
+	    	<a class="dropdown-item" href="<%= l[:url] %>"><%= l[:name] %></a>
+	    	<% end %>
+	    	<% end %>
+	    </div>
+	    <% end %>
+	  	</li>
+		<% link_count+=1 %>
+	<% end %>
+	<div class="ms-auto ml-auto btn-group align-items-center mr-2">
+  <a type="button" href="<%= admin_classify_path %>" class="btn btn-sm btn-danger">Classify</a>
+  <a type="button" class="btn btn-sm btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="sr-only">Toggle Dropdown</span>
+  </a>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="<%= admin_guess_upvotes_news_path %>">Guess Interest</a>
+    <a class="dropdown-item" href="<%= admin_news_similar_path %>">Group similar</a>
+    <a class="dropdown-item" href="<%= admin_classify_disambiguate_path %>">Disambiguate</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#">Separated link</a>
+  </div>
+</div>
+</ul>

@@ -1,0 +1,14 @@
+<h2>Summarize a news event</h2>
+<div class="row">
+	<div class="col-5">
+News article here
+<% @sources.each do |source| %>
+<div class="bg-white p-1 mx-1">
+<%= source.title %>
+</div>
+<% end %>
+	</div>
+	<div class="col">
+<%= render partial: 'form' %>
+</div>
+</div>

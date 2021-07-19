@@ -1,0 +1,29 @@
+<% unless @notice.nil? %>
+<div class="alert alert-info p-1 m-0"><%= @notice %></div>
+<% end %>
+<% @source.summaries.each do |summary| %>
+<div>
+	<h4>Summary <%= tag.span(num_format(summary.word_count,0,",")+ " words", class: "badge badge-info") %></h4>
+	<div>
+	<%= link_to summary.auto_html_format, newsify.summary_path(id: summary.id) %>
+	</div>
+	<div>
+		<% summary.topics.each do |topic| %>
+			<span><a href="/items/<%= topic.id %>"><%= topic.name %></a></span>
+		<% end %>
+	</div>
+</div>
+
+	<% if false %>
+		<div class="bg-white p-2 m-2" style="width:100%;height:200px;">
+		<div class="" style="overflow:scroll;height:140px;">
+			<% if !summary.post_mc_guid.nil? %>
+			Published @ <%= summary.published_at %>
+			<% end %>
+			<div>
+			<%= summary.title %>
+			</div>
+		</div>
+		</div>
+	<% end %>
+<% end %>

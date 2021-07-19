@@ -9,7 +9,7 @@
 <% else %>
 <% groups.each do |group| %>
 	<% group_member_count = group.respond_to?(:count) ? group.count : group.member_count %>
-	<% count_lbl = group_member_count.nil? ? "" : tag.span(group_member_count, class: "badge badge-info ml-auto mr-1 fsz5") %>
+	<% count_lbl = group_member_count.nil? ? "" : tag.span(group_member_count, class: "badge badge-info ml-auto mr-1 me-1 fsz5") %>
 
     <%= link_to raw("<div class='group d-flex align-items-center'>#{icon_span(group.icon_guessed,{wrap_css:"mx-1 fsz3"})}<span class='name pl-1'>#{group.name}</span>#{count_lbl}</div>"), group_path(group), class: 'nav-link side-nav-link p-1 px-2' %>
     <% if show[:room] %>
@@ -18,7 +18,7 @@
     <% if group.is_debate %>
 		<% room_org = group.room_org(room.id) %>
 		<% points = room_org.points(category:"interesting").to_i %>
-		<% points_span = tag.span "#{points} #{"point".pluralize(points)}", class: "badge badge-success ml-auto mr-1 p-1" %> 
+		<% points_span = tag.span "#{points} #{"point".pluralize(points)}", class: "badge badge-success ml-auto mr-1 me-1 p-1" %> 
 	<% end %>
 
     <div class="ml-3 bg-light border">

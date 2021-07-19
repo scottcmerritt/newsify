@@ -1,0 +1,60 @@
+<% body_class = "" if (local_assigns[:body_class].nil?) %>
+<% title_class = "" if (local_assigns[:title_class].nil?) %>
+<% style_wrap = ""  if (local_assigns[:style_wrap].nil?) %>
+<% img_overlay = false  if (local_assigns[:img_overlay].nil?) %>
+<% text_style = "" if local_assigns[:text_style].nil? %>
+
+
+<% if !img_src.blank? && img_overlay %>
+
+
+  <div class="card" style="<%= style_wrap %>">
+
+    <img class="card-img" src="<%= img_src %>" alt="Card image cap">
+
+    <div class="card-img-overlay <%= body_class %>">
+        <h5 class="card-title <%= title_class %> bg-white p-1 rounded" style="opacity:0.7;"><%= raw title %></h5>
+        <div class="card-text bg-white p-1 rounded" style="opacity:0.8;">
+          <div style="opacity:100%;"><%= raw text %></div>
+            
+          </div>
+        <% if false %><p class="card-text">Last updated 3 mins ago</p><% end %>
+    </div>
+
+    
+       <% unless link.blank? %>
+       <div class="card-footer text-center">
+        <%= raw link %>
+       </div>
+       <% end %> 
+</div>
+
+
+
+<% else %>
+
+
+  <div class="card" style="<%= style_wrap %>">
+    <% if !img_src.blank? %>
+    <img class="card-img-top" src="<%= img_src %>" alt="Card image cap">
+
+    <% end %>
+    <div class="card-body <%= body_class %>">
+      <h5 class="card-title <%= title_class %>"><%= raw title %></h5>
+      <p class="card-text" style="<%= text_style %>"><%= raw text %></p>
+       </div>
+       <% unless link.blank? %>
+       <div class="card-footer text-center">
+        <%= raw link %>
+       </div>
+       <% end %>
+       <% if false %>
+      <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </div>
+      <% end %>    
+</div>
+
+
+<% end %>
+

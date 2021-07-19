@@ -1,0 +1,38 @@
+<div class="container">
+	<%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: newsify.summaries_path} %>
+	<%= paginate @summaries %>	
+
+	<%= render partial: "community/shared/labels_nav", locals: {selected: @label} %>
+
+<div class="summaries olist vertical">
+<% @summaries.each do |summary| %>
+<div class="summaryItem oliWrap oli oprofile bg-secondary border mb-2 p-1">
+	<%= render partial: "community/votes/main", locals: {object: summary,user:current_user} %>
+	<div class="d-flex align-items-center p-1">
+		<%= tag.span summary.otype_guessed, class:"ml-2 badge badge-info align-items-middle" %>
+
+		<%= tag.span summary.created_at_wtime, class:"ms-auto ml-auto badge badge-light bg-light text-secondary align-items-middle" %>
+		<%= link_to "Delete", newsify.summary_path(summary), method: :delete, class: "btn btn-sm btn-danger ml-2 ms-2" %>
+	</div>
+	<div class="oname d-flex align-items-center bg-white p-1">
+		<%= link_to summary.title, newsify.summary_path(summary), class: "text-dark nodec"%>
+	</div>
+	<%= render partial: "community/votes/moderation", locals: {object: summary,user:current_user,labels:Community::Voting::VOTESCOPE_LABELS} %>
+
+
+	<div class="ml-3 bg-white mt-1">
+		<% summary.summary_sources.each do |summary_source| %>
+		<div class="px-2 py-1">
+			<%= link_to summary_source.source.title, newsify.source_path(summary_source.source) %>
+		</div>
+		<% end %>
+	</div>
+	<% if @room %>
+	<div class="bg-white p-1 border">Add to room: <%= link_to @room.name, room_add_preview_path(id:@room.id,oid:summary.id,otype:"Summary"), method: :post, remote: true %></div>
+	<% end %>
+</div>
+
+<% end %>
+</div>
+<%= paginate @summaries %>
+</div>

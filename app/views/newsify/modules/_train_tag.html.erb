@@ -1,0 +1,23 @@
+<% tag = nil if (local_assigns[:tag].nil?) %>
+<% hide_tag = false if (local_assigns[:hide_tag].nil?) %>
+<% expanded = false if (local_assigns[:expanded].nil?) %>
+<% tag_score_adj = nil if (local_assigns[:tag_score_adj].nil?) %>
+<% tag_score = nil if (local_assigns[:tag_score].nil?) %>
+<% excluded_ids = [] if (local_assigns[:excluded_ids].nil?) %>
+<% unless excluded_ids.include?(item.id) %>
+<% if expanded %>
+<div class="stopic <% if hide_tag %>stopic_gray<% end %>" style="white-space: unset;" oid="<%= oid %>" item-id="<%= item.id %>">
+<span data-toggle="tooltip" data-html="true" title="<%= item.wiki_text.nil? ? "No wiki" : item.wiki_text.length %><br/>Fame: <%= item.fame %><br/>Relevance: <%= item.relevance %><br/><% unless tag_score_adj.nil? %>Scored adj: <b><%= tag_score_adj %><% end %></b>" tag-score="<%= tag_score unless tag_score.nil? %>"><a class='title' href="/?i=<%= item.id %>"><% unless tag.nil? %>(<%= tag[:hits] %>) <% end %><%= item.name %><% unless tag.nil? %> [<%= num_format(tag[:score],4) %>]<% end %></a><a href="#" class="edit_tag add_tag" >+</a><a href="#" class="edit_tag remove_tag" >-</a></span>
+
+<div style="color:gray;">
+<%= item.wd_descr %>
+</div>
+
+</div>
+<% else %>
+
+<span class="stopic <% if hide_tag %>stopic_gray<% end %>" data-toggle="tooltip" data-html="true" title="<%= item.wd_descr %><br/><%= item.wiki_text.nil? ? "No wiki" : item.wiki_text.length %><br/>Fame: <%= item.fame %><br/>Relevance: <%= item.relevance %><br/><% unless tag_score_adj.nil? %>Scored adj: <b><%= tag_score_adj %><% end %></b>" oid="<%= oid %>" item-id="<%= item.id %>" tag-score="<%= tag_score unless tag_score.nil? %>"><a class='title' href="/?i=<%= item.id %>"><% unless tag.nil? %>(<%= tag[:hits] %>) <% end %><%= item.attributes.has_key?("approved") && item.approved ? "*" : "" %><%= item.name %><% unless tag.nil? %> [<%= num_format(tag[:score],4) %>]<% end %></a><a href="#" class="edit_tag add_tag" >+</a><a href="#" class="edit_tag remove_tag" >-</a></span>
+
+
+<% end %>
+<% end %>

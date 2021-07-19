@@ -1,0 +1,36 @@
+<h4>Import from wikipedia <% if @room %> into <%= link_to @room.name, @room %><% end %>
+</h4>
+<% if @room %>
+<p>Add ammunition to your debates by importing Wikipedia articles</p>
+<% end %>
+<form class="" method="get" action="" %>
+<input type="text" name="name" value="<%= @name_query %>" placeholder="Search"> <input type="submit" class="d-inline m-1">
+</form>
+<div class="row">
+	<div class="col-7">
+
+<div class="m-2">
+	<% unless @result.nil? %>
+		<% @result.each do |row| %>
+			<div class="border-bottom p-1 bg-white d-flex justify-content-between" data-page="<%= row[:page] %>">
+				<% existing = Item.where(wiki_url:row[:page]).first %>
+				
+				<%= render partial: "items/parts/wiki_import_row",locals: {row:row,item:existing,room:@room,page:row[:page]} %>
+			</div>
+		<% end %>
+	<% end %>
+	<div style="height:250px;"></div>
+</div>
+</div>
+<div class="col-5">
+	
+</div>
+</div>
+
+
+
+<div id="roomAmmo" class="btmPanel panel-sm container-fluid m-0 p-0 border-0 bg-transparent">
+	<div id="previewsCount" style="position:absolute;top:-30px;right:10px;"><%= @previews.nil? ? "" : @previews.length %></div>
+
+<%= render partial:"rooms/parts/show_previews", locals: {previews:@previews,room:@room,show:{remove:true}} %>
+</div>

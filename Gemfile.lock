@@ -12,8 +12,15 @@ PATH
   specs:
     newsify (0.1.0)
       acts_as_votable
+      aylien_text_api
+      custom_sort
+      diffy
+      google-cloud-language
       kaminari
+      narray
       rails (~> 6.1.4)
+      tactful_tokenizer
+      tf-idf-similarity
 
 GEM
   remote: https://rubygems.org/
@@ -80,9 +87,12 @@ GEM
     acts_as_votable (0.13.1)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    aylien_text_api (1.0.0)
     builder (3.2.4)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
+    custom_sort (0.4.07)
+    diffy (3.4.0)
     erubi (1.10.0)
     faraday (1.5.1)
       faraday-em_http (~> 1.0)
@@ -173,6 +183,7 @@ GEM
     minitest (5.14.4)
     multi_json (1.15.0)
     multipart-post (2.1.1)
+    narray (0.6.1.2)
     nio4r (2.5.7)
     nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
@@ -210,7 +221,7 @@ GEM
       rake (>= 0.13)
       thor (~> 1.0)
     rake (13.0.6)
-    ruby2_keywords (0.0.4)
+    ruby2_keywords (0.0.5)
     signet (0.15.0)
       addressable (~> 2.3)
       faraday (>= 0.17.3, < 2.0)
@@ -224,9 +235,13 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
+    tactful_tokenizer (0.0.5)
+    tf-idf-similarity (0.2.0)
+      unicode_utils (~> 1.4)
     thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    unicode_utils (1.4.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -236,11 +251,17 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aylien_text_api
+  custom_sort
+  diffy
   google-cloud-language
   impressionist!
   kaminari
+  narray
   newsify!
   sqlite3
+  tactful_tokenizer
+  tf-idf-similarity
 
 BUNDLED WITH
    2.1.4

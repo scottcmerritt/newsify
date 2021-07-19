@@ -1,0 +1,5 @@
+$("#btmPanelScroll").html('<%= escape_javascript(render(partial: "community/panels/previews",locals:{previews:@previews,show:{remove:true}})) %>')
+<% if @page %>
+$('div[data-page="<%= @page %>"]').html('<%= escape_javascript(render(partial: "items/parts/wiki_import_row",locals: {item:@item,room:@room,page:@page})) %>')
+<% end %>
+$("#previewsCount").html('<%= @previews.length %>')

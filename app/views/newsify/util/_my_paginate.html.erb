@@ -1,14 +1,15 @@
 <% data = local_assigns[:data] %>
 <% paths = local_assigns[:paths] %>
+<% link_css = "btn btn-sm font-weight-bold fw-bold border rounded my-1 bg-light" %>
 
-<div class="d-flex justify-content-between bg-white border-bottom border-top my-1">
-	<%= @page == 1 ? tag.span("") : link_to("Prev page", paths[:prev]) %>
+<div class="d-flex align-items-center justify-content-between bg-white border-bottom border-top my-1">
+	<%= @page == 1 ? tag.span("") : link_to("Prev page", paths[:prev], class: link_css) %>
 	<div>
 	<%= tag.span "#{data.total_count} rows", class: "fw-bold font-weight-bold" %>
 
 	<%= tag.span "Page #{@page} of #{data.total_pages}", class: "mx-1" %>
 
 	</div>
-	<%= link_to("Next page", paths[:next]) %>
+	<%= link_to("Next page", paths[:next], class: link_css) %>
 </div>
 

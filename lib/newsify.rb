@@ -25,13 +25,18 @@ require "community/concerns/membership_user"
 require "community/concerns/vote_stats"
 require "community/concerns/vote_cacheable"
 
+require "community/concerns/labeled_data"
+
 
 #%i[VoteLabelSpam VoteLabelQuality VoteLabelInteresting VoteLabelLearnedfrom VoteLabelFun VoteLabelFunny VoteLabelAd VoteLabelClickbait VoteLabelEnglish]
 
 
+require "newsify/text_util"
 require "newsify/stats/org_custom"
 require "newsify/import_source"
 require "newsify/import"
 require "newsify/news_general"
+require "newsify/news_manager"
 
+require "newsify/entity_row"
 require "newsify/google_analyze"

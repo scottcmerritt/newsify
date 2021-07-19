@@ -1,5 +1,5 @@
 module Newsify
-  # shared functionality for classifying news related classes
+  # shared functionality for classifying news related models
   module NewsClassify
     # NOTE: this next line was commented out, not sure if that was intentional
     extend ActiveSupport::Concern

@@ -3,7 +3,7 @@ class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did
 	self.table_name = "summaries"
 	#has_paper_trail
 	acts_as_votable
-	include Newsify::GenericObj
+	include Newsify::GenericObj, Newsify::TextUtil, Newsify::NewsManager
 	include Community::IconUtil, Community::VoteCacheable
 
 	#include GenericObj, TextUtil, NewsManager, IconUtil

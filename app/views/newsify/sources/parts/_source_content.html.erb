@@ -1,0 +1,57 @@
+
+<% text_style = "overflow-y: scroll;height: 300px;white-space: pre-wrap;" %>
+<% unless @source.summaries.nil? %><% end %>
+<div class="card-group mt-3">
+<% render :partial=>"feedbacker/ui/card", :locals=>{:title=>"Original",:text=>@source.card_text,:img_src=>@source.urltoimage,:link=>"#",:style_wrap=>"width: 18rem;"} %>
+<% if @source.is_video? %>
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+
+        player = new YT.Player('videoPlayer', {
+          //height: '<%= 390*0.8 %>',
+          width: '100%', //'<%= 640*0.8 %>',
+          videoId: '<%= @source.youtube_key %>',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+
+      }
+
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        //event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+
+      }
+
+  </script>
+<%= render :partial=>"/items/util/card", :locals=>{:title=>"Video",:text=>'<div id="videoPlayer"></div>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} %>
+
+<% else %>
+	<% if @source.first_content.nil? %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:title=>"No article added yet",:text=>'<a class="btn btn-sm btn-primary" href="?summarize=1">Grab it and summarize</a>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} %>
+	<% else %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:text_style=>text_style,:title=>"Actual content #{tag.span(num_format(@source.last_content.word_count,0,",")+ " words",class:'ml-1 badge badge-info')}",:text=>@source.last_content.auto_html_format,:img_src=>nil,:link=>"#",:style_wrap=>"width: 18rem;"} %>
+	<% end %>
+<% end %>
+<%= render partial:"newsify/sources/parts/summaries_opinions" %>
+</div>

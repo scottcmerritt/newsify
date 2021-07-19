@@ -1,0 +1,34 @@
+<% first_hidden = false %>
+<% hide_tag = false %>
+
+<% tag_score_thresh = nil if (local_assigns[:tag_score_thresh].nil?) %>
+
+<div class="tags_suggest">
+<% tags.each_pair do|tag_item_id,tag| %>
+
+<% tag_score = !tag.has_key?(:score) || tag[:score].nil? ? nil : num_format(tag[:score],3).to_f %>
+<% if tag_score_thresh.nil? %>
+
+<% else %>
+
+<% tag_score_adj = num_format(tag[:score_adj],5).to_f %>
+<% hide_tag = !tag_score.nil? && !(tag_score >= 0.01 && tag_score_adj >= tag_score_thresh)  %>
+
+<% if !first_hidden && hide_tag %>
+	<a class="tags_show_more" href="#">More</a>
+	<div class="tags_hidden">
+<% end %>
+<% end %>
+
+<%= render :partial=>"newsify/modules/train_tag",:locals=>{:item=>tag[:item],:oid=>oid,:tag=>tag,:hide_tag=>hide_tag,:tag_score=>tag_score,:tag_score_adj=>tag_score_adj} rescue "" %>
+
+	<% if hide_tag %>
+		<% first_hidden = true %>
+	<% end %>
+
+<% end %>
+
+<% if first_hidden %>
+</div>
+<% end %>
+</div>

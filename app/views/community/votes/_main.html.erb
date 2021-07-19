@@ -5,24 +5,25 @@
 <% toggles_only = false if local_assigns[:toggles_only].nil? %>
 <% show_count = false if local_assigns[:show_count].nil? %>
 <% wrap_css = "bg-primary-light" if local_assigns[:wrap_css].nil? %>
+<% colors = {:up_down=>["text-success","text-secondary"],:toggles=>["text-success","text-secondary"]} %>
 
 <% if only_if_set %>
 <% if vote.vote_scope.nil? && (user.liked?(object) || user.disliked?(object)) %>
-	<%= render partial: "community/votes/up_down_vote", locals: {object: object, otype: otype, vote_scope: nil,icons: {up: "heart",down:"heart-broken"}, user: user, show_count: show_count} %>
+	<%= render partial: "community/votes/up_down_vote", locals: {object: object, otype: otype, vote_scope: nil,icons: {up: "heart",down:"heart-broken"}, user: user, show_count: show_count,icon_colors: colors[:up_down]} %>
 <% end %>
 <% if !upvote_only && !vote.vote_scope.nil? && !upvote_only %>
 	<%= render partial: "community/votes/upvote_toggles", locals: {object: object, vote_scopes:Community::Voting::VOTESCOPES,labels:Community::Voting::VOTESCOPE_LABELS,icons: {up: "check-circle",down:"check-circle"},otype:otype, user: user, only_if_set:true,vote:vote,wrap_css:"",show_count:show_count} %>
 <% end %>
 
 <% else %>
-<div class="d-flex <%= wrap_css %>">
+<div class="d-flex <%= wrap_css %> align-items-center">
 	<% if !toggles_only %>
 	<div class="text-light px-1 mx-1">
-		<%= render partial: "community/votes/up_down_vote", locals: {object: object, otype: otype, vote_scope: nil,icons: {up: "heart",down:"heart-broken"}, user: user,show_count:show_count} %>
+		<%= render partial: "community/votes/up_down_vote", locals: {object: object, otype: otype, vote_scope: nil,icons: {up: "heart",down:"heart-broken"}, user: user,show_count:show_count,icon_colors: colors[:up_down]} %>
 	</div>
 	<% end %>
 	<% if !upvote_only || toggles_only %>
-	<div class="ml-auto">
+	<div class="ms-auto ml-auto">
 		<%= render partial: "community/votes/upvote_toggles", locals: {object: object, vote_scopes:Community::Voting::VOTESCOPES,labels:Community::Voting::VOTESCOPE_LABELS,icons: {up: "check-circle",down:"check-circle"},otype:otype, user: user,show_count:show_count} %>
 	</div>
 	<% end %>

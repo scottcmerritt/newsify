@@ -81,7 +81,7 @@ module Community
 
 		def setup
 			if self.otype=="item"
-		      @data = Item.select("id,name,name as title,wiki_text,wiki_img_url as thumb,wiki_img_url as image,created_at,updated_at,itype,url,sash_id,parent_id").where("id =?", self.oid).first # find_by(id: params[:oid]) 
+		      @data = Newsify::Item.select("id,name,name as title,wiki_text,wiki_img_url as thumb,wiki_img_url as image,created_at,updated_at,itype,url,sash_id,parent_id").where("id =?", self.oid).first # find_by(id: params[:oid]) 
 		      #object = preview #.to_json # as_json({})
 		    elsif self.otype == "person"
 
@@ -137,15 +137,15 @@ module Community
 
 			case otype
 			when "item"
-				output = Item.all
+				output = Newsify::Item.all
 			when "summary" # || "news")
 				output = Newsify::Summary.all
 			when "source" # || "news")
 				output = Newsify::Source.all
 			when "sound" #("audio" || "sound")
-				output = Item.all_sounds
+				output = Newsify::Item.all_sounds
 			when "person" #("audio" || "sound")
-				output = Item.all_people
+				output = Newsify::Item.all_people
 			when "source"
 				output = Newsify::Source.all
 			when "vote"

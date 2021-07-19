@@ -1,0 +1,34 @@
+<div class="row">
+	<div class="col-7 py-2 images-xlg">
+		<%= render partial: "items/parts/header",locals: {header_link: item_path(@item)} %>
+		<% unless params[:save] %>
+		<form method="get" action="">
+			<input type="hidden" name="save" value="1">
+			<input type="submit" class="m-1 btn btn-sm btn-success" value="Save"/>
+		</form>
+		<% end %>
+		<div><%= @wiki.main_image_url %></div>
+		<div class="py-1">
+			<%= @wiki.summary %>
+		</div>
+		<% if params[:all] %>
+		<div class="py-1">
+			<%= @wiki.text %>
+		</div>
+		<% end %>
+		<% if false %>
+		<div class="py-1">
+			<%= @wiki.content %>
+		</div>
+		<% end %>
+	</div>
+	<div class="col-5">
+		<% unless @wiki.image_thumburls.nil? %>
+		<% @wiki.image_thumburls.each do |url| %>
+		<%= tag.img "", src:url %>
+		<% end %>
+		<% end %>
+
+	</div>
+
+</div>

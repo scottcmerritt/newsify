@@ -1,0 +1,26 @@
+<% item = @item if local_assigns[:item].nil? %>
+<% r = 1 if local_assigns[:r].nil? %>
+<% yes_icon = 'heart' %>
+<% no_icon = 'heart-broken' %>
+<% off_icon = 'heart' %>
+<% yes_css = "text-danger" %>
+<% no_css = "text-danger" %>
+<% off_css = "text-muted" %>
+<% wrap = true if local_assigns[:wrap].nil? %>
+<% span_css = "bg-white border rounded text-center mx-auto p-1" if local_assigns[:span_css].nil? %>
+
+<% otype = local_assigns[:otype].nil? ? "item" : otype %>
+<% if wrap %>
+<div class="text-center">
+<% end %>
+<span class="<%= span_css %>">
+<% is_fav = current_user.favorited?(item) %> 
+<% if is_fav %>
+<%= link_to icon_text('',yes_icon,false,yes_css), cancel_connection_path(otype:otype,id:item.id,r:r) %>
+<% else %>
+  <%= link_to icon_text('',off_icon,false,off_css), add_connection_path(otype:otype,id:item.id,r:r) %>
+<% end %>
+</span>
+<% if wrap %>
+</div>
+<% end %>

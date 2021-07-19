@@ -1,0 +1,13 @@
+<% if item.nil? %>
+	<% item = item.nil? ? Item.new(name:row[:name]) : item %>
+	<div>
+		<%= link_to "Save", wiki_save_path(name:item.name,page:page,room_id:(room.nil? ? nil : room.id)), method: :post,remote: true %> <b><%= item.name %></b>
+		<div class="text-right fsz7">
+			<%= page %>
+		</div>
+	</div>
+<% else %>
+
+	<%= link_to "Add to room", wiki_save_path(name:item.name,page:page,room_id:(room.nil? ? nil : room.id),item_id:item.id), method: :post,remote: true unless room.nil? || room.has_preview?(item) %> 
+	<%= link_to item.name, item %>
+<% end %>

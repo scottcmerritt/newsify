@@ -1,0 +1,39 @@
+<% show_import_link = false if local_assigns[:show_import_link].nil? %>
+<% header_link = nil if local_assigns[:header_link].nil? %>
+<h2 class="topicH bg-primary primary-b text-light my-1 d-flex">
+	<% if @item.itype == "CATEGORY" %><%= link_to raw("<i class='fa fa-arrow-left'></i>"), categories_path, class: "text-dark" %><% end %>
+	<%= icon_span @item.icon_guessed, {wrap_css: "mr-2 me-2",no_wrap:false} %>
+	<%= link_to @item.name,header_link, class: "text-light" unless header_link.nil? %>
+	<%= @item.name if header_link.nil? %>
+
+	<%= link_to icon_text("","users",false,"text-dark mx-1"),"?gogroup=1" if @item.has_org? %>
+
+	<div class="ms-auto ml-auto d-flex align-items-center">
+		<%= render partial: "items/parts/connection", locals: {wrap: false,span_css:"mx-1 fsz3"} rescue "[No connections]" %>
+		<%= render partial: "rooms/parts/preview_adder", locals: {oid:@item.id,otype:"Item"} rescue "[No preview_adder]" %>
+	</div>
+</h2>
+<% if current_user.has_role?(:moderator) || current_user.has_role?(:admin) %>
+<div class="d-flex fsz6">
+	<%= link_to "Import", item_import_path(id:@item.id), class:"p-1" if show_import_link %>
+	<div class="ms-auto ml-auto d-flex">
+	<%= link_to "edit", edit_item_path(@item), class: "px-2" if current_user.has_role? :moderator %>
+	<%= link_to "del", item_path(@item), method: :delete, class: "px-2" if current_user.has_role? :admin %>
+	</div>
+</div>
+<% end %>
+
+<div class="fsz5 d-flex align-items-center">
+	<%= tag.span @item.wiki_url, class: "p-1 fsz7" unless @item.wiki_url.blank? %>
+	
+	<div class="justify-content-end ms-auto ml-auto mx-1">
+		<%= @item.iptc_subject_code %>
+		<% if @item.parent.nil? %>
+		<%= link_to "Categories", categories_path %>
+		<% else %>
+		<%= link_to @item.parent.name, @item.parent %>
+		<% end %>
+	</div>
+	
+
+</div>

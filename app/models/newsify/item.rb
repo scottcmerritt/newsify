@@ -1,13 +1,14 @@
 module Newsify
 class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	self.table_name = "items"
+	is_impressionable if defined?(is_impressionable)
 
 	def self.model_name
   		ActiveModel::Name.new("Newsify::Item", nil, "Item")
 	end
 
 	acts_as_votable
-	include Community::VoteCacheable, Community::IconUtil
+	include Community::VoteCacheable, Community::IconUtil, Classify::ClassifyContent
 
 =begin
   has_merit
@@ -66,6 +67,11 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	
 	def has_org?
 		Community::Org.exists?(item_id:self.id)
+	end
+
+	def self.basic_search q
+		query = "%#{q}%"
+		where("name LIKE ?", query)
 	end
 
 

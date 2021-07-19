@@ -1,2 +1,6 @@
 <h4>The news relevant to you...</h4>
-<%= link_to "Sources", newsify.sources_path %>
+<div class="d-flex">
+<%= link_to "Sources", newsify.sources_path, class: "mx-3" %>
+
+<%= link_to "Topics", newsify.items_path, class: "mx-3" %>
+</div>

@@ -1,13 +1,15 @@
+<% topics = source.topics(min_score:0.15,max_score:1.0) if local_assigns[:topics].nil? %>
+<% topics2 = source.topics(min_score:0.0,max_score:0.15) if local_assigns[:topics2].nil? %>
 <div class="d-flex bg-light p-1 align-items-center">
 	<% keywords = source.import_keywords.pluck(:keyword) %>
 	<div class="badge badge-primary rounded mr-1">
 	<%= keywords.join(",") %>
 	</div>
 
-		<% source.topics(min_score:0.15,max_score:1.0).each do |item| %>
+		<% topics.each do |item| %>
 		<%= link_to item.name, item_path(item.id), class:"ms-auto ml-auto badge bg-light badge-light border rounded text-secondary align-items-middle text-success p-1 m-1" %>
 		<% end %>
-		<% source.topics(min_score:0.0,max_score:0.15).each do |item| %>
+		<% topics2.each do |item| %>
 		<%= link_to item.name, item_path(item.id), class:"ms-auto ml-auto badge bg-light badge-light border rounded text-secondary align-items-middle text-secondary p-1 m-1" %>
 		<% end %>
 </div>

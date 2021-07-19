@@ -1,0 +1,21 @@
+<% data = local_assigns[:data] %>
+<% my_paginate_data = {
+	data:data,
+	paths:
+		{
+			prev: newsify.sources_path({page:@page-1}),
+			next: newsify.sources_path({page:@page+1})
+		}
+	} 
+%>
+<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
+
+<% data.each do |row| %>
+<div class="mb-2">
+<%= link_to row.title, newsify.source_path(row) if false %>
+<%= render partial: "newsify/sources/source2", locals:{source:row} %>
+</div>
+<% end %>
+
+<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
+

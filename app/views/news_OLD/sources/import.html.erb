@@ -22,7 +22,7 @@
 			<b><%= link_to import.keyword,sources_imported_path(import_id: import.id) %></b> by <% if import.user.nil? %>Auto importer<% else %><%= link_to import.user.username, import.user %><% end %>
 			</div>
 			<div class="justify-content-end"><%= time_ago_in_words import.created_at %> ago
-			<span import-id="<%= import.id %>"><%= link_to "Classify", sources_import_classify_path(import_id: import.id), remote: true %></span>
+			<span import-id="<%= import.id %>"><%= link_to "Classify", newsify.sources_import_classify_path(import_id: import.id), remote: true %></span>
 			<%= import.import_pct == 100 ? "100%" : "#{num_format(import.import_pct*100,1)}%" %>
 			</div>
 		</div>

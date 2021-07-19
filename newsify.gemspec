@@ -23,4 +23,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", "~> 6.1.4"
   spec.add_dependency "kaminari"
   spec.add_dependency "acts_as_votable"
+  spec.add_dependency "tactful_tokenizer"
+  spec.add_dependency "narray"
+  spec.add_dependency "tf-idf-similarity"
+
+  spec.add_dependency "aylien_text_api"
+  spec.add_dependency "google-cloud-language"
+
+  spec.add_dependency "diffy"
+  spec.add_dependency "custom_sort"
 end

@@ -1,10 +1,11 @@
-<% show = {votes:true,moderation:true,scores:false,interesting:false,added_by:true,similar_count:true} if local_assigns[:show].nil? %>
+<% show_default = {votes:true,moderation:true,scores:false,interesting:false,added_by:true,similar_count:true} %>
+<% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
 <div source-id="<%= source.id %>" class="source summaryItem oliWrap oli oprofile border mb-2 p-0 posr">
-	<%= render partial: "community/votes/main", locals: {object: source, user: current_user} if show[:votes] rescue tag.div("[Voting not enabled") %>
+	<%= render partial: "community/votes/main", locals: {object: source, user: current_user, icon_colors: ["text-success","text-secondary"]} if show[:votes] rescue tag.div("[Voting not enabled") %>
 
 	<div class="oname d-flex align-items-center bg-white p-1 px-2">
 	<%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold" %>
-	
+
 	<%= tag.span source.created_at_wtime, class:"ms-auto ml-auto badge bg-light badge-light text-secondary align-items-middle" %>
 
 	</div>
@@ -63,6 +64,7 @@
 			<% end %>
 			</div>
 			<div class="col-3 pt-1">
+
 			<% begin %>
 				<%= render partial: "newsify/sources/parts/similar", locals: {source:source} if show[:similar_count] %>
 			<% rescue Exception => e %>

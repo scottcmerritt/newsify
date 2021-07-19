@@ -1,28 +1,9 @@
-[<%= @cache_result %>]
 <h2 class="d-flex align-items-center"><%= ENV['NEWS_APP_NAME'] || 'Custom NEWS site' %>
 	<%= link_to "Import", newsify.sources_import_path, class: "ms-auto ml-auto btn btn-sm btn-primary bg-primary" %>
 </h2>
 <%= paginate @labeled if false %>
 <%= page_entries_info @labeled if false %>
 
-<% my_paginate_data = {
-	data:@labeled,
-	paths:
-		{
-			prev: newsify.sources_path({page:@page-1}),
-			next: newsify.sources_path({page:@page+1})
-		}
-	} 
-%>
-<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
 
-<% @labeled.each do |row| %>
-<div class="bg-white border rounded p-2">
-<%= link_to row.title, newsify.source_path(row) if false %>
-<%= render partial: "newsify/sources/source", locals:{source:row} %>
-</div>
-<% end %>
-
-<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
-
+<%= render partial: "newsify/sources/list", locals: {data: @labeled} %>
 

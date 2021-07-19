@@ -16,7 +16,7 @@ module IconUtil
   end
 
   def icon_guessed
-    if self.is_a? Room
+    if defined?(Room) && self.is_a?(Room)
       default_icon = "fa fa-comments"
       return self.icon_css.blank? ? (self.item.nil? ? default_icon : self.item.icon_guessed) : self.icon_css
     elsif self.is_a? Community::VoteAudit
@@ -63,7 +63,7 @@ module IconUtil
 
       if self.is_a? User
         _prefix + "user"
-      elsif self.is_a? Item
+      elsif self.is_a? Newsify::Item
         case self.itype
         when "PERSON" 
           _prefix+"user"
@@ -77,11 +77,11 @@ module IconUtil
           _prefix+"sitemap"
         end
 
-      elsif self.is_a? Room
+      elsif defined?(Room) && self.is_a?(Room)
         _prefix + "comments"
       elsif self.is_a? Community::Org
         _prefix + "users"
-      elsif self.is_a? RoomMessage
+      elsif defined?(RoomMessage) && self.is_a?(RoomMessage)
         _prefix + "comment"
       elsif self.is_a? Summary
         _prefix + "newspaper"
