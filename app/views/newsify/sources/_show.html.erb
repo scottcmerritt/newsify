@@ -17,7 +17,7 @@
 <h4 class="bg-white border-bottom p-2 my-1 d-flex align-items-center justify-content-between">
 	<%= tag.span @source.title %> 
 	
-	<a class="btn btn-primary btn-sm" href="<%= @source.url %>" target="_blank">Publisher link</a>
+	<a class="btn btn-primary btn-sm" href="<%= @source.url %>" target="_blank"><i class="fa fa-external-link-alt"></i></a>
 
 </h4>
 <div class="d-flex justify-content-between px-2">
@@ -156,16 +156,7 @@ SourceContent Error: <%= e %>
 
 (function() {
 
-
-
-
-
-
-
-
-
 $( document ).ready(function() {	
-
 	$('a.misc').on('click',function() {
 		$('div.misc').toggle();
 	});

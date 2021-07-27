@@ -13,10 +13,15 @@ module Newsify
       @labeled = Source.order("created_at DESC")
       .page(@page).per(20)
     end
+
     def show
       impression = impressionist(@source, "",{},{})
       do_summarization! if params[:summarize]
+
+      @new_comment    = Comment.build_from(@source, current_user.id, "")
+
     end
+
     def opinions
 
     end

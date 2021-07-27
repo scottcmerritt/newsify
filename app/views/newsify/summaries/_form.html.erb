@@ -1,4 +1,4 @@
-<%= simple_form_for @summary do |f| %>
+<%= simple_form_for @summary, url: newsify.summary_path(@summary) do |f| %>
   <%= f.input :title %>
   <%= f.input :source_ids %>
   <%= f.submit "Save", class: 'btn btn-success' %>

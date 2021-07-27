@@ -2,6 +2,9 @@ module Newsify
 class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	  self.table_name = 'sources'
 	  is_impressionable if defined?(is_impressionable)
+	  
+	  acts_as_commentable
+
 
 	  def self.model_name
   		ActiveModel::Name.new("Newsify::Source", nil, "Source")
@@ -94,12 +97,14 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	  end
 	end
 
+
+
 	def opinions
 		SourceOpinion.select("source_opinions.*,opinions.title").joins("LEFT JOIN opinions ON source_opinions.opinion_id = opinions.id").where("source_id = ?",self.id)
 	end
 
 	def youtube_key
-		Source.parse_youtube_full(self.url)[2]
+		Source.parse_youtube_full(self.url)[2] unless self.url.nil?
 	end
 
 	def summarized? user = nil
@@ -190,7 +195,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	end
 
 	def is_video?
-		self.url.downcase.include?("youtube.com/watch")
+		self.url.blank? ? false : self.url.downcase.include?("youtube.com/watch")
 	end
 	def google_classify! entities: false, min_salience: 0.0, ga: nil
 		ga = GoogleAnalyze.new if ga.nil?

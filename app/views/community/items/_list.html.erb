@@ -1,31 +1,10 @@
 <% show_defaults = {votes:true,rank_score:false,edit:false,itype:false,relevance:false} %>
 <% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
+<%= data.to_sql %>
+<% begin %>
 <% data.each do |item| %>
-<div class="bg-white border mb-2">
-
-	<% grand_parent = item.parent.parent unless item.parent.nil? %>
-	<div class="d-flex px-1 pt-1 fsz6">
-	<% unless item.parent.nil? %>
-		<div>
-			<%= tag.span(safe_join([link_to(grand_parent.name, newsify.item_path(grand_parent), class: "text-dark"),tag.span("/",class:"mx-1")])) unless grand_parent.nil? %> <%= link_to item.parent.name, newsify.item_path(item.parent), class: "text-dark" unless item.parent.nil? %>
-		</div>
-	<% end %>
-	<% if show[:itype] %>
-	<div class="mx-2 fsz7 ml-auto">
-		<%= tag.span(item.itype) %>
-		<%= link_to "edit", edit_item_path(item), class: "mx-2" if show[:edit] %>
-	</div>
-	<% end %>
-	</div>
-
-<div class="bg-white p-1 d-flex align-items-center">
-	<%= tag.div item.weighted_score, class: "badge badge-info mr-1" %>
-	<%= item.cached_weighted_interesting_average if show[:rank_score] %>
-	<%= link_to item.oname, newsify.item_path(item) %>
-</div>
-<%= tag.div render(partial: "community/votes/main", locals: {object: item, user: current_user}) if show[:votes] %>
-<% if show[:relevance] %>
-<div>Relevance: <%= item.relevance %>, Impressions: <%= item.impressionist_count %>, Tags: <%= item.source_topics.count %></div>
+	<%= render partial: "community/items/parts/list_item", locals: {item:item,show:show} rescue "list_item ERROR" %>
 <% end %>
-</div>
+<% rescue Exception => e %>
+<%= e %>
 <% end %>

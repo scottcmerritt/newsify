@@ -1,2 +1,4 @@
-<h3><%= @source.title %></h3>
 <%= render partial: "newsify/sources/show", locals: {source: @source} %>
+<%= feedbacker_comments target: @source, new_comment: @new_comment %>
+
+<%= render partial: "comments/template", locals: {commentable: @source, new_comment: @new_comment} if false %>

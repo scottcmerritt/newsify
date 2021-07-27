@@ -1,8 +1,9 @@
-
 <% text_style = "overflow-y: scroll;height: 300px;white-space: pre-wrap;" %>
+
 <% unless @source.summaries.nil? %><% end %>
 <div class="card-group mt-3">
-<% render :partial=>"feedbacker/ui/card", :locals=>{:title=>"Original",:text=>@source.card_text,:img_src=>@source.urltoimage,:link=>"#",:style_wrap=>"width: 18rem;"} %>
+<% render :partial=>"feedbacker/ui/card", :locals=>{:title=>"Original",:text=>@source.card_text,:img_src=>@source.urltoimage,:link=>"#",:style_wrap=>"width: 18rem;"} rescue "ERROR:FB/UI/CARD" %>
+
 <% if @source.is_video? %>
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
@@ -44,14 +45,14 @@
       }
 
   </script>
-<%= render :partial=>"/items/util/card", :locals=>{:title=>"Video",:text=>'<div id="videoPlayer"></div>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} %>
+<%= render :partial=>"/items/util/card", :locals=>{:title=>"Video",:text=>'<div id="videoPlayer"></div>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} rescue "Error:Items/UtilCard1" %>
 
 <% else %>
 	<% if @source.first_content.nil? %>
-	<%= render :partial=>"feedbacker/ui/card", :locals=>{:title=>"No article added yet",:text=>'<a class="btn btn-sm btn-primary" href="?summarize=1">Grab it and summarize</a>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:title=>"No article added yet",:text=>'<a class="btn btn-sm btn-primary" href="?summarize=1">Grab it and summarize</a>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} rescue "Error:Items/UtilCard2" %>
 	<% else %>
-	<%= render :partial=>"feedbacker/ui/card", :locals=>{:text_style=>text_style,:title=>"Actual content #{tag.span(num_format(@source.last_content.word_count,0,",")+ " words",class:'ml-1 badge badge-info')}",:text=>@source.last_content.auto_html_format,:img_src=>nil,:link=>"#",:style_wrap=>"width: 18rem;"} %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:text_style=>text_style,:title=>"Actual content #{tag.span(num_format(@source.last_content.word_count,0,",")+ " words",class:'ml-1 badge badge-info')}",:text=>@source.last_content.auto_html_format,:img_src=>nil,:link=>"#",:style_wrap=>"width: 18rem;"} rescue "Error:Items/UtilCard3" %>
 	<% end %>
 <% end %>
-<%= render partial:"newsify/sources/parts/summaries_opinions" %>
+<%= render partial:"newsify/sources/parts/summaries_opinions" rescue "Error:SummariesOpinions" %>
 </div>

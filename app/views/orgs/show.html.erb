@@ -8,7 +8,7 @@
 			
 			<% votes_interesting = @org.interesting_votes(vote_flag:nil) %>
 			<% unless votes_interesting.nil? %>
-			Articles <%= @org.sources.count %>, Votes: <%= vote_count.count %>
+			Articles <%= @org.sources.count %>, Votes: <%= votes_interesting.count %>
 			<% unless votes_interesting.count == 0 %><b><%= @org.interesting_vote_pct %>% interested</b><% end %>
 			<% end %>
 			

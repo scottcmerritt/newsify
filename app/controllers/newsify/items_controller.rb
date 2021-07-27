@@ -24,7 +24,7 @@ module Newsify
 			setup_time_decay
 			@js_url = "/items.js"
 
-			setup_labeled_data Item, "items", "Item"
+			setup_labeled_data Newsify::Item, "items", "Item"
 			#add_friend_filter
 			do_labeled_query
 

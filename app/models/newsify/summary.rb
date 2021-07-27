@@ -185,7 +185,7 @@ class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did
 
 	def self.by_item item_id, date=nil
 
-		db_adapt = ActiveRecord::Base.configurations[Rails.env]['adapter']
+		db_adapt = ActiveRecord::Base.connection.instance_values["config"][:adapter] #ActiveRecord::Base.configurations[Rails.env]['adapter']
 
 		#if by_period == "month"
 		#	if db_adapt == "sqlite3"

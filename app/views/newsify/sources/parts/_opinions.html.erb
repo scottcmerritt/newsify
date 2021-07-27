@@ -1,6 +1,10 @@
 <div class="p-1 my-1">
-<%= link_to @source.title, @source %>
+<%= link_to @source.title, newsify.source_path(@source) %>
 </div>
+<% if @source.opinions.empty? %>
+<%= tag.div "No opinions", class: "alert alert-warning" %>
+<% else %>
 <% @source.opinions.each do |source_opinion| %>
 <%= render partial: "newsify/source_opinions/show", locals: {source_opinion:source_opinion} %>
+<% end %>
 <% end %>

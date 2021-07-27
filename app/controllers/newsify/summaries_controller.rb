@@ -66,7 +66,7 @@ class SummariesController < ApplicationController
 	end
 
 	def update
-		if @summary.update_attributes(permitted_parameters)
+		if @summary.update(permitted_parameters)
 	      flash[:success] = "Summary #{@summary.title} was updated successfully"
 	      redirect_to @summary
 	    else

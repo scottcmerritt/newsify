@@ -33,12 +33,12 @@ module Newsify
       end
     end
 
-      def default_badge_css size: 'md', tight: false, active: false, color: 'info', active_color: 'dark'
+    def default_badge_css size: 'md', tight: false, active: false, color: 'info', active_color: 'dark'
       "badge #{active ? "badge-#{active_color}" : "badge-#{color} bg-#{color}"} border rounded #{tight ? 'mr-1' : 'mx-1'} #{size == 'sm' ? 'px-1' : 'p-2'}"
     end
 
-    def my_paginate data, page: 1
-      page = 1 if page.nil?
+    def my_paginate data, page: 12
+      page = page.nil? ? 1 : page.to_i
       prev_page = newsify.items_path(page:page-1)
       next_page = newsify.items_path(page:page+1)
       render(partial:"newsify/util/my_paginate", locals: {data: data, paths: {prev:prev_page,next:next_page}})
