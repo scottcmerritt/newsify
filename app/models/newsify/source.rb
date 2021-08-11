@@ -29,7 +29,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	has_many :source_opinions
 
 	belongs_to :summary_source, optional: true
-	belongs_to :user #, :class_name => 'User'
+	belongs_to :user, optional: true #, :class_name => 'User', foreign_key: 'createdby'
 
 
 	def grouped?
