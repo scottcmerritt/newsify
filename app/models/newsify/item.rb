@@ -2,7 +2,9 @@ module Newsify
 class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	self.table_name = "items"
 	is_impressionable if defined?(is_impressionable)
-
+	acts_as_commentable
+	acts_as_favoritable
+	
 	def self.model_name
   		ActiveModel::Name.new("Newsify::Item", nil, "Item")
 	end
@@ -11,6 +13,8 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	include Community::VoteCacheable, Community::IconUtil, Classify::ClassifyContent
 
 	has_many :content_topics
+	has_many :source_topics
+
 
 =begin
   has_merit
@@ -77,6 +81,15 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	end
 
 
+	def sources
+		Source.joins("LEFT JOIN source_topics ON source_topics.source_id = sources.id")
+		.where("source_topics.item_id = ?",self.id)
+	end
+	def children
+		Item.where(parent_id:self.id)
+	end
+
+
 	def post_count
 		source_topics.count
 	end
@@ -118,7 +131,7 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
     	#extra[:room_name] = self.room.name if self.show_room
     	super(options).merge(extra) #.except(:show_room)
   	end
-
+ 
 	def to_json
 		#super(:only => :username, :methods => [:foo, :bar])
 		super(:only => [:id,:title], :methods => [:oname, :otitle])

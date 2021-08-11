@@ -1,6 +1,13 @@
-<h4>The news relevant to you...</h4>
-<div class="d-flex">
-<%= link_to "Sources", newsify.sources_path, class: "mx-3" %>
+<h4>The news relevant to your community!</h4>
 
-<%= link_to "Topics", newsify.items_path, class: "mx-3" %>
+<% k2 = "Fun & Trivia" %>
+<% i1 = Newsify::Item.where(name: k2,itype:"CATEGORY").first %>
+<%= tag.span(tag.i "",class:"fa fa-check-circle") unless i1.nil? %>
+
+<% if i1.nil? %>
+<div>
+	<%= link_to "Import categories", newsify.categories_import_path %>
 </div>
+<% end %>
+
+<%= newsify_widget_sources show:{tabs:true} %>

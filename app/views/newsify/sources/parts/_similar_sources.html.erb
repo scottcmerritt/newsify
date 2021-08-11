@@ -1,0 +1,14 @@
+<div id="similarSources" class="collapse">
+<div class="row">
+	<% @source.similar_sources.each do |source| %>
+	<div class="col-3 border p-2">
+		<div class="mb-2">
+		<%= tag.div link_to(source.title, newsify.source_path(source), class:"fs-6") %>
+		<%= link_to source.org.name,newsify.org_path(source.org), class:"text-secondary fs-7 d-flex flex-fill justify-content-end" unless source.org.nil? %>
+		</div>
+	<%= tag.p source.description, class: "text-muted fs-7" %>
+
+	</div>
+	<% end %>
+</div>
+</div>

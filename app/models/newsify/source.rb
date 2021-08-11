@@ -2,13 +2,12 @@ module Newsify
 class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	  self.table_name = 'sources'
 	  is_impressionable if defined?(is_impressionable)
-	  
 	  acts_as_commentable
-
+	  acts_as_favoritable
 
 	  def self.model_name
   		ActiveModel::Name.new("Newsify::Source", nil, "Source")
-	end
+		end
 
 	  include Newsify::GenericObj, Newsify::NewsClassify
 	  include Community::IconUtil, Community::VoteCacheable
@@ -28,9 +27,15 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	has_many :summary_sources
 	has_many :import_sources
 	has_many :source_opinions
+
 	belongs_to :summary_source, optional: true
+	belongs_to :user #, :class_name => 'User'
 
 
+	def grouped?
+		!similar_sources.nil?
+		#is_group && !similar_sources.nil?
+	end
 	
 
 
@@ -61,13 +66,13 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	scope :byOrg, -> (org_id) { where("orgs.id = ?", org_id)}
 
 	scope :not_ad, -> {(where("`is_ad` IS NOT ? ",true)) }
-   	scope :not_spam, -> {(where("is_spam IS NOT ? ",true)) } #scope :not_spam, -> {(where("`is_spam` IS NOT ? ",true)) }
-   	scope :not_duplicate, -> {(where("is_duplicate IS NOT ? ",true)) } #scope :not_duplicate, -> {(where("`is_duplicate` IS NOT ? ",true)) }
-   	#scope :with_image, -> {(where("`urlToImage` IS NOT NULL AND NOT urlToImage = ''")) } #worked with sqlite
-   	scope :with_image, -> {(where("urlToImage IS NOT NULL AND NOT urlToImage = ''")) }
+ 	scope :not_spam, -> {(where("is_spam IS NOT ? ",true)) } #scope :not_spam, -> {(where("`is_spam` IS NOT ? ",true)) }
+ 	scope :not_duplicate, -> {(where("is_duplicate IS NOT ? ",true)) } #scope :not_duplicate, -> {(where("`is_duplicate` IS NOT ? ",true)) }
+ 	#scope :with_image, -> {(where("`urlToImage` IS NOT NULL AND NOT urlToImage = ''")) } #worked with sqlite
+ 	scope :with_image, -> {(where("urlToImage IS NOT NULL AND NOT urlToImage = ''")) }
 
-   	scope :with_orgs, -> {joins("LEFT JOIN orgs ON orgs.id = sources.org_id")}
-   	scope :with_content, -> {joins("LEFT JOIN contents ON contents.source_id = sources.id")}
+ 	scope :with_orgs, -> {joins("LEFT JOIN orgs ON orgs.id = sources.org_id")}
+ 	scope :with_content, -> {joins("LEFT JOIN contents ON contents.source_id = sources.id")}
 	scope :with_summaries, -> {joins("LEFT JOIN summary_sources ON summary_sources.source_id = sources.id").joins("LEFT JOIN summaries ON summaries.id = summary_sources.summary_id")}
 	
 	scope :by_created_date_as_date, -> (order_desc) {order_desc ? order("DATE(sources.created_at) DESC") : order("DATE(sources.created_at) ASC")}
@@ -92,11 +97,10 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	  	unless options[:vote_scopes].nil?
 	  	options[:vote_scopes].each do |vote_scope|
 		    json[vote_scope.to_sym] = voted_value(options[:user],vote_scope)
-		end
-		end
+			end
+			end
 	  end
 	end
-
 
 
 	def opinions
@@ -117,9 +121,9 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	end
 	def is_summarized? user:
 		res = {by_you: false, summarized: false}
-		if self.summarized? user
-			res[:by_you] = true
-		elsif self.summarized?
+		
+		res[:by_you] = user.nil? ? false : self.summarized?(user)
+		if res[:by_you] || self.summarized?
 			res[:summarized] = true
 		end
 		res
@@ -136,7 +140,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 
 		all_words = content.split(" ") unless (content.nil? || content == "")
 
-	    logger.debug "content = #{content}"	
+	  logger.debug "content = #{content}"	
 		logger.debug "arr = #{all_words}"
 		new_arr = []
 		link_found = false
@@ -191,19 +195,19 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 		end
 
 		return result
-
 	end
 
 	def is_video?
 		self.url.blank? ? false : self.url.downcase.include?("youtube.com/watch")
 	end
-	def google_classify! entities: false, min_salience: 0.0, ga: nil
+
+	def google_classify! entities: false, min_salience: 0.0, ga: nil, full_scan: false
 		ga = GoogleAnalyze.new if ga.nil?
     	#@sentiment = ga.sentiment_from_text text_content: "I just ate a delicious meal at a restaurant"
     	errors = []
     	begin
     		if self.to_classify.scan(/\w+/).size >= 20
-		    	@classified = ga.classify_from_text text_content: self.to_classify
+		    	@classified = ga.classify_from_text text_content: (full_scan ? self.to_classify_full : self.to_classify)
 		    	@classified.each do |row|
 		      		self.add_google_category row[:name], row[:confidence]
 		#      {:name=>"/News/Politics", :confidence=>0.9399999976158142}
@@ -237,6 +241,9 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 
 	def to_classify
 		"#{self.title} #{(self.description.blank? ? "" : self.description)}"
+	end
+	def to_classify_full
+		content.nil? || content.length == 0 ? to_classify : (to_classify + " " + content.first.article)
 	end
 	def add_google_category label, score, category = true
 		classifier = SourceTopic::CLASSIFIERS.find_index("Google:classify")
@@ -416,7 +423,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	end
 
 	def self.topics source_id,  args= {min_score: 0.05, max_score: 1.0}
-		items = SourceTopic.select("items.id,source_topics.item_id,items.parent_id,items.name,items.wd_descr,items.wiki_text,source_topics.createdby,items.fame,items.relevance,source_topics.score,source_topics.approved")
+		items = SourceTopic.select("items.id,source_topics.item_id,items.parent_id,items.name,items.wd_descr,items.wiki_text,source_topics.createdby,items.fame,items.relevance,source_topics.score,source_topics.approved,source_topics.category as is_category")
 		.joins("LEFT JOIN items ON source_topics.item_id = items.id")
 		.where("source_topics.source_id = ? AND source_topics.score >= ? AND source_topics.score<= ?",source_id,args[:min_score],args[:max_score])
 		.order("score DESC")

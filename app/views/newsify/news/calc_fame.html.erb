@@ -1,0 +1,4 @@
+<%= render partial: "admin/manage/menu" rescue "no manage menu" %>
+<%= my_paginate @items.page(params[:page]) %>
+
+<%= render partial: "community/items/list", locals: {data:@items,show:{relevance:true}} %>

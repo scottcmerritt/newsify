@@ -1,0 +1,118 @@
+<% user_limit = nil if local_assigns[:user_limit].nil? %>
+<% switch_to = false if local_assigns[:switch_to].nil? %>
+<% toggle_wrap = nil if local_assigns[:toggle_wrap].nil? %>
+<% css = "medH" if local_assigns[:css].nil? %>
+<% room = nil if local_assigns[:room].nil? %>
+<% colors = nil if local_assigns[:colors].nil? %>
+<% msg_count_range = users.nil? || users.first.nil? || !users.first.respond_to?(:msg_count) ? nil : [users.first.msg_count,users.last.msg_count] %>
+<% show_default = {stats:true,msg_counts:true,room_add_btn:false} %>
+<% show = local_assigns[:show].nil? ? show_default : show_default.merge(show) %>
+<% connections = current_user.friends if local_assigns[:connections].nil? && !current_user.nil? %>
+<% connections_requested = current_user.requested_friends if local_assigns[:connections_requested].nil? && !current_user.nil? %>
+<% connections_pending = current_user.pending_friends if local_assigns[:connections_pending].nil? && !current_user.nil? %>
+
+<% room_orgs = nil if local_assigns[:room_orgs].nil? %>
+
+<% unless toggle_wrap.nil? || (toggle_wrap == false) %>
+
+<% target_id = toggle_wrap[:target_id] || "div#{SecureRandom.hex(6)}" %>
+<% target_sel = toggle_wrap[:target_sel] || "##{target_id}" %>
+<div class="role_user_group bg-white p-0 mb-2 mx-0 border">
+    <%= togglelink_for(toggle_wrap[:title],"#", {expanded: false, no_wrap: false, div_class:"bg-dark text-light fsz3 p-1 px-2 m-0 d-flex align-items-center",link_color: "text-light", target: target_sel, count: toggle_wrap[:count] || users.count }) %>
+<div class="collapse" id="<%= target_id %>">
+<% end %>
+
+<div class="olist oscroll vertical <%= css %>">
+	<%= render :partial=>"users/participants/header",:locals=>{:users=>users,:msg_count_range=>msg_count_range} %>
+		<% unless room_orgs.nil? %>
+		<div id="team_scores" class="d-flex">
+		<%= render partial: "rooms/parts/teams_header",locals:{room:room} %>
+		</div>
+		<% end %>
+		<% unless room.nil? %>
+		<div id="room_guests">
+			<%= render partial: "rooms/parts/guests_header",locals:{room:room} %>
+		</div>
+		<% end %>
+	<div class="olistData">
+<% if users.nil? %>
+<%= render partial: "users/parts/loading" %>
+<% else %>
+<% unless user_limit.nil? %>
+<div class="oli">
+<div class="p-1 text-center">View all <%= users.length %></div>
+</div>
+<% end %>
+<% users.each do |user| %>
+<div class="oli">
+	<div class="user">
+	<div class="oprofile d-flex align-items-center justify-content-between border-bottom mb-1" style="border-left:solid 6px <%= colors.nil? ? 'gray' : colors[user.id] %>;">
+		<div style="width:270px;" class="ms-1">
+			<% unless room.nil? || room.org_by_user(user).nil? %>
+			<div class="sm-square d-inline-block rounded" style="background:<%= room.org_by_user(user).bg_color %>"></div>
+			<% end %>
+			<span><%= tag.i "", class: "fa fa-circle text-success fsz7" if user.is_a?(User) && user.online? %></span>
+			<% if user.is_a? User %>
+					<%= switch_to ? link_to(user.display_name_public, switch_user_path(id: user.id)) : link_to(user.display_name_public, user) %>
+			<% end %>
+		</div>
+
+
+
+		<div class="ml-auto text-center" style="width:260px;">
+			<%= render partial: "rooms/parts/change_role", locals: {user:user, room: room} if show[:room_add_btn] %>
+<% if false %>
+<%= render partial: "users/parts/add_to_room",locals: {user:user,room:room,role_id:1,label:"Debater"} if show[:room_add_btn] %>
+
+<%= render partial: "users/parts/add_to_room",locals: {user:user,room:room,role_id:2,label:"Participant"} if show[:room_add_btn] %>
+<% end %>
+
+		</div>
+
+		<div class="ml-auto d-flex align-items-center justify-content-end" style="min-width: 120px;">
+			
+			<%= link_to num_format(user.post_count,0,","), "#", class: "badge badge-light ml-1", data: {toggle:"tooltip"}, title:"# of posts" if show[:msg_counts] %>
+			<% unless @room.nil? || show[:stats] == false || is_guest? %>
+			
+				<%= feedback_for user.quantity_score(room,msg_count_range) %>
+				<% score = (100.to_f*(user.room_stats(room)[:my_drives].to_f/user.room_stats(room)[:total_drives])) %>
+				<%= feedback_for(score,{colors: [0,3,4]}) %>
+			
+			<% end %>
+			<%= render partial: "users/connect",locals:{user:user,connections:connections,requested:connections_requested,pending:connections_pending} unless current_user.nil? %>
+		</div>
+
+
+		<% if show[:data] || (respond_to?(:is_data_scientist) && is_data_scientist?) %>
+		<span class="ml-auto scorePct"><%= pct_format user.room_stats(room)[:driving_pct] %>%</span>
+		<div class="ml-auto">Stories viewed: <%= user.room_stats(room)[:total_previews] %></div>
+		<div class="ml-auto">Total drives: <%= user.room_stats(room)[:total_drives] %></div>
+		<div class="ml-auto">My drives: <%= user.room_stats(room)[:my_drives] %></div>
+		<div class="ml-auto">My previews: <%= user.room_stats(room)[:my_previews] %></div>
+		<% end %>
+
+	</div>
+	<% unless msg_count_range.nil? %>
+
+		<div class="odata ofeedback" data-value="<%= user.quantity_score room %>">
+			<div class="meter meter-sm quantity" style="width:<%= user.quantity_score(room,msg_count_range) %>%;">
+			
+			</div>
+			<% if false %>
+			[<%= (user.quantity_score(room,nil)*100).round(2) %> ]
+		[<%= msg_count_range.nil? ?  (user.quantity_score(room,msg_count_range)*100).round(2) :  user.quantity_score(room,msg_count_range) %>]
+			<% end %>
+		</div>
+	<% end %>
+	
+	</div>
+</div>
+<% end %>
+<% end %>
+</div>
+</div>
+
+<% if toggle_wrap %>
+</div>
+	</div>
+<% end %>

@@ -14,7 +14,7 @@ module Newsify
 		end
 
 		# calculates the interests, if remove, then it removes the OLDER ItemInterest rows
-		def self.calc_interests! user, resource_type: Source, upvotes: true, downvotes: true, remove: false, limit: 3000
+		def self.calc_interests! user, resource_type: Newsify::Source, upvotes: true, downvotes: true, remove: false, limit: 3000
 			# one approach might be to maintain a list of global relevance/fame
 			# if an item is low "score" but high relevance/fame, include it in interests, otherwise exclude it?
 

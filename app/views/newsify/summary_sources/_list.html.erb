@@ -3,7 +3,7 @@
 <% end %>
 <% @source.summaries.each do |summary| %>
 <div>
-	<h4>Summary <%= tag.span(num_format(summary.word_count,0,",")+ " words", class: "badge badge-info") %></h4>
+	<h4>Summary <%= tag.span(num_format(summary.word_count,0,",")+ " words", class: "fs-6 badge bg-info badge-info") %></h4>
 	<div>
 	<%= link_to summary.auto_html_format, newsify.summary_path(id: summary.id) %>
 	</div>

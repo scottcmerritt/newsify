@@ -7,17 +7,21 @@ module Community
 	      before_action :load_labels, only: [:index,:labeled,:mine,:show]
 	      
 	  end
-
-
 	  private
-	    
-	    
+		  def setup_news_feed
+	  		  setup_label_sort #sets up sort_by, using default values if no label is set
+			    setup_time_decay
+			    setup_labeled_data
+			    add_friend_filter if current_user.respond_to?(:friends)
+			    add_order_by
+			end
+
 	    def load_labels
 	      @labels = Community::Voting.votescopes_main
 	      @mod_labels = Community::Voting.votescopes_moderation
 	    end
 
-	    def setup_labeled_data model = Source, table_name="sources", resource_type = "Source"
+	    def setup_labeled_data model = Newsify::Source, table_name="sources", resource_type = "Newsify::Source"
 	      if @time_decay_text.nil? #@lambda_val.nil?
 	        @labeled = model.select("#{table_name}.*") #,1 as time_decay, #{@order_text} as net_score")
 	      else
@@ -43,7 +47,26 @@ module Community
 	      query_name = @no_join ? "nojoin" : (@label == "blended" ? "blended" : "labeled")
 
 	      @labeled = ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3" ? @labeled : @labeled.customsort(query_name,label: @label,recency_key: @recent_relevance,sort_order: @sort_order)
+	      
+	      #if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3"
+	      #	sqlite_order_by
+	      #else
+		    #  @labeled = @labeled.customsort(query_name,label: @label,recency_key: @recent_relevance,sort_order: @sort_order)
+		    #end
 	      @labeled = @labeled.page(params[:page])
+	    end
+
+	    def sqlite_order_by
+	    	@sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
+				@sort_order = "DESC"
+
+				@label = (@mod_labels+@labels).include?(params[:label]) ? params[:label] : nil
+
+				@order_text = @sort_by[0]
+
+				@order_text = "cached_weighted_#{@label}_average" unless @label.nil? #  "cached_weighted_score"
+
+
 	    end
 
 	    def setup_label_sort
@@ -56,6 +79,7 @@ module Community
 	    end
 
 	    def setup_time_decay
+	    	require 'custom_sort'
 	       # recency = 0 = High, Med, Low, None
 
 	       if params[:recency]

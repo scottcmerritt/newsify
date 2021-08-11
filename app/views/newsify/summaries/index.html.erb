@@ -7,7 +7,7 @@
 <div class="summaries olist vertical">
 <% @summaries.each do |summary| %>
 <div class="summaryItem oliWrap oli oprofile bg-secondary border mb-2 p-1">
-	<%= render partial: "community/votes/main", locals: {object: summary,user:current_user} %>
+	<%= render partial: "community/votes/main", locals: {object: summary,user:current_user,wrap_css:"bg-light"} %>
 	<div class="d-flex align-items-center p-1">
 		<%= tag.span summary.otype_guessed, class:"ml-2 badge badge-info align-items-middle" %>
 

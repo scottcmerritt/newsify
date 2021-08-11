@@ -5,7 +5,7 @@
 		<% if @org.respond_to?(:interesting_votes) && !@org.interesting_votes(vote_flag:nil).nil? %>
 		<div class="alert alert-success">
 			<% vote_count = @org.interesting_votes(vote_flag:nil).count %>
-			Articles <%= @org.sources.count %>, Votes: <%= vote_count %>
+			<%= link_to "Articles #{@org.sources.count}", newsify.sources_path(org_id:@org.id) %> Votes: <%= vote_count %>
 			<% unless vote_count == 0 %><b><%= @org.interesting_vote_pct %>% interested</b><% end %>
 		</div>
 		<% end %>
@@ -18,10 +18,13 @@
 	<div class="col-6">
 		<% unless @org.author_orgs.count == 0 %>
 		<div class="alert alert-success">
-		<h4>Authors <span class="badge badge-primary"><%= @org.author_orgs.count %></span></h4>
+		<h4 class="d-flex align-items-center">Authors <span class="mx-1 badge bg-primary badge-primary fs-6"><%= @org.author_orgs.count %></span>
+			<span class="ms-auto ml-auto fs-6 px-2">Articles</span>
+		</h4>
 		<% @org.author_orgs.each do |author_org| %>
-		<div class="bg-white p-1 m-1">
+		<div class="bg-white p-1 my-1 d-flex">
 		<%= link_to author_org.author.name, newsify.author_path(author_org.author) %>
+		<%= tag.span author_org.author.sources.count, class: "ms-auto ml-auto px-2" %>
 		</div>
 		<% end %>
 		</div>

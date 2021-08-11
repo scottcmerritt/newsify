@@ -53,17 +53,29 @@ def google_classify! entities: false, min_salience: 0.0, ga: nil, exclude_item_i
 	end
 
 	def to_classify
-		if self.is_a?(Item)
+		if self.is_a?(Newsify::Item)
 			"#{self.title} #{(self.wiki_text.blank? ? "" : self.wiki_text)}"
-		elsif self.is_a?(Content)
+		elsif self.is_a?(Newsify::Content)
 			"#{self.title} #{(self.article.blank? ? "" : self.article)}"
+		elsif self.is_a?(Newsify::Source)
+			"#{self.title} #{(self.description.blank? ? "" : self.description)}"
 		end
 	end
 
-	def add_google_category label, score, category = true
+	def add_google_category label, score, category = true, add_category: true
 		classifier = Newsify::ContentTopic::CLASSIFIERS.find_index("Google:classify")
 		item = Newsify::Item.by_google_category label
-		Newsify::ContentTopic.create(content_type:self.class.name,content_id: self.id,item_id:item.id,score:score,classifier:classifier,category:category) unless item.nil? || ContentTopic.where(content_type:self.class.name,content_id: self.id,item_id:item.id).exists?
+		item = Newsify::Item.create_google_category label if item.nil? && add_category
+
+		# if add_category == false, ONLY creates a ContentTopic row if category doesn't exist AND google CATEGORY already exists
+
+
+
+		if self.is_a?(Newsify::Content)
+			Newsify::ContentTopic.create(content_type:self.class.name,content_id: self.id,item_id:item.id,score:score,classifier:classifier,category:category) unless item.nil? || ContentTopic.where(content_type:self.class.name,content_id: self.id,item_id:item.id).exists?
+		else
+			Newsify::SourceTopic.create(content_type:self.class.name,content_id: self.id,item_id:item.id,score:score,classifier:classifier,category:category) unless item.nil? || SourceTopic.where(content_type:self.class.name,content_id: self.id,item_id:item.id).exists?
+		end
 	end
 	def add_entity_rows rows:, min_salience: 0.3, exclude_item_ids: nil
 		ignore_itypes = ["NUMBER"]

@@ -1,0 +1,30 @@
+<% item = @item if local_assigns[:item].nil? %>
+<% data = nil if local_assigns[:data].nil? #item.favoritors_by_type('User') %>
+
+<% connections = nil if local_assigns[:connections].nil? %>
+
+<% unless data.empty? %>
+<div id="interested">
+<%= render partial: "shared/header", locals: {header_clickable:false,title: "Interested",url:nil, header_css:nil,icon:"heart"} %>
+
+<% unless connections.empty? %>
+<div class="d-flex flex-wrap border-bottom border-dark">
+<% connections.each do |user| %>
+<div class="p-1">
+	<%= link_to user.display_name_public, user, class: default_badge_css %>
+</div>
+<% end %>
+</div>
+<% end %>
+
+
+<div class="d-flex flex-wrap">
+<% data.each do |user| %>
+<div class="p-1">
+	<%= link_to user.display_name_public, user, class: default_badge_css %>
+</div>
+<% end %>
+</div>
+
+</div>
+<% end %>

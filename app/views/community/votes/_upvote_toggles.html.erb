@@ -8,10 +8,15 @@
 <% vui = "toggle" if local_assigns[:vui].nil? %>
 <div class="<%= wrap_css %>">
 <% vote_scopes.each do |vote_scope| %>
+	<div class="d-inline-block">
 	<% if only_if_set && (!vote.nil? && (vote.vote_scope == vote_scope)) %>
 		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label}) %>
 	<% elsif !only_if_set %>
 		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label}) %>
 	<% end %>
+	<%= tag.div object.get_up_votes(vote_scope:vote_scope).count, class: "fs-8 text-center" if is_admin? && params[:counts] %>
+	</div>
+
 <% end %>
+
 </div>

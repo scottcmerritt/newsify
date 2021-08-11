@@ -11,6 +11,7 @@ PATH
   remote: .
   specs:
     newsify (0.1.01)
+      acts_as_favoritor
       acts_as_votable
       aylien_text_api
       custom_sort
@@ -21,6 +22,8 @@ PATH
       rails (~> 6.1.4)
       tactful_tokenizer
       tf-idf-similarity
+      wikipedia
+      wikipedia-client
 
 GEM
   remote: https://rubygems.org/
@@ -84,17 +87,20 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    acts_as_favoritor (5.0.1)
+      activerecord (>= 5.0)
     acts_as_votable (0.13.1)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     aylien_text_api (1.0.0)
     builder (3.2.4)
+    colorize (0.8.1)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
     custom_sort (0.4.07)
     diffy (3.4.0)
     erubi (1.10.0)
-    faraday (1.5.1)
+    faraday (1.7.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -102,6 +108,7 @@ GEM
       faraday-net_http (~> 1.0)
       faraday-net_http_persistent (~> 1.1)
       faraday-patron (~> 1.0)
+      faraday-rack (~> 1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords (>= 0.0.4)
     faraday-em_http (1.0.0)
@@ -111,17 +118,19 @@ GEM
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
+    faraday-rack (1.0.0)
+    formatador (0.3.0)
     friendly_id (5.4.2)
       activerecord (>= 4.0.0)
-    gapic-common (0.5.0)
+    gapic-common (0.7.0)
       faraday (~> 1.3)
       google-protobuf (~> 3.14)
       googleapis-common-protos (>= 1.3.11, < 2.a)
       googleapis-common-protos-types (>= 1.0.6, < 2.a)
-      googleauth (>= 0.16.2, < 2.a)
+      googleauth (>= 0.17.0, < 2.a)
       grpc (~> 1.36)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (0.5.2)
+      activesupport (>= 5.0)
     google-cloud-core (1.6.0)
       google-cloud-env (~> 1.0)
       google-cloud-errors (~> 1.0)
@@ -145,7 +154,7 @@ GEM
       grpc (~> 1.27)
     googleapis-common-protos-types (1.1.0)
       google-protobuf (~> 3.14)
-    googleauth (0.16.2)
+    googleauth (0.17.0)
       faraday (>= 0.17.3, < 2.0)
       jwt (>= 1.4, < 3.0)
       memoist (~> 0.16)
@@ -155,6 +164,10 @@ GEM
     grpc (1.38.0)
       google-protobuf (~> 3.15)
       googleapis-common-protos-types (~> 1.0)
+    hashie (4.1.0)
+    httparty (0.18.1)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jwt (2.2.3)
@@ -170,7 +183,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    loofah (2.10.0)
+    loofah (2.11.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -178,15 +191,19 @@ GEM
     marcel (1.0.1)
     memoist (0.16.2)
     method_source (1.0.0)
+    mime-types (3.3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2021.0704)
     mini_mime (1.1.0)
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     multi_json (1.15.0)
+    multi_xml (0.6.0)
     multipart-post (2.1.1)
     narray (0.6.1.2)
-    nio4r (2.5.7)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nio4r (2.5.8)
+    nokogiri (1.12.2)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     os (1.1.1)
     public_suffix (4.0.6)
@@ -245,6 +262,17 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    wikidata (0.0.3)
+      activesupport
+      colorize
+      formatador
+      hashie (>= 2.0)
+      httparty
+      i18n
+      thor
+    wikipedia (0.2)
+    wikipedia-client (1.15.0)
+      addressable (~> 2.7)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -262,6 +290,8 @@ DEPENDENCIES
   sqlite3
   tactful_tokenizer
   tf-idf-similarity
+  wikidata
+  wikipedia-client
 
 BUNDLED WITH
    2.1.4

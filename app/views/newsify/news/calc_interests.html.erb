@@ -1,0 +1,60 @@
+<%= render partial: "admin/manage/menu" %>
+<div class="row">
+	<div class="col-6 fsz3">
+	<span class="fsz1"><%= SourceTopic.count %></span> total source topics
+	</div>
+	<div class="col-6 fsz3">
+		The current user has 
+	<span class="fsz1"><%= ItemInterest.where(user_id:current_user.id).count %></span> interest data points</div>
+</div>
+
+
+<div>Item interests (excluding last 40 minutes): <%= @demo.count %></div>
+<div>
+	<div class="text-center">Sample of recently rated topics</div>
+<% @demo.limit(10).each do |row| %>
+<div class="d-flex">
+	<%= link_to row.item_name, row.item %>
+	<span class="ml-auto fsz8">
+	<%= time_ago_in_words row.created_at %> ago</span>
+</div>
+<% end %>
+
+</div>
+
+
+<div class="bg-white border p-1">
+<div class="d-flex">Newly classified <%= link_to "Classify", "?classify=1", class: "btn btn-success ml-auto" %></div>
+<%= @classified %>
+
+</div>
+
+<h4>Calculate item interests based on source feedback</h4>
+<div>Down votes: <%= @downvotes.count %></div>
+<% @downvotes.each do |vote| %>
+<div>
+	<span class="badge badge-primary mr-1">
+		<%= vote.votable.topics.length %>
+	</span>
+<%= link_to vote.votable.title, vote.votable %>
+</div>
+<% end %>
+<%= link_to "Calculate", "?run=1", class: "btn btn-success" %>
+<div class="row">
+	<div class="col-6">
+
+		<%= render partial: "util/auto_table", locals: {rows:@results,prepend_methods: [:item_name]} unless @results.nil? %>
+	</div>
+	<div class="col-6">
+
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-6">
+<%= render partial: "util/auto_table", locals: {title:"Your interests",time_ago_columns:["created_at"],rows:@interests,prepend_methods: [:item_name]} %>
+</div>
+<div class="col-6">
+<%= render partial: "util/auto_table", locals: {title: "Your disinterests",time_ago_columns:["created_at"],rows:@disinterests,prepend_methods: [:item_name]} %>
+</div>
+</div>

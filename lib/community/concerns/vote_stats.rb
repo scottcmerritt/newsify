@@ -14,7 +14,7 @@ module Community
 
        def update_all_interest_scores! minutes_ago: 30
         UserCustom.outdated_interests(minutes_ago: minutes_ago).each do |user|
-          ItemInterest.calc_interests! user, remove: true
+          Newsify::ItemInterest.calc_interests! user, remove: true
         end
       end
 

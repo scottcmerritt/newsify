@@ -6,6 +6,39 @@ module Newsify
 		before_action :load_groups, only: [:index,:networks]
 		before_action :load_permissions, only: [:show,:join]
 
+
+		def index
+			@page = params[:page] ? params[:page].to_i : 1
+			@page = 1 if @page < 1
+
+			@org_types = 
+			{
+				"news":
+					{:name=>"News organizations",:field=>"is_news"},
+				"companies":
+					{name:"Companies",field:"is_company"},
+				"non_profits":
+					{name:"Non profits",field:"is_non_profit"},
+				"blogs":
+					{:name=>"Blogs",:field=>"is_blog"}
+			}
+			@org_type = params[:org_type].to_sym if params[:org_type]
+			@org_type = @org_types.key?(@org_type) ? @org_types[@org_type][:field] : nil
+
+			if params[:q]
+				@query = params[:q]
+
+				prepped = "%#{@query.downcase}%"
+				@orgs = Community::Org.select("orgs.*")
+				.where("lower(name) LIKE ?",prepped)
+			end
+
+			@orgs = @orgs.where("#{@org_type} = ?",true) unless @org_type.nil?
+
+			@orgs = @orgs.page(params[:page])
+
+		end
+
 		def join
 			@org.join! current_user
 			@pending_member = current_user
@@ -24,7 +57,8 @@ module Newsify
 		
 		# POST '/remove/org_user/:id/:user_id'
 		def remove_user
-			@room = Room.find_by(id: params[:room_id])
+			@room = Room.find_by(id: params[:room_id]) if defined?(Room)
+
 			@org.member_deny! @pending_member, current_user
 			@org.reload
 
@@ -40,7 +74,7 @@ module Newsify
 
 		def approve_member
 			#TODO: check to make sure they are in the room
-			@room = Room.find_by(id: params[:room_id])
+			@room = Room.find_by(id: params[:room_id]) if defined?(Room)
 
 			@org.member_approve! @pending_member, current_user
 			@org.reload
@@ -51,7 +85,7 @@ module Newsify
 			locals = {:org=>@org,:room=>@room}
 			#@org.broadcast_approval @pending_member
 	     	notification = render_to_string(:partial=>"community/orgs/notice/added",:locals=>locals,:layout=>false)
-	     	NotificationChannel.broadcast_to @pending_member, {:notification=>notification,:org_id=>@org.id}
+	     	NotificationChannel.broadcast_to @pending_member, {:notification=>notification,:org_id=>@org.id} if defined?(NotificationChannel)
 			unless @room.nil?
 				redirect_to controller:"rooms",action:"roles",id:@room.id
 			else
@@ -102,6 +136,12 @@ module Newsify
 
 	  	def load_pending_member
 			@pending_member = User.find_by(id: params[:user_id])
+		end
+
+		def check_org_room_participation
+			if @room.nil? || !@room.room_orgs.where(org_id:@org.id).exists?
+				@room = nil
+			end
 		end
 
 

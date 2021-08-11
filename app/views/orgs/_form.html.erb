@@ -2,16 +2,27 @@
   <div class="row">
   	<div class="col-6">
 	  <%= f.input :name, as: :string %>
-	  <%= f.input :is_network, as: :boolean, :label=>"Is network?" %>
+	  
 	  <%= f.input :is_news, as: :boolean, :label=>"News organization?" %>
-	  <%= f.input :is_group, as: :boolean, :label=>"Membership organization?" %>
-	  <%= f.input :approve_members, as: :boolean, :label=>"New members need to be approved?" %>
+	  <%= f.input :is_blog, as: :boolean, :label=>"Is a blog?" %>
+
+	  <br/><br/>
+	 	<%= f.input :is_company, as: :boolean, :label=>"Is company?" %>
+	  <%= f.input :is_non_profit, as: :boolean, :label=>"Non profit?" %>
+	<br/><br/>
 	</div>
 	<div class="col-6">
+		<%= f.input :is_network, as: :boolean, :label=>"Is network?" %>
+	  <%= f.input :is_group, as: :boolean, :label=>"Membership organization?" %>
+	  <br/><br/>
+	  	  <%= f.input :approve_members, as: :boolean, :label=>"New members need to be approved?" %>
+	  	  <br/><br/>
+
+		
 		<%= f.input :is_seller, as: :boolean, :label=>"Are you a bar or restaurant?" %>
 	</div>
 </div>
   
 
-  <%= f.submit "Save", class: 'btn btn-success' %>
+  <%= f.submit @org.id.nil? ? "Add organization" : "Save organization", class: 'btn btn-success' %>
 <% end %>

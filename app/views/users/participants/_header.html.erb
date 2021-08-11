@@ -1,0 +1,5 @@
+<% unless msg_count_range.nil? %>
+	<div class="bg-white p-1 text-sm">
+	Most <span class='badge badge-info'><%= msg_count_range.max %> messages</span> <span class="pl-2">Least <span class='badge badge-info'><%= msg_count_range.min %> messages</span></span>
+	</div>
+<% end %>

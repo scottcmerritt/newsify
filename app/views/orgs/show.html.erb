@@ -1,4 +1,4 @@
-<h6>General organization SHOW</h6>
+<h6>Newsify organization SHOW</h6>
 <h2 class="d-flex">Organization <%= link_to "Back", main_app.orgs_path, class: "ml-auto ms-auto" %> </h2>
 <%= render partial: "community/orgs/org_header", locals: {org:@org} %>
 <div class="row">
@@ -8,7 +8,9 @@
 			
 			<% votes_interesting = @org.interesting_votes(vote_flag:nil) %>
 			<% unless votes_interesting.nil? %>
-			Articles <%= @org.sources.count %>, Votes: <%= votes_interesting.count %>
+			<%= link_to "Articles #{@org.sources.count}", newsify.sources_path(org_id:@org.id) %> 
+
+			 Votes: <%= votes_interesting.count %>
 			<% unless votes_interesting.count == 0 %><b><%= @org.interesting_vote_pct %>% interested</b><% end %>
 			<% end %>
 			
@@ -23,10 +25,13 @@
 	<div class="col-6">
 		<% unless @org.author_orgs.count == 0 %>
 		<div class="alert alert-success">
-		<h4>Authors <span class="badge badge-primary"><%= @org.author_orgs.count %></span></h4>
+		<h4 class="d-flex">Authors <span class="badge badge-primary"><%= @org.author_orgs.count %></span>
+			<span class="ms-auto ml-auto">Articles</span>
+		</h4>
 		<% @org.author_orgs.each do |author_org| %>
 		<div class="bg-white p-1 m-1">
 		<%= link_to author_org.author.name, newsify.author_path(author_org.author) %>
+		<%= tag.span author_org.author.sources.count, class: "ms-auto ml-auto" %>
 		</div>
 		<% end %>
 		</div>

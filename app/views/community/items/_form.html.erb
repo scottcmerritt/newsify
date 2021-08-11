@@ -1,16 +1,16 @@
-<%= simple_form_for @item do |f| %>
+<%= simple_form_for @item, url: newsify.item_path(@item) do |f| %>
   
 <% if false %>
   <%= form.association :item, collection: Item.order(:name), label: "Category", prompt: "Choose a Topic" %>
 <% end %>
 
   <%= f.submit "Save", class: 'btn btn-success' %>
-  <%= link_to "Cancel", @item, class: "mx-1 btn btn-danger" %>
+  <%= link_to "Cancel", newsify.item_path(@item), class: "mx-1 btn btn-danger" %>
 
 <div class="form-row">
     <div class="col-sm-6">
     	<%= f.input :name %>
-        <%= render partial: "shared/icon_selector", locals: {form: f} %>
+        <%= render partial: "community/shared/icon_selector", locals: {form: f} %>
     </div>
     <div class="col-sm-6">
     	 <%= f.input :itype, collection: @itypes, label: "Type" %>
@@ -38,5 +38,5 @@
 </div>
   
   <%= f.submit "Save", class: 'btn btn-success' %>
-  <%= link_to "Cancel", @item, class: "mx-1 btn btn-danger" %>
+  <%= link_to "Cancel", newsify.item_path(@item), class: "mx-1 btn btn-danger" %>
 <% end %>

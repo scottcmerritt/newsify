@@ -1,6 +1,7 @@
 <% source = @source if local_assigns[:source].nil? %>
 <% show = {votes:true,moderation:true,scores:false} if local_assigns[:show].nil? %>
 
+<% if false %>
 <div class="bg-white w-100 d-flex p-1">
 	<input id="saveSelected" type="button" value="Save Article Text" /> 
 	<input id="shareSelected" type="button" value="Share" /> 
@@ -13,12 +14,19 @@
 		<% end %>
 	</div>
 </div>
+<% end %>
 
 <h4 class="bg-white border-bottom p-2 my-1 d-flex align-items-center justify-content-between">
+	<span>
+	<% begin %>
+	<%= render partial: "community/items/parts/connection", locals: {item: @source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} %>
+	<% rescue Exception => e %>
+	<%= e %>
+	<% end %>
 	<%= tag.span @source.title %> 
+	</span>
 	
-	<a class="btn btn-primary btn-sm" href="<%= @source.url %>" target="_blank"><i class="fa fa-external-link-alt"></i></a>
-
+	<a class="btn btn-primary btn-sm ms-auto" href="<%= @source.url %>" target="_blank"><i class="fa fa-external-link-alt"></i></a>
 </h4>
 <div class="d-flex justify-content-between px-2">
 	<% if @source.respond_to?(:impressionist_count) %>
@@ -27,73 +35,56 @@
 		<% rescue Exception => e %>
 		<span>Error:<%= e %></span>
 		<% end %>
-
+	<% else %>
+		<%= tag.span "" %>
 	<% end %>
-	<%= tag.span @source.created_at_wtime, class:"ms-auto ml-auto badge badge-light text-secondary" %>
+	<%= link_to("#{@source.similar_sources.length} similar", "#similarSources", data: {'bs-toggle': "collapse"}) if @source.grouped? %>
+	
+	<%= tag.span @source.created_at_wtime, class:"badge badge-light text-secondary" %>
 </div>
-<% unless @source.group_id.nil? %>
-<div>
-[GROUP: <%= @source.is_group ? "YES" : @source.group_id  %>] <%= @source.similar_sources.nil? ? 0 : @source.similar_sources.length %> similar articles
-<% unless @source.similar_sources.nil? %>
-<% @source.similar_sources.each do |source| %>
-<div class="ml-3">
-<%= link_to source.title, source %>
+<%= render partial: "newsify/sources/parts/similar_sources", locals: {source: @source} if @source.grouped? %>
 
-</div>
-<% end %>
-<% end %>
-</div>
-<% end %>
 <%= render partial: "community/votes/main", locals: {object: @source, user: current_user} if show[:votes] rescue "No Voting" %>
 
 <% if params[:clean] %>
 <div><%= @testing %>, Purging: (<%= @purging %>)</div>
 <% end %>
-	<div class="row">
-		<div class="col-sm-3 col-5">
-			<% unless @source.urltoimage.nil? %>
-			<img class="img-thumbnail" src="<%= @source.urltoimage %>"/>
-			<% end %>
-		</div>
-		<div class="col-sm-9 col-7">
-			<%= tag.div @hashkey, style:"text-align:right;font-size:11px;" if is_admin? %>
-			<div>
-				<%= @source.description %>
-			</div>
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="bg-white border-top p-1 mb-1">Organization
-					<% unless @source.org.nil? %><%= link_to @source.org.name,newsify.org_path(@source.org) %><% end %>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="bg-white border-top p-1 mb-1">Authors 
-					<% unless @source.authors.nil? %>
-					<% @source.authors.each do |author| %>
-					<%= link_to author.name, newsify.author_path(author), class: "p-1 m-1" %>
-					<% end %>
-					<%= link_to @source.org.name,newsify.org_path(@source.org) unless @source.org.nil? %><% end %>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-12">
-						<% Newsify::Source.topics(@source.id,{min_score: 0.05, max_score: 1.0}).each do |topic| %>
-						<span class="badge badge-light text-success">
-							<%= link_to topic.name, item_path(id:topic.id), class: "text-success" %></span>
-						<% end %>
 
-						<% Newsify::Source.topics(@source.id,{min_score: 0.0, max_score: 0.05}).each do |topic| %>
-						<span class="badge badge-light text-secondary">
-							<%= link_to topic.name, item_path(id:topic.id), class: "text-secondary" %>
-						</span>
-						<% end %>
-						
+<div class="row">
+	<div class="col-sm-3 col-5">
+		<% unless @source.urltoimage.nil? %>
+		<img class="img-thumbnail" src="<%= @source.urltoimage %>"/>
+		<% end %>
+	</div>
+	<div class="col-sm-9 col-7">
+		<%= tag.div @hashkey, style:"text-align:right;font-size:11px;" if is_admin? %>
+		<div>
+			<%= @source.description %>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="bg-white border-top p-1 mb-1">Organization
+				<%= link_to @source.org.name,newsify.org_path(@source.org) unless @source.org.nil? %>
 				</div>
 			</div>
-
+			<div class="col-sm-6">
+				<div class="bg-white border-top p-1 mb-1">Authors 
+				<% unless @source.authors.nil? %>
+				<% @source.authors.each do |author| %>
+				<%= link_to author.name, newsify.author_path(author), class: "p-1 m-1" %>
+				<% end %>
+				<%= link_to @source.org.name,newsify.org_path(@source.org) unless @source.org.nil? %><% end %>
+				</div>
+			</div>
 		</div>
-	
+		<div class="row">
+			<div class="col-12">
+				<%= render partial: "newsify/sources/parts/items_scrollable",locals: {source:@source,show:{classify_button:true}} %>					
+			</div>
+		</div>
+
+	</div>
+
 </div>
 
 <% begin %>

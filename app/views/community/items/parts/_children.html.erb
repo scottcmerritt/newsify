@@ -1,0 +1,17 @@
+<% scrollable = true if local_assigns[:scrollable].nil? %>
+<% if scrollable %>
+<div style="overflow-x: scroll;">
+<% end %>
+
+<div class="d-flex <% "flex-wrap" unless scrollable %>">
+	<% item.children.each do |child| %>
+	<div class="mb-1 mx-1 p-1 border rounded badge d-flex align-items-center">
+	<%= link_to child.name, newsify.item_path(child), class: "text-secondary fs-7 nodec" %>
+	<%= tag.span child.sources.count, class: "badge border bg-white text-dark mx-1 fs-7" %>
+	</div>
+	<% end %>
+</div>
+
+<% if scrollable %>
+</div>
+<% end %>

@@ -1,0 +1,76 @@
+<%= render partial: "users/header",locals: {size:'sm'} rescue "No user header" %>
+
+<div class="my-1">
+<%= render partial: "community/rank/parts/sub_header", locals: {theme:0,path_to_more: feed_path,selected:1} rescue "no sub_header" %>
+
+<h4 class="mainH listH bg-primary primary-b text-light d-flex mt-0"><%= @order == :desc ? "Interests" : "Disinterests" %> <%= link_to "based on reading news", newsify.feed_path, class: "badge badge-info mx-1" rescue "no feed_scroll_path" %>
+	<%= link_to icon_text("Download","file-download"), @export_link, class: "btn btn-sm btn-contrast ms-auto ml-auto" %>
+</h4>
+<% if @interests.nil? || @interests.length == 0 %>
+<div class="col-12 text-center">
+<%= link_to "Express interest in headlines", newsify.feed_path rescue "no feed_scroll_path" %> to establish interests and dis-interests
+</div>
+<div class="alert alert-primary w-50 mx-auto text-center">No data yet</div>
+
+<% else %>
+<% max_interests = @interests[0].interests %>
+<div class="d-flex justify-content-between fs-7 fsz7 text-muted p-1">
+<div>Updated <%= time_ago_in_words @interests[0].updated_at %> ago</div>
+<div class="mx-3 text-dark"><%= tag.span num_format(@user.interests_total,0,","), class:"font-weight-bold" %> total records</div>
+
+
+</div>
+
+
+<div class="row mx-2 no-gutters">
+
+<% displayed = 0 %>
+<% @interests.each do |row| %>
+
+	<% if (@order == :desc && row.interests > 0) || (@order == :asc && row.interests < 0 ) %>
+	<% displayed+=1 %>
+	<div class="col-4">
+		<div class="border rounded p-1 m-1">
+
+		<%= tag.div (row.item.nil? || row.item.parent.nil?) ? " " : link_to(row.item.parent.name, row.item.parent), class: "fs-7 fsz7",style: "height:12px;" unless row.item.parent.nil? %>
+
+	<%= link_to row.name, item_path(id:row.item_id), class: "text-contrast" %>
+	<%= tag.div "", style: "height: 12px" if row.item.parent.nil? %>
+
+	<% unless row.nil? || row.interests.nil? || max_interests.nil? %>
+	<div style="height:5px;background:<%= @bg_color %>;width:<%= 100*(row.interests/max_interests) %>%"></div>
+	<% end %>
+
+	
+	</div>
+	</div>
+	<% end %>
+<% end %>
+
+<% if displayed == 0 %>
+<% @interests.each do |row| %>
+
+	<% if (@order == :desc && row.interests == 0) %>
+	<div class="col-4">
+		<div class="border rounded p-1 m-1">
+
+		<%= tag.div (row.item.nil? || row.item.parent.nil?) ? " " : link_to(row.item.parent.name, row.item.parent), class: "fs-7 fsz7",style: "height:12px;" unless row.item.parent.nil? %>
+
+	<%= link_to row.name, item_path(id:row.item_id), class: "text-contrast" %>
+	<%= tag.div "", style: "height: 12px" if row.item.parent.nil? %>
+	</div>
+	</div>
+
+
+	<% end %> 
+
+
+
+
+<% end %>
+<% end %>
+
+
+</div>
+<% end %>
+</div>

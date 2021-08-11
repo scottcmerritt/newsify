@@ -1,3 +1,11 @@
+<% if false && params[:gc] %>
+<div class="border p-2 bg-white m-1">
+<% @classified.each do |row| %>
+<div><%= row %></div>
+<% end %>
+</div>
+<% end %>
+<%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: newsify.sources_path} unless @hide_news_menu %>
 <%= render partial: "newsify/sources/show", locals: {source: @source} %>
 <%= feedbacker_comments target: @source, new_comment: @new_comment %>
 

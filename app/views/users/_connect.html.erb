@@ -1,0 +1,18 @@
+<% current_user = local_assigns[:current_user].nil? ? current_user : local_assigns[:current_user] %>
+<% user_limit = nil if local_assigns[:user_limit].nil? %>
+<span class="connect" user-id="<%= user.id %>">
+<% if user == current_user %>
+
+<% else %>
+	<% if connections.include? user %>
+	<%= link_to(raw(tag.i("",class: "fa fa-plug text-success")), newsify.cancel_connection_path(otype:"user",id: user.id), class: "px-1") %>
+	<% elsif requested.include? user %>
+		<%= link_to(raw(tag.i("",class: "fa fa-plug text-secondary")), newsify.add_connection_path(otype:"user",id: user.id), class: "px-1") %>
+	<% elsif pending.include? user %>
+	<%= tag.i "", class: "fsz3 fa fa-plug text-secondary p-1" %>
+	<%= link_to(raw(tag.i("",class: "fsz4 fa fa-ban text-danger p-1")), newsify.cancel_connection_path(otype:"user",id: user.id), class: "py-1") %>
+	<% else %>
+	<%= link_to(raw(tag.i("",class: "fa fa-plus text-success")), newsify.add_connection_path(otype:"user",id: user.id), class: "px-1", remote: true) %>
+	<% end %>
+<% end %>
+</span>

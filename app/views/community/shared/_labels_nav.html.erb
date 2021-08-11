@@ -3,8 +3,6 @@
 <% show_moderation = true if local_assigns[:show_moderation].nil? %>
 <% if force_show || !(@labels.nil? && @mod_labels.nil?) %>
 <div class="d-flex align-items-center justify-content-between">
-
-
 	<% if show_main %>
 	<div class="navbar navbar-sub bg-white p-1 mb-1">
 	<% @labels.each do |label| %>

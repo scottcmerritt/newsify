@@ -3,6 +3,7 @@ module Newsify
 		self.table_name = "authors"
 		has_many :source_authors
 		has_many :author_orgs
+		has_many :sources, through: :source_authors
 
 		def self.add_from_api raw_names, api_name="newsapi",org_id=nil, createdby=nil
 

@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", "~> 6.1.4"
   spec.add_dependency "kaminari"
   spec.add_dependency "acts_as_votable"
+  spec.add_dependency "acts_as_favoritor"
   spec.add_dependency "tactful_tokenizer"
   spec.add_dependency "narray"
   spec.add_dependency "tf-idf-similarity"
@@ -32,4 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "diffy"
   spec.add_dependency "custom_sort"
+  spec.add_dependency "wikipedia"
+  spec.add_dependency "wikipedia-client"
 end

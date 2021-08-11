@@ -29,6 +29,13 @@ gem 'custom_sort'
 #gem 'paper_trail' # for logging model history
 gem 'diffy'
 
+gem 'wikidata'
+gem 'wikipedia-client'
+
+
+# community gems
+#gem 'has_friendship', git: 'https://github.com/sungwoncho/has_friendship.git'
+
 group :development do
   gem 'sqlite3'
 end

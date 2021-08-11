@@ -1,0 +1,24 @@
+<% show_default = {tabs:false} %>
+<% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
+
+<% if show[:tabs] %>
+<div class="d-flex justify-content-between">
+<%= link_to "Topics", newsify.items_path, class: "mx-3" %>
+
+<div class="text-center p-1 my-1">
+<%= tag.span "Recent articles", class: "btn btn-sm bg-white border rounded text-dark fs-6" %>
+<%= link_to "Your feed", newsify.feed_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded" %>
+<%= link_to "View more", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded" %>
+</div>
+
+
+<%= link_to "Admin", newsify.newsify_admin_path, class: "mx-3" %>
+</div>
+<% end %>
+
+<% data = local_assigns[:data] || Newsify::Source.limit(5) %>
+<% data.each do |row| %>
+<div class="my-1">
+<%= render partial: "newsify/sources/source", locals:{source:row,show:show} %>
+</div>
+<% end %>

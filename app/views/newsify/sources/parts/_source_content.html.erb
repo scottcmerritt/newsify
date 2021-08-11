@@ -49,9 +49,9 @@
 
 <% else %>
 	<% if @source.first_content.nil? %>
-	<%= render :partial=>"feedbacker/ui/card", :locals=>{:title=>"No article added yet",:text=>'<a class="btn btn-sm btn-primary" href="?summarize=1">Grab it and summarize</a>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} rescue "Error:Items/UtilCard2" %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:title=>"No article added yet",:text=>'<a class="mx-1 btn btn-sm btn-primary" href="?summarize=1">Grab it and summarize</a><a class="btn btn-sm btn-primary" href="?summarize=1&gc=1&entities=1&fullscan=1">Classify</a>',:img_src=>nil,:link=>"#",:style_wrap=>"col-7"} rescue "Error:Items/UtilCard2" %>
 	<% else %>
-	<%= render :partial=>"feedbacker/ui/card", :locals=>{:text_style=>text_style,:title=>"Actual content #{tag.span(num_format(@source.last_content.word_count,0,",")+ " words",class:'ml-1 badge badge-info')}",:text=>@source.last_content.auto_html_format,:img_src=>nil,:link=>"#",:style_wrap=>"width: 18rem;"} rescue "Error:Items/UtilCard3" %>
+	<%= render :partial=>"feedbacker/ui/card", :locals=>{:text_style=>text_style,:title=>"Actual content #{tag.span(num_format(@source.last_content.word_count,0,",")+ " words",class:'ml-1 badge bg-info badge-info')}",:text=>@source.last_content.auto_html_format,:img_src=>nil,:link=>"#",:style_wrap=>"width: 18rem;"} rescue "Error:Items/UtilCard3" %>
 	<% end %>
 <% end %>
 <%= render partial:"newsify/sources/parts/summaries_opinions" rescue "Error:SummariesOpinions" %>

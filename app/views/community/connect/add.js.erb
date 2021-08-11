@@ -1,0 +1,1 @@
+document.querySelector(".connect[<%= @otype %>-id='<%= @target.id %>']").innerHTML = '<%= link_to(raw(tag.i("",class: "fa fa-plug text-secondary")), newsify.add_connection_path(otype:@otype,id: @target.id), class: "px-1") %>'

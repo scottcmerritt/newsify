@@ -3,8 +3,8 @@
 	data:data,
 	paths:
 		{
-			prev: newsify.sources_path({page:@page-1}),
-			next: newsify.sources_path({page:@page+1})
+			prev: @label.nil? ? newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1})) : newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1})),
+			next: @label.nil? ? newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1})) : newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1}))
 		}
 	} 
 %>
@@ -13,7 +13,7 @@
 <% data.each do |row| %>
 <div class="mb-2">
 <%= link_to row.title, newsify.source_path(row) if false %>
-<%= render partial: "newsify/sources/source2", locals:{source:row} %>
+<%= render partial: "newsify/sources/source", locals:{source:row,show: {:classify_button=>false}} %>
 </div>
 <% end %>
 

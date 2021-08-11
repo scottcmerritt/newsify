@@ -1,0 +1,20 @@
+<% if params[:oid] || params[:org_id] %>
+<div class="d-flex">
+<div class="mx-auto text-center my-1 border rounded p-1">
+<% if params[:oid] %>
+<% item = Newsify::Item.find_by(id:params[:oid]) %>
+<div class="d-flex align-items-center">Filtered by <%= link_to item.name, newsify.item_path(item), class: "mx-1 me-3 " %>
+	<%= link_to "X", newsify.categories_path, class: "btn btn-sm border bg-white ms-3" %>
+</div>
+<% end %>
+<% if params[:org_id] %>
+	<% org = Community::Org.find_by(id:params[:org_id]) %>
+	<% unless org.nil? %>
+	<div class="d-flex align-items-center">Filtered by <%= link_to org.name,newsify.org_path(org), class:"mx-1 me-3"  %>
+		<%= link_to "X", newsify.categories_path, class: "btn btn-sm border bg-white ms-3" %>
+	</div>
+	<% end %>
+<% end %>
+</div>
+</div>
+<% end %>

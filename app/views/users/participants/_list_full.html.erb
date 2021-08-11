@@ -1,0 +1,100 @@
+<% switch_to = false if local_assigns[:switch_to].nil? %>
+<% toggle_wrap = nil if local_assigns[:toggle_wrap].nil? %>
+<% show_default = {stats:true,msg_counts:true,room_add_btn:false,data:false} %>
+<% show = local_assigns[:show].nil? ? show_default : show_default.merge(show) %>
+<% room = nil if local_assigns[:room].nil? %>
+<% connections = current_user.friends if local_assigns[:connections].nil? && !current_user.nil? %>
+<% room_orgs = nil if local_assigns[:room_orgs].nil? %>
+<% colors = nil if local_assigns[:colors].nil? %>
+<% msg_count_range = users.nil? || users.first.nil? || !users.first.respond_to?(:msg_count) ? nil : [users.first.msg_count,users.last.msg_count] %>
+<% connections = current_user.friends if local_assigns[:connections].nil? && !current_user.nil? %>
+<% connections_requested = current_user.requested_friends if local_assigns[:connection_requested].nil? && ! current_user.nil? %>
+<% users.each do |user| %>
+<div class="oli">
+	<div class="user border-bottom">
+	<div class="oprofile d-flex align-items-center justify-content-between" style="border-left:solid 6px <%= colors.nil? ? 'gray' : colors[user.id] %>;">
+		<div style="width:270px;" class="px-1">
+			<% unless room.nil? || room.org_by_user(user).nil? %>
+			<div class="sm-square d-inline-block rounded" style="background:<%= room.org_by_user(user).bg_color %>"></div>
+			<% end %>
+			<span><%= tag.i "", class: "fa fa-check-circle text-success fsz6" if user.confirmed? %></span>
+			<span><%= tag.i "", class: "fa fa-circle text-success fsz6" if user.online? %></span>
+		<%= switch_to ? link_to(user.username, switch_user_path(id: user.id)) : link_to(user.username, user) %>
+		<%= tag.span user.email, class: "p-1" if is_admin? %>
+		</div>
+
+
+		<div class="ml-auto text-center" style="width:260px;">
+			<%= render partial: "rooms/parts/change_role", locals: {user:user, room: room} if show[:room_add_btn] %>
+		</div>
+
+		<div class="ml-auto d-flex align-items-center justify-content-end" style="min-width: 140px;">
+			
+
+			<% unless @room.nil? || show[:stats] == false || is_guest? %>
+			
+				<%= feedback_for user.quantity_score(room,msg_count_range) %>
+				<% score = (100.to_f*(user.room_stats(room)[:my_drives].to_f/user.room_stats(room)[:total_drives])) %>
+				<%= feedback_for(score,{colors: [0,3,4]}) %>
+			
+			<% end %>
+			
+		</div>
+
+
+
+		<% if show[:msg_counts] %>
+			<div class="scoreStat">
+				<div class="stat"><%= num_format(user.post_count,0,",") %></div>
+				<div class="lbl fsz7">Posts</div>
+			</div>
+			<% end %>
+
+		<% if show[:data] || is_data_scientist? %>
+		<div class="scoreStat">
+		<div class="ml-auto stat"><%= pct_format user.room_stats(room)[:driving_pct] %>%</div>
+			<div class="lbl">Driving</div>
+		</div>
+
+		<div class="scoreStat"><div class="stat"><%= user.room_stats(room)[:total_previews] %></div><div class="lbl">Snippets viewed</div></div>
+		<% if false %>
+		<div class="scoreStat"><div class="stat"><%= user.room_stats(room)[:total_drives] %></div><div class="lbl">Drives</div></div>
+		<% end %>
+		<div class="scoreStat"><div class="stat"><%= user.room_stats(room)[:my_drives] %></div><div class="lbl">My drives</div></div>
+		<div class="scoreStat"><div class="stat"><%= user.room_stats(room)[:my_previews] %></div><div class="lbl">My previews</div></div>
+		<% end %>
+
+		<% unless current_user.nil? %>
+			<%= link_to "Chat", user_conversations_add_path(target_id: user.id) %>
+			<span class="connect" user-id="<%= user.id %>">
+			<% if user == current_user %>
+			<div style="width:20px;"></div>
+			<% else %>
+				<% if connections.include? user %>
+				<%= link_to(raw(tag.i("",class: "fa fa-plug text-success")), add_connection_path(otype:"user",id: user.id), class: "px-1") %>
+				<% elsif connections_requested.include? user %>
+				<%= link_to(raw(tag.i("",class: "fa fa-plug text-secondary")), add_connection_path(otype:"user",id: user.id), class: "px-1") %>
+				<% else %>
+				<%= link_to(raw(tag.i("",class: "fa fa-plus text-success")), add_connection_path(otype:"user",id: user.id), class: "px-1", remote: true) %>
+				<% end %>
+			<% end %>
+			</span>
+			<% end %>
+
+	</div>
+	<% unless msg_count_range.nil? %>
+
+		<div class="odata ofeedback" data-value="<%= user.quantity_score room %>">
+			<div class="meter meter-sm quantity" style="width:<%= user.quantity_score(room,msg_count_range) %>%;">
+			
+			</div>
+			<% if false %>
+			[<%= (user.quantity_score(room,nil)*100).round(2) %> ]
+		[<%= msg_count_range.nil? ?  (user.quantity_score(room,msg_count_range)*100).round(2) :  user.quantity_score(room,msg_count_range) %>]
+			<% end %>
+		</div>
+	<% end %>
+	
+	</div>
+</div>
+<% end %>

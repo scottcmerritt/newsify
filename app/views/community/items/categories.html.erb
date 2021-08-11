@@ -1,0 +1,5 @@
+<%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: newsify.categories_path} %>
+
+<%= my_paginate @items.page(params[:page]), page: params[:page] unless params[:q] %>
+
+<%= render partial: "community/items/list", locals: {data:@items} %>

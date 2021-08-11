@@ -1,0 +1,9 @@
+<h4>News admin dashboard</h4>
+<%= tag.div "#{Newsify::Source.count} articles" %>
+
+<%= tag.div "#{Newsify::Item.count} topics" %>
+
+<%= tag.div link_to "#{Newsify::ItemInterest.count} item interests", newsify.profile_interests_path %>
+
+<%= Newsify::ItemInterest.select("user_id").group(:user_id).to_json %>
+

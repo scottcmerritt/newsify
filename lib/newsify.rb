@@ -1,12 +1,21 @@
 require "newsify/version"
 require "newsify/engine"
 
+require 'newsify/configure'
+
 module Newsify
   # Your code goes here...
+  extend Configure
+
+  def newsify(options = {})
+
+
+  end
+
 end
 
 
-
+require "community/wiki_util"
 require "community/concerns/votes/labels/ad"
 require "community/concerns/votes/labels/clickbait"
 require "community/concerns/votes/labels/english"
@@ -24,6 +33,8 @@ require "community/concerns/membership"
 require "community/concerns/membership_user"
 require "community/concerns/vote_stats"
 require "community/concerns/vote_cacheable"
+require "community/concerns/user_utility"
+require "community/concerns/user_community"
 
 require "community/concerns/labeled_data"
 
@@ -38,5 +49,6 @@ require "newsify/import"
 require "newsify/news_general"
 require "newsify/news_manager"
 
+require "newsify/news_categories"
 require "newsify/entity_row"
 require "newsify/google_analyze"

@@ -1,9 +1,14 @@
 <% show_defaults = {votes:true,rank_score:false,edit:false,itype:false,relevance:false} %>
 <% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
-<%= data.to_sql %>
+
 <% begin %>
 <% data.each do |item| %>
-	<%= render partial: "community/items/parts/list_item", locals: {item:item,show:show} rescue "list_item ERROR" %>
+	<% begin %>
+	<%= render partial: "community/items/parts/list_item", locals: {item:item,show:show} %>
+	<% rescue Exception => e %>
+		<%= e %>
+	<% end %>
+
 <% end %>
 <% rescue Exception => e %>
 <%= e %>

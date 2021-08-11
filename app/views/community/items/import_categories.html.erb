@@ -1,0 +1,38 @@
+<div class="row">
+	<div class="col-6">
+		<% unless @top_level.nil? %>
+		<% @top_level.each do |item| %>
+		<div>
+		<%= item %>
+		</div>
+		<% end %>
+		<% end %>
+		<% unless @data.nil? %>
+		<h2>All data</h2>
+		<% @data.each do |k,v| %>
+			<div class="font-weight-bold"><%= k %></div>
+			<% unless v.nil? %>
+				<% v.each do |k1,v1| %>
+				<div class="ms-2 ml-2 border rounded p-1">
+				<%= k1 %>
+				<%= tag.span(tag.i "",class:"fa fa-check-circle") unless Newsify::Item.where(name: k1,itype:"CATEGORY").first.nil? %>
+				<% v1.each do |k2,v2| %>
+					<div class="ms-3 ml-3 ps-3 pl-3">
+						<%= k2 %>
+						<% i1 = Newsify::Item.where(name: k2,itype:"CATEGORY").first %>
+						<%= tag.span(tag.i "",class:"fa fa-check-circle") unless i1.nil? %>
+					</div>
+				<% end %>
+				</div>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% end %>
+	</div>
+	<div class="col-6">
+		<h3><%= Newsify::Item.count %></h3>
+		<% Newsify::Item.where(itype:"CATEGORY").order(:parent_id).each_with_index do |item,index| %>
+		<div class="p-1 border m-1"><%= index %>: (<%= item.id %>) <%= item.name %>, <%= item.itype %>, <%= item.parent_id %></div>
+		<% end %>
+	</div>
+</div>

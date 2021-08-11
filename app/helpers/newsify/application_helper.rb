@@ -13,7 +13,7 @@ module Newsify
     end
 
     def label_w_count lbl, count, with_delim=","
-      raw("#{lbl} #{tag.span num_format(count,0,with_delim), class:"badge badge-info"}")
+      raw("#{lbl} #{tag.span num_format(count,0,with_delim), class:"badge bg-info badge-info"}")
     end
 
     def nav_link lbl, href, count, is_active = false, css = ""
@@ -37,12 +37,48 @@ module Newsify
       "badge #{active ? "badge-#{active_color}" : "badge-#{color} bg-#{color}"} border rounded #{tight ? 'mr-1' : 'mx-1'} #{size == 'sm' ? 'px-1' : 'p-2'}"
     end
 
-    def my_paginate data, page: 12
+    def my_paginate data, page: 12, categories: false, label: nil
       page = page.nil? ? 1 : page.to_i
-      prev_page = newsify.items_path(page:page-1)
-      next_page = newsify.items_path(page:page+1)
+      if label
+        prev_page = newsify.items_labeled_path(page:page-1,label:label)
+        next_page = newsify.items_labeled_path(page:page+1,label:label)
+      else
+        prev_page = categories ? newsify.categories_path(page:page-1) : newsify.items_path(page:page-1)
+        next_page = categories ? newsify.categories_path(page:page+1) : newsify.items_path(page:page+1)
+      end
       render(partial:"newsify/util/my_paginate", locals: {data: data, paths: {prev:prev_page,next:next_page}})
     end
+
+    def org_paths
+      org_type = params[:org_type] if params[:org_type]
+      if org_type
+        return {:prev=>newsify.orgs_by_type_path(org_type: org_type,page:@page-1),:next=>newsify.orgs_by_type_path(org_type: org_type,page:@page+1)}
+      else
+        return {:prev=>newsify.orgs_path(page:@page-1),:next=>newsify.orgs_path(page:@page+1)}
+      end
+    end
+
+
+    def newsify_draw_orgs
+      #render(partial:"shared/hello", locals: {target: target, path_to_resource:path_prepped, data:data}) # + render(partial:"shared/hello2")
+      render(partial:"newsify/orgs/index")
+    end
+
+    # widget on home page
+    def newsify_widget_sources show: nil
+      data = Newsify::Source.order("created_at DESC").limit(5)
+      render(partial:"newsify/sources/widgets/index", locals: {data:data,show:show})
+
+    end
+
+    # used for generating a power meter underneath a div
+    def lbl_meter text,score:, meter_height:"2px"
+      wd = Math.tan(score)*100.0 +0.15
+      wd = wd > 100 ? 100 : wd
+      meter_color = "green"
+      tag.div(tag.div(text)+tag.div("",style:"width:#{wd}%;height:#{meter_height};background-color:#{meter_color}"))
+    end
+
 
   end
 end

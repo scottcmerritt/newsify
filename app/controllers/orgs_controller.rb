@@ -38,14 +38,15 @@ class OrgsController < ApplicationController
   	end
 
 	def index
-
-
+		redirect_to newsify.orgs_path if newsify
+		@page = params[:page] ? params[:page].to_i : 1
+		@page = 1 if @page < 1
 
 		# User.page(3).without_count
 		# then use <%= link_to_prev_page @users, 'Previous Page' %> and <%= link_to_next_page @users, 'Next Page' %>
 		Community::Org.all.each {|org| org.cache_content_scores! } if params[:build_cache]
 		
-
+			
 		if params[:q]
 			@query = params[:q]
 
@@ -58,13 +59,16 @@ class OrgsController < ApplicationController
 				@orgs = Community::Org.select("orgs.*")
 				.joins("LEFT JOIN vote_caches ON vote_caches.resource_id = orgs.id")
 				.order("cached_content_score DESC")
-				.where("is_news = ? AND vote_caches.resource_type = ?",true,"Community::Org")
+				.where("vote_caches.resource_type = ?","Community::Org")
 			else
 				@orgs = Community::Org.all
 			end
+			@org_type = "is_news" #@org_types.key?(params[:org_type]) ? @org_types[params[:org_type][:field]] : nil
+			@orgs = @orgs.where("#{@org_type} = ?",true) unless @org_type.nil?
 
 		end
 		@orgs = @orgs.page(params[:page]).per(20)
+
 
 	  @top_voted = OrgCustom.top_orgs if defined?(VoteCache) #OrgCustom.top_voted(10)
   	 
@@ -249,7 +253,7 @@ class OrgsController < ApplicationController
 	end
 
 	def update
-		if @org.update_attributes(permitted_parameters)
+		if @org.update(permitted_parameters)
 	      flash[:success] = "Org #{@org.name} was updated successfully"
 	      redirect_to @org
 	    else
@@ -284,7 +288,7 @@ class OrgsController < ApplicationController
 	protected
 
 	def permitted_parameters
-    	params.require(:org).permit(:name,:is_group,:is_news,:is_company,:is_network,:is_seller,:approve_members,:icon_css)
+    	params.require(:org).permit(:name,:is_group,:is_news,:is_blog,:is_company,:is_non_profit,:is_network,:is_seller,:approve_members,:icon_css)
   	end
 
   	def load_permissions

@@ -1,0 +1,76 @@
+<% if false %>
+<h2>Organizations & Groups <span class="badge badge-primary"><%= num_format Community::Org.count,0,"," %></span>
+<%= link_to "Info", orgs_info_path if false %>
+</h2>
+<% end %>
+ 	
+ 	<form action="?" method="get">
+      		<input type="text" name="q" value="<%= @query %>" class="mx-2 fsz4 p-1"/>
+    </form>
+
+<div class="row">
+	<div class="col-6">
+		<h6 class="mainH listH bg-primary primary-b text-light">Organizations 
+			<span class="mx-1 badge bg-light text-dark badge-light"><%= num_format @orgs.total_count,0,"," %></span>
+			<% if false %><div class="ml-auto ms-auto"><%= page_entries_info @orgs, entry_name: 'org' %></div><% end %></h6>
+<% require "kaminari" %>
+<% if true %>
+		<%= render(partial:"newsify/util/my_paginate", locals: {data: @orgs, paths: {prev:org_paths[:prev],next:org_paths[:next]}}) rescue tag.div(paginate(@orgs),class:"mt-1") rescue "error" %>
+
+		<% if false %>
+		<div class="d-flex justify-content-between m-1">
+			<%= newsify.link_to_prev_page @orgs, 'Prev Page',class: "btn btn-primary btn-sm" %>
+			<%= newsify.link_to_next_page @orgs, 'Next Page',class: "ms-auto ml-auto btn btn-primary btn-sm" %>
+		</div>
+		<% end %>
+<% end %>		
+
+		<div class="bg-white p-1 m-1 d-flex align-items-center justify-content-between">
+			<div class="d-flex align-items-center">
+			<span class="badge bg-secondary badge-secondary me-1 mr-1"><b>Articles</b></span> <b>Name</b> 
+			</div>
+			<div style="width:140px;" class="d-flex align-items-center">
+				<span class="badge badge-success ms-1 ml-1"><b>Interest</b></span>
+				<div style="width:80px;" class="px-1 text-center font-weight-bold">Score</div>
+			</div>
+		</div>
+		<div class="bg-primary-light">
+		<% @orgs.each do |org| %>
+			<%= render partial: "community/orgs/show", locals: {org: org} %>
+		<% end %>
+		</div>
+
+	</div>
+	<div class="col-6">
+		<%= render partial: 'community/orgs/groups', locals: {groups: current_user.my_groups, paginate: true, count: nil,title: "My groups"} unless current_user.nil? %>
+
+		<%= render partial: 'community/orgs/groups', locals: {groups: @groups, paginate: true, count: nil,title: "All groups",empty_message: "No groups created"} %>
+	</div>
+</div>
+
+<% if false %>
+<div class="container">
+<% if @auto_ui %>
+
+ <%= render :partial=>"/util/auto_table",:locals=>{:title=>"Orgs",:rows=>@orgs} %>
+
+<% else %>
+<h2>News Organizations</h2>
+
+<div class="summaries olist vertical p-2">
+	<% unless @orgs.nil? %>
+		<% @orgs.each do |org| %>
+		<div class="summaryItem oliWrap oli oprofile d-flex justify-content-between">
+			<div class="oname"><%= link_to org.name, org_path(org) %></div>
+
+			
+
+		</div>
+		<% end %>
+	<% end %>
+</div>
+
+
+<% end %>
+</div>
+<% end %>

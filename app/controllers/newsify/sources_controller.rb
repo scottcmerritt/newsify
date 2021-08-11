@@ -1,24 +1,95 @@
 module Newsify
   class SourcesController < ApplicationController
-    include Newsify::ClassifyNews
+    require "custom_sort"
+    include Newsify::ClassifyNews, Newsify::NewsGeneral
+    include Community::LabeledData
 
     before_action :setup_pager
     before_action :set_source, only: [:show, :opinions]
 
+#      before_action :load_entities, only: [:show,:edit,:update]
+#  before_action :load_feed_report, only: [:info,:index,:mine,:start,:scroll,:report,:labeled,:my_interests]
+
+  before_action :get_links
+  before_action :set_otype
+
+  skip_before_action :verify_authenticity_token, only: [:index,:labeled]
+
+
+
+
     def index
-      
+      @labels =  ["saved"] + @labels
       #Newsify::Cache.set_obj "my_test_key", "hello"
       #@cache_result = Newsify::Cache.get_obj "my_test_key"
 
-      @labeled = Source.order("created_at DESC")
-      .page(@page).per(20)
+      if params[:oid]
+        @labeled = Source.select("sources.*").joins(:source_topics) 
+        @labeled = @labeled.where(source_topics: {item_id: params[:oid]})
+      elsif params[:author_id]
+        @labeled = Source.select("sources.*").joins("LEFT JOIN source_authors ON source_authors.source_id=sources.id")
+        @labeled = @labeled.where("source_authors.author_id = ?",params[:author_id])
+      elsif params[:import_id]
+        @labeled = Source.select("sources.*").joins("LEFT JOIN import_sources ON sources.id = import_sources.source_id")
+        .where("import_id = ?",params[:import_id])
+      else
+        @labeled = Source.select("sources.*")
+      end
+      @labeled = @labeled.where(org_id:params[:org_id]) if params[:org_id]
+
+      @labeled = @labeled.order("sources.created_at DESC")
+      @labeled = @labeled.page(@page).per(20)
     end
+
+    def labeled
+      @labels =  ["saved"] + @labels
+
+      @otype = "source"
+      if params[:label] == "saved"
+        @label = "saved"
+        @labeled =  current_user.favorited_by_type('Newsify::Source').page(params[:page])
+      else
+        @sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
+        @sort_order = "DESC"
+
+        @label = (@mod_labels+@labels).include?(params[:label]) ? params[:label] : nil
+
+        @order_text = @sort_by[0]
+
+        @order_text = "cached_weighted_#{@label}_average" unless @label.nil? #  "cached_weighted_score"
+
+        @labeled = Source.joins("LEFT JOIN vote_caches ON vote_caches.resource_id = sources.id")
+        .where("vote_caches.resource_type = ?","Newsify::Source")
+        .order("#{@order_text} #{@sort_order}").page(params[:page]).per(10)
+      end
+      render "index"
+    end
+
+     def labeled_old
+        @otype = "source"
+        setup_label_sort
+        setup_time_decay
+        @js_url = "/labeled/sources/#{@label}.js"
+
+        #Source.where("title = ?","Dated test article").destroy_all
+
+        setup_labeled_data
+        #add_friend_filter
+        add_order_by
+
+        classify_sources @labeled if params[:classify]
+
+        render "index"
+    end
+
+
 
     def show
       impression = impressionist(@source, "",{},{})
       do_summarization! if params[:summarize]
 
       @new_comment    = Comment.build_from(@source, current_user.id, "")
+      @classified = @source.google_classify!(entities:params[:entities],full_scan: params[:fullscan]) if params[:gc]
 
     end
 
@@ -39,7 +110,8 @@ module Newsify
   
       #q = "music"
       #:page, :q
-      @terms = ["headlines","dating", "tech","tennis","soccer","summer","open source software","software","dating","startup","acquired","music","entrepreneur","tech","business","education","fullerton","orange county","california"]
+      @terms = Newsify.article_import_terms
+
       if params[:news] && params[:news][:term]
         terms = [params[:news][:term]] #["dating"] #["tech"] #["dating"] #[nil,"tennis","soccer","summer","open source","software","dating","startup","acquired","music","entrepreneur","tech","business","education","fullerton","orange county","california"]
         terms.each do |term|
@@ -48,10 +120,15 @@ module Newsify
 
         redirect_to newsify.sources_import_path(step:2) #sources_path
       end
+      @imports = Newsify::Import.order("id desc").limit(50)
       @step = params[:step].to_i
   end
 
     private
+
+    def set_otype
+      @otype = "sources"
+    end
 
     def set_source
       @source = Source.find_by(id:params[:id])

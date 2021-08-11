@@ -5,11 +5,11 @@
 <div class="d-flex align-items-center justify-content-between bg-white border-bottom border-top my-1">
 	<%= @page == 1 ? tag.span("") : link_to("Prev page", paths[:prev], class: link_css) %>
 	<div>
-	<%= tag.span "#{data.total_count} rows", class: "fw-bold font-weight-bold" %>
+	<%= tag.span "#{num_comma(data.total_count,0)} rows", class: "fw-bold font-weight-bold" %>
 
 	<%= tag.span "Page #{@page} of #{data.total_pages}", class: "mx-1" %>
 
 	</div>
-	<%= link_to("Next page", paths[:next], class: link_css) %>
+	<%= @page == data.total_pages ? tag.span("") : link_to("Next page", paths[:next], class: link_css) %>
 </div>
 

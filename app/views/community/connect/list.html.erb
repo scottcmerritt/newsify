@@ -1,0 +1,38 @@
+<%= render partial: "games/menu",locals: {index:-1} rescue "[no games menu]" %>
+
+<% custom_locals = {connections:@connections,connections_requested:@requested,connections_pending:@pending} %>
+
+
+<h6 class="bg-primary text-light p-1 mt-1">Public interests <%= tag.span @items.length, class: "badge bg-info badge-info mx-1" %></h6>
+<div class="d-flex flex-wrap">
+<% @items.each do |item| %>
+<div class="mx-1 bg-white border rounded p-1">
+<%= link_to item.name, newsify.item_path(item) %>
+</div>
+<% end %>
+</div>
+<div class="d-flex">
+<% @items_requested.each do |item| %>
+<div class="mx-1 bg-white border rounded p-1">
+<%= item.name %>
+</div>
+<% end %>
+</div>
+
+
+<div class="row m-1 border py-1">
+	<div class="col-sm-6 bg-white pb-1">
+	<h5><%= @requested.count %> connection requests</h5>
+	<% custom_locals[:users] = @requested %>
+	<%= render partial: "/users/participants/list", locals: custom_locals %>
+	</div>
+	<div class="col-sm-6 bg-white pb-1">
+		<% custom_locals[:users] = @pending %>
+		<h5>You made <%= @pending.count %> connection requests</h5>
+		<%= render partial: "/users/participants/list", locals: custom_locals %>
+	</div>
+</div>
+
+<h4>Connections</h4>
+<% custom_locals[:users] = @connections %>
+<%= render partial: "/users/participants/list", locals: custom_locals %>

@@ -8,10 +8,12 @@
 </div>
 <% end %>
 
-<h4>Sources</h4>
-<%= paginate @author.source_authors.page(params[:page]) %>
-<% @author.source_authors.page(params[:page]).each do |source_author| %>
+<h5 class="bg-light border p-1 d-flex align-items-center">Sources
+<%= tag.span @author.sources.count, class: "mx-1 badge bg-info text-dark" %>
+</h5>
+<%= paginate @author.sources.page(params[:page]) %>
+<% @author.sources.page(params[:page]).each do |source| %>
 <div class="bg-white border p-1 m-1">
-<%=link_to source_author.source.title, newsify.source_path(source_author.source) %>
+<%= render partial: "newsify/sources/source", locals:{source:source} %>
 </div>
 <% end %>

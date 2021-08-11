@@ -1,0 +1,4 @@
+<% wrap_css = "ms-auto ml-auto text-right text-end" if local_assigns[:wrap_css].nil? %>
+<% unless source.similar_sources.nil? %>
+<div class="<%= wrap_css %>"><%= tag.span "#{source.similar_sources.count("*")} similar", class: "d-flex-inline badge bg-primary badge-primary text-light rounded border" %></div>
+<% end %>

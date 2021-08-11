@@ -35,7 +35,7 @@ module ClassifyNews
     @errors = []
     
     @import = Import.find_by(id:params[:import_id])
-    request.xhr? ? @import.delay.classify! : do_import_classify
+    request.xhr? && @import.respond_to?(:delay) ? @import.delay.classify! : do_import_classify
 
     respond_to do |format|
         format.html {render "import_classify"}

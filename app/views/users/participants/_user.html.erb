@@ -1,0 +1,18 @@
+<div class="oli">
+	<div class="user">
+	<div class="oprofile" <% unless color.nil? %>style="border-left:solid 6px <%= color %>;"<% end %>>
+		<%= link_to(user.username, user) %>
+		<% unless msg_count_range.nil? %>
+		<div class="odata" data-value="<%= user.quantity_score room %>">
+			<div style="background:green;width:<%= user.quantity_score(room,msg_count_range) %>%;height:3px;">
+			</div>
+<% if false %>
+			[<%= (user.quantity_score(room,nil)*100).round(2) %> ]
+		[<%= msg_count_range.nil? ?  (user.quantity_score(room,msg_count_range)*100).round(2) :  user.quantity_score(room,msg_count_range) %>]
+<% end %>
+		</div>
+		<% end %>
+	</div>
+	
+	</div>
+</div>

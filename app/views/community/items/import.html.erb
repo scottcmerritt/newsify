@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-7 py-2 images-xlg">
-		<%= render partial: "items/parts/header",locals: {header_link: item_path(@item)} %>
+		<%= render partial: "community/items/parts/header",locals: {header_link: newsify.item_path(@item)} %>
 		<% unless params[:save] %>
 		<form method="get" action="">
 			<input type="hidden" name="save" value="1">

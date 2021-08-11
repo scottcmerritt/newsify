@@ -140,9 +140,6 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
       t.datetime "updated_at"
     end
 
-
-
-
     create_table "source_topics", force: :cascade do |t|
       t.bigint "source_id"
       t.bigint "item_id"
@@ -154,6 +151,8 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
       t.bigint "approvedby"
       t.text "approvedby_guid"
       t.decimal "score", precision: 5, scale: 4
+      t.boolean "category", default: false
+      t.integer "classifier"
       t.index ["item_id"], name: "idx_16733_source_topics_item_id_ix"
       t.index ["source_id"], name: "idx_16733_source_topics_source_id_ix"
     end

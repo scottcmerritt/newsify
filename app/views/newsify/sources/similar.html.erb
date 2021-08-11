@@ -34,7 +34,7 @@
 		
 		<%= paginate @sources if false %>
 		<% @sources.each do |source| %>
-			<%= render partial: "newsify/sources/source2",locals: {source: source, show: {similar_count: true}} %>
+			<%= render partial: "newsify/sources/source",locals: {source: source, show: {similar_count: true}} %>
 		<% end %>
 	<% end %>
 
@@ -67,7 +67,7 @@
 	<% else %>
 	<h4>Grouped (<%= @grouped.total_count %>)</h4>
 	<% @grouped.each do |source| %>
-	<%= render partial: "newsify/sources/source2", locals: {source:source} %>
+	<%= render partial: "newsify/sources/source", locals: {source:source} %>
 	<% end %>
 	<% end %>
 	</div>
