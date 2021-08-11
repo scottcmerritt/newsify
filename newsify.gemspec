@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "diffy"
   spec.add_dependency "custom_sort"
+  spec.add_dependency "sortify" #, :git => 'git://github.com/scottcmerritt/sortify.git', :branch=> "main"
   spec.add_dependency "wikipedia"
   spec.add_dependency "wikipedia-client"
 end
