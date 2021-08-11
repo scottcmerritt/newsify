@@ -1,6 +1,7 @@
 module Newsify
 	class ItemsController < ApplicationController
-		require "custom_sort"
+		require "custom_sort" #phasing out
+		require "sortify"
 
 		include Newsify::NewsGeneral, Community::LabeledData #, RoomUtility
 		before_action :get_links

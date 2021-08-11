@@ -1,6 +1,7 @@
 module Newsify
   class SourcesController < ApplicationController
-    require "custom_sort"
+    require "custom_sort" #phasing out
+    require "sortify"
     include Newsify::ClassifyNews, Newsify::NewsGeneral
     include Community::LabeledData
 
