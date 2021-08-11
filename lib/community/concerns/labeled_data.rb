@@ -79,7 +79,8 @@ module Community
 	    end
 
 	    def setup_time_decay
-	    	require 'custom_sort'
+	    	require 'custom_sort' # phasing out
+	    	require 'sortify'
 	       # recency = 0 = High, Med, Low, None
 
 	       if params[:recency]
