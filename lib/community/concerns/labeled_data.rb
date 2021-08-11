@@ -46,12 +46,12 @@ module Community
 	#      @labeled = @labeled.order("#{order_text.nil? ? @order_text : order_text} #{@sort_order}")
 	      query_name = @no_join ? "nojoin" : (@label == "blended" ? "blended" : "labeled")
 
-	      @labeled = ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3" ? @labeled : @labeled.customsort(query_name,label: @label.nil? ? nil : Arel.sql(@label),recency_key: @recent_relevance,sort_order: @sort_order.nil? ? nil : Arel.sql(@sort_order))
+	      @labeled = ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3" ? @labeled : @labeled.sortify(query_name,label: @label.nil? ? nil : Arel.sql(@label),recency_key: @recent_relevance,sort_order: @sort_order.nil? ? nil : Arel.sql(@sort_order))
 	      
 	      #if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3"
 	      #	sqlite_order_by
 	      #else
-		    #  @labeled = @labeled.customsort(query_name,label: @label,recency_key: @recent_relevance,sort_order: @sort_order)
+		    #  @labeled = @labeled.sortify(query_name,label: @label,recency_key: @recent_relevance,sort_order: @sort_order)
 		    #end
 	      @labeled = @labeled.page(params[:page])
 	    end
@@ -90,7 +90,7 @@ module Community
 	        end
 	#      @recent_relevance = params[:recency] ? params[:recency].to_i :  2 
 
-	      @time_decay_text = CustomSort::SortFields.time_decay_adjusted("sources",@recent_relevance)
+	      @time_decay_text = Sortify::SortFields.time_decay_adjusted("sources",@recent_relevance)
 
 	    end
 
