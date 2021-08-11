@@ -46,7 +46,7 @@ module Community
 	#      @labeled = @labeled.order("#{order_text.nil? ? @order_text : order_text} #{@sort_order}")
 	      query_name = @no_join ? "nojoin" : (@label == "blended" ? "blended" : "labeled")
 
-	      @labeled = ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3" ? @labeled : @labeled.customsort(query_name,label: @label,recency_key: @recent_relevance,sort_order: @sort_order)
+	      @labeled = ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3" ? @labeled : @labeled.customsort(query_name,label: Arel.sql(@label),recency_key: @recent_relevance,sort_order: Arel.sql(@sort_order))
 	      
 	      #if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "sqlite3"
 	      #	sqlite_order_by
