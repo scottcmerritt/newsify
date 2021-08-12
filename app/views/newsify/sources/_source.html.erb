@@ -1,9 +1,10 @@
 <% show_default = {votes:true,moderation:true,scores:false,interesting:false,added_by:true,similar_count:true} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
+<% show_count = (params[:debug] && is_admin?) %>
 <div source-id="<%= source.id %>" class="source summaryItem oliWrap oli oprofile border mb-2 p-0 posr d-flex flex-column">
 	
 	<div class="topRow">
-		<%= render partial: "community/votes/main", locals: {object: source, user: current_user, icon_colors: ["text-success","text-secondary"]} if show[:votes] && !current_user.nil? rescue tag.div("[Voting not enabled") %>
+		<%= render partial: "community/votes/main", locals: {show_count:show_count,object: source, user: current_user, icon_colors: ["text-success","text-secondary"]} if show[:votes] && !current_user.nil? rescue tag.div("[Voting not enabled") %>
 
 		<div class="oname d-flex bg-white p-1 px-2">
 			<span class="d-flex m-1 me-2 mt-2">
@@ -46,12 +47,10 @@
 				</div>
 				<div class="col-5 text-right text-end">
 					<div class="bg-light">
-						<% begin %>
+					<% begin %>
 					<%= render partial: "community/votes/moderation", locals: {object: source, user: current_user,labels:Community::Voting::VOTESCOPE_LABELS} if show[:moderation] && !current_user.nil? %>
 					<% rescue Exception => e %>
 					ERROR: <%= e %>
-
-
 					<% end %>
 					</div>
 
@@ -64,7 +63,7 @@
 		<% if show[:interesting] && !current_user.nil? %>
 
 		<div class="justify-content-center p-1 px-3 border-top">
-		<%= render partial: "community/votes/up_down_vote", locals: {object: source, otype: @otype.singularize, vote_scope: Community::Voting::VOTESCOPE_INTERESTING,icons: {up: "heart",down:"heart-broken"}, user: current_user, show_count: false,label:"Interested?",size:"lg"} rescue "Error:voting" %>
+		<%= render partial: "community/votes/up_down_vote", locals: {show_count:show_count,object: source, otype: @otype.singularize, vote_scope: Community::Voting::VOTESCOPE_INTERESTING,icons: {up: "heart",down:"heart-broken"}, user: current_user, show_count: false,label:"Interested?",size:"lg"} rescue "Error:voting" %>
 		</div>
 		<% end %>
 

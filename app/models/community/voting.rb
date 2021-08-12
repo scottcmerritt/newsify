@@ -105,8 +105,6 @@ module Community
 
 			process_room_message(vote_up,add_points) if defined?(RoomMessage) && @vote_target.is_a?(RoomMessage)
 
-
-
 			if current_user.respond_to?(:add_points)
 				current_user.add_points(1, category: 'equity-eligible')
 				current_user.badge_adder(add: badge_name)

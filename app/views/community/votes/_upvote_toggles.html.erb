@@ -6,17 +6,16 @@
 <% labels = {} if local_assigns[:labels].nil? %>
 <% with_label = true if local_assigns[:with_label].nil? %>
 <% vui = "toggle" if local_assigns[:vui].nil? %>
+<% show_count = false if local_assigns[:show_count].nil? %>
 <div class="<%= wrap_css %>">
 <% vote_scopes.each do |vote_scope| %>
 	<div class="d-inline-block">
 	<% if only_if_set && (!vote.nil? && (vote.vote_scope == vote_scope)) %>
-		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label}) %>
+		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label,show_count:show_count}) %>
 	<% elsif !only_if_set %>
-		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label}) %>
+		<%= render partial: "community/votes/upvote_toggle",locals: local_assigns.merge({vui:vui,labels:labels,vote_scope: vote_scope, otype: otype, user: user,wrap_css:(only_if_set ? "fsz6 d-inline-block p-0 " : nil),with_label:with_label,show_count:show_count}) %>
 	<% end %>
 	<%= tag.div object.get_up_votes(vote_scope:vote_scope).count, class: "fs-8 text-center" if is_admin? && params[:counts] %>
 	</div>
-
 <% end %>
-
 </div>

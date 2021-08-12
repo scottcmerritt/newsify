@@ -1,3 +1,4 @@
+[recency: <%= @recent_relevance %>]
 <h2 class="d-flex align-items-center justify-content-between"><%= ENV['NEWS_APP_NAME'] || 'Custom NEWS site' %>
 	<div class="d-flex align-items-center fs-6">
 		<span class="fs-7">Feeds</span> 
@@ -137,5 +138,8 @@
 
 
 </form>
-
+<% begin %>
 <%= render partial: "newsify/sources/list", locals: {data: @labeled} %>
+<% rescue Exception => ex %>
+<%= tag.div ex, class: "border p-1" %>
+<% end %>

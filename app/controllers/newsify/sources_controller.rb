@@ -53,6 +53,17 @@ module Newsify
         @sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
         @sort_order = "DESC"
 
+
+        setup_label_sort
+        setup_time_decay
+        @js_url = "/labeled/sources/#{@label}.js"
+
+        #Source.where("title = ?","Dated test article").destroy_all
+
+        setup_labeled_data
+        #add_friend_filter
+        add_order_by
+=begin
         @label = (@mod_labels+@labels).include?(params[:label]) ? params[:label] : nil
 
         @order_text = @sort_by[0]
@@ -62,6 +73,7 @@ module Newsify
         @labeled = Source.joins("LEFT JOIN vote_caches ON vote_caches.resource_id = sources.id")
         .where("vote_caches.resource_type = ?","Newsify::Source")
         .order("#{@order_text} #{@sort_order}").page(params[:page]).per(10)
+=end
       end
       render "index"
     end
