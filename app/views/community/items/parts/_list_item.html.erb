@@ -13,7 +13,7 @@
 	</div>
 
 <div class="bg-white p-1 d-flex align-items-center">
-	<%= render partial: "community/items/parts/connection", locals: {item:item,wrap: false,span_css:"mx-1 fsz3"} %>
+	<%= render partial: "community/items/parts/connection", locals: {item:item,wrap: false,span_css:"mx-1 fsz3"} unless current_user.nil? %>
 	<%= link_to item.oname, newsify.item_path(item) %>
 
 	<div class="ms-auto">

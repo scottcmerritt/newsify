@@ -19,7 +19,7 @@
 <h4 class="bg-white border-bottom p-2 my-1 d-flex align-items-center justify-content-between">
 	<span>
 	<% begin %>
-	<%= render partial: "community/items/parts/connection", locals: {item: @source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} %>
+	<%= render partial: "community/items/parts/connection", locals: {item: @source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} unless current_user.nil? %>
 	<% rescue Exception => e %>
 	<%= e %>
 	<% end %>

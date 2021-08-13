@@ -10,7 +10,7 @@
 
 	<div class="ms-auto ml-auto d-flex align-items-center fs-6">
 		<% begin %>
-		<%= render partial: "community/items/parts/connection", locals: {wrap: false,span_css:"mx-1 fs-4"} %>
+		<%= render partial: "community/items/parts/connection", locals: {wrap: false,span_css:"mx-1 fs-4"} unless current_user.nil? %>
 		<% rescue Exception => e %>
 		<%= e %>
 		<% end %>

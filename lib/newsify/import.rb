@@ -91,7 +91,7 @@ module Newsify
 	      # this line works if uncommented
 	      #url = 'https://newsapi.org/v2/everything?q=bitcoin&from=2019-02-20&sortBy=popularity&language=en&page=1&apiKey=2866f6092de941d892f46a570d821daa'
 
-	      logger.debug "NEWS_FROM_API"
+	      logger.debug "NEWS_FROM_API" unless logger.nil?
 	      logger.debug url unless logger.nil?
 
 			req = URI.open(url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
@@ -181,7 +181,7 @@ module Newsify
 			  	end
 			end
 
-			result = {:sources=>sources,:import_count=>imported["articles"].length,:imported=>imported,:pages_retrieved=>pages_retrieved}
+			result = {:object=>import,:sources=>sources,:import_count=>imported["articles"].length,:imported=>imported,:pages_retrieved=>pages_retrieved}
 			return result
 
 
