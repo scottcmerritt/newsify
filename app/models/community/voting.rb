@@ -87,7 +87,7 @@ module Community
 			@icon_colors = ["text-success","text-secondary"]
 			# optionally add vote_scope, :vote_scope => 'rank', :vote_scope => 'spam'
 
-			logger.debug "OTYPE: #{params[:otype]}, #{params[:oid]}"
+			logger.debug "OTYPE: #{params[:otype]}, #{params[:oid]}" unless logger.nil?
 			#@vote_target = Community::Preview.get(params[:otype],params[:oid],is_admin?)
 			
 			
@@ -155,12 +155,12 @@ module Community
 		def process_vote_audit
 			# added propagation to the user_audit object
 			
-			logger.debug "CHANGED VOTEAUDIT"
+			logger.debug "CHANGED VOTEAUDIT" unless logger.nil?
 			voter = @vote_target.vote.voter
 			@chained_target = voter if (!voter.nil? && (voter != current_user))
-			logger.debug @chained_target.as_json
-			logger.debug "IS A USER" if voter.is_a?(User)
-			logger.debug "AFTER"
+			logger.debug @chained_target.as_json unless logger.nil?
+			logger.debug "IS A USER" if !logger.nil? && voter.is_a?(User)
+			logger.debug "AFTER" unless logger.nil?
 		end
 
 		def process_user_conversation
