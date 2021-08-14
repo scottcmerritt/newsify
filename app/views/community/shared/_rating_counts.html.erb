@@ -1,0 +1,86 @@
+<% points = current_user.respond_to?(:points_by_category) ? current_user.points_by_category : nil %>
+<% within_hrs = params[:within] && params[:within].to_i > 0 && params[:within].to_i <= 240 ? params[:within].to_i : 12 %>
+
+<% otype = @otype == "feed" ? "source" : @otype %>
+
+<div class="container bg-white border border-2 rounded my-1">
+	<div class="row border-bottom fw-bold font-weight-bold fs-6 text-dark">
+		<div class="col-5">
+			<div class="d-flex flex-wrap align-items-center">
+			<div>Within <%= within_hrs %> hours</div>
+
+			<div class="mx-1 text-muted ms-3 fs-7">
+				<%= tag.span current_user.rated_within(klass, within_hrs), class: "fs-6 fw-bold text-primary" %> <%= otype ? otype.pluralize : klass.name.pluralize %> rated <span class="fw-bold fs-7 text-primary"><%= current_user.ratings_within(klass, within_hrs) %></span> times
+			</div>
+
+			</div>
+		</div>
+		<div class="col-5">
+			Total
+		</div>
+		<div class="col-2 text-center">
+			<% if current_user.respond_to?(:points) %>''
+			Eligibility for equity
+			<% end %>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-5">
+			<b>Interesting</b>
+			<i class="fa fa-arrow-up text-success px-1 fsz4"></i> <%= current_user.ratings_up_votes klass,within_hrs,"interesting" %><i class="fa fa-arrow-down text-danger px-1 fsz4"></i> <%= current_user.ratings_down_votes klass,within_hrs,"interesting" %>
+			<div class="row">
+				<div class="col-6">
+					<%= tag.div "#{@unrated_by_me.count} available", class: "border text-dark badge bg-light badge-light p-1" unless @unrated_by_me.nil? %>
+				</div>
+				<div class="col-6">
+					
+				</div>
+			</div>
+
+		</div>
+		<% if false %>
+		<div class="col-3">
+			<% unless @feed_types.nil? %>
+			<div class="suggester dropdown show mt-1">
+				  <a class="btn btn-sm btn-warning dropdown-toggle font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				    <%= icon_text "Feed type", "list" %>
+				  </a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			    <% @feed_types.each do |link| %>
+			    <%= link_to icon_text(link.title,link.icon_css),feed_start_path({query:link.title,otype:link.otype,format:"js"}), class: "dropdown-item pl-2", remote:false %>
+			    <% end %>
+				</div>
+			</div>
+			<% end %>	
+		</div>
+		<% end %>
+		<div class="col-5">
+			<div class="mb-1">
+			<% if current_user.respond_to?(:rated) %>
+					<%= tag.span current_user.rated(klass), class: "fs-5 fw-bold" %> <%= otype ? otype.pluralize : klass.name.pluralize %> rated <span class="fw-bold fs-6"><%= current_user.ratings klass %></span> times
+			<% end %>
+			<div class="fs-7">
+					<%= tag.span raw("#{tag.span(@unrated.count, class:"fw-bold text-dark")} unrated"), class: "text-muted me-1" unless @unrated.nil? %>
+
+					<%= tag.div "Points #{tag.span(num_format(points[:total],0))}", class: "fs-7 mx-1badge bg-primary badge-primary" unless points.nil? %>
+			</div>
+			</div>
+		</div>
+		<div class="col-2">
+			<% equity_eligible = current_user.respond_to?(:points) ? current_user.points(category:"equity-eligible") : nil %>
+			<% if !equity_eligible.nil? && equity_eligible > 0 %>
+			<div class="text-center <% if equity_eligible % 10 == 0 %>animate__animated animate__bounce animate__faster animate__repeat-2<% end %> font-weight-bold fsz2">
+			<%= num_format equity_eligible,0 %>
+			</div>
+			<% end %>
+			<% if false %>
+			<div>
+			<% points[:categories].each do |info| %>
+			<div><%= info[:name] %>: <%= info[:points] %></div>
+			<% end %>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

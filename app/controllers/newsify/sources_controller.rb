@@ -13,6 +13,7 @@ module Newsify
 
   before_action :get_links
   before_action :set_otype
+  before_action :load_feed_report, only: [:index,:labeled,:mine]
 
   skip_before_action :verify_authenticity_token, only: [:index,:labeled]
 
@@ -46,7 +47,7 @@ module Newsify
       @otype = "source"
       if params[:label] == "saved"
         @label = "saved"
-        @labeled =  current_user.favorited_by_type('Newsify::Source').page(params[:page])
+        @labeled =  current_user.favorited_by_type(target_type).page(params[:page])
       else
         @sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
         @sort_order = "DESC"
@@ -147,6 +148,10 @@ module Newsify
 
     private
 
+    def target_type
+      "Newsify::Source"
+    end
+    
     def set_otype
       @otype = "sources"
     end
@@ -154,7 +159,6 @@ module Newsify
     def set_source
       @source = Source.find_by(id:params[:id])
     end
-
 
     def setup_pager
       @page = params[:page] ? params[:page].to_i : 1
@@ -192,8 +196,54 @@ module Newsify
 
     end
 
+
+
+  # MOVE THIS STUFF ELSEWHERE (organize it)
+
+    def load_feed_report
+      @unrated_by_me = unrated_by_me
+      @unrated = unrated
+    end
+
+    def recent_votes within_days: 7
+      #this array could be massive
+       ActsAsVotable::Vote.where("voter_type = ? AND voter_id = ? AND votable_type = ? AND created_at > ?","User",current_user.id,target_type,within_days.days.ago).pluck(:votable_id)
+    end
+
+    def custom_unrated_by_me_guessed user #, label = nil, recency_key = 0
+      
+      guessed_interest = GuessScope.where(user_id:user.id,target_type:target_type,accurate:nil)
+      .order("score DESC").limit(100)
+      .where("score > ?",5)
+      .pluck(:target_id)
+
+      Source.select("sources.*")
+      .where(id: guessed_interest)
+      .where.not(id: recent_votes)
+    end
+
+    def custom_unrated_by_me query_name = :blended, label = nil, recency_key = 0
+      Source.select("sources.*").customsort(query_name,label: nil,recency_key: recency_key)
+      .where.not(id: recent_votes)
+    end
+
+    def recent_guesses target_ids, query_name = :blended, label = nil, recency_key = 0
+      Source.select("sources.*").customsort(query_name,label: nil,recency_key: recency_key)
+      .where(id:target_ids)
+      #.where.not(id: recent_votes)
+    end
+
+    def unrated_by_me within_days: 2, votes_within_days: 4
+      @data = Source.where.not(id: recent_votes(within_days:votes_within_days))
+      .where("created_at > ?",within_days.days.ago)
+    end
+
+    def unrated within_days: 2
+      @data = Source.joins("LEFT OUTER JOIN votes ON votable_id = sources.id AND votable_type = '#{target_type}'")
+      .where("votable_id is NULL")
+      .where("sources.created_at > ?",within_days.days.ago)
+    end
+
+
   end
-
- 
-
 end

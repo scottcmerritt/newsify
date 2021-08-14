@@ -1,0 +1,207 @@
+<style>
+	.source {height:220px;overflow: hidden;}
+	.sources {height:400px; overflow-y: scroll;}
+	.feedbackReport {height:80px;}
+	#debugger {display:none;}
+</style>
+<script>
+	var voteOnOne = false //used for voting 1 at a time
+	var queueQuantity = 0
+	var activeEl = null
+	
+	// what is voted if ignored?
+	var defaultOtype = 'source' //TODO: get this from sourceWrap
+	var defaultVoteScope = 'interesting';
+
+(function() {
+//jQuery(document).ready(function($) {
+$( document ).ready(function() {	
+	alert('loaded')
+	//$(".source").hide()
+	$(".sourceWrap").eq(0).removeClass("d-none")
+	bindSourceFeedbackList()
+
+	$(".sourceWrap").hover(function(e) {
+		activeEl = $(this)
+		$("#debugger .active").html("<div>Hovering over " + activeEl.attr('source-id')+"</div>")
+		votePrevious(activeEl)
+
+	},
+	function(e) {
+
+
+	})
+	$(".sources").on('scroll',function(e) {
+
+
+
+		//$("#debugger").html(els.join(", "))
+
+	})
+
+})
+
+
+})
+
+function votePrevious(el) {
+	let found = false
+	let targetSourceId = el.attr('source-id')
+	$(".sourceWrap").each(function(index,element) {
+		let sourceId = $(element).attr('source-id')
+		found = found || (sourceId == targetSourceId)
+		if(!found) {
+			if(!$(element).hasClass('rated')) {
+				$("#debugger .log").prepend(sourceId + "," )
+				let href = `/vote/${defaultOtype}/${sourceId}/down/${defaultVoteScope}`
+				let voteEl = getVoteElement(element,'.voteBtn',href)
+				$(element).addClass('rated')
+				doVote(voteEl,defaultOtype,sourceId)	
+			}
+		}
+	})
+}
+
+function getVoteElement(element,cssSelector,href) {
+	var foundEl = undefined
+	$(element).find(cssSelector).each(function(index,el) {
+		if($(el).attr('href').split("?")[0] == href)
+			return foundEl = el
+	})
+	return foundEl
+}
+
+function doVote(el,otype,oid) {
+	let url = $(el).attr('href')
+	$.ajax({ url: url,
+	        type: 'POST',
+	        dataType: 'script',
+	        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+	        data: {},
+	        success: function(response) {
+	        	processVote(otype,oid)
+	        }
+	    });
+}
+
+//var el = $('tr:last').get(0);
+//var holder = $('table').get(0);
+//var isVisible = isScrolledIntoView(el, holder);
+
+
+function isElementVisible (el, holder) {
+  holder = holder || document.body
+  const { top, bottom, height } = el.getBoundingClientRect()
+  const holderRect = holder.getBoundingClientRect()
+
+  return top <= holderRect.top
+    ? holderRect.top - top <= height
+    : bottom - holderRect.bottom <= height
+}
+
+function processVote(otype,oid,reportDelay) {
+		let articlesLeft = 0
+		if(voteOnOne) {
+			wrap.remove() //wrap.closest('.sourceWrap').remove()
+			
+			$(".sourceWrap").eq(0).removeClass('d-none')
+			articlesLeft = $(".sourceWrap").length	
+		}
+		else {
+			$(".sourceWrap").each(function(index,element) {
+				if(!$(element).hasClass('rated')) {
+					articlesLeft+=1
+				}
+			})
+		}
+
+		if(articlesLeft == queueQuantity)
+		{
+			//setTimeout(()=>{getMoreSources(false,queueQuantity)},200)
+		}
+		if(articlesLeft == 0)
+		{
+			
+		}
+		decrementFeedCount()
+		setTimeout(()=>{updateFeedbackReport({otype:otype,oid:oid})},reportDelay)
+}
+	
+	function bindSourceFeedbackList() {
+		$(".voteBtn").on('click',function() {
+
+			let wrap = $(this).closest('.sourceWrap')
+			let oid = wrap.attr('source-id')
+			
+			$("#debugger .log").html("Vote Btn clicked " + oid)
+			wrap.addClass('rated')
+
+			processVote('source',oid,300)
+//			setTimeout(()=>{updateFeedbackReport({otype:'source',oid:oid})},400)
+		})
+		$(".suggester .dropdown-item").on('click',function(e) {
+			e.preventDefault()
+			alert('clicked')
+
+		})
+	}
+
+	function decrementFeedCount() {
+		let feedCountEl = $("#feedCount")
+		let count = parseInt(feedCountEl.text())
+		feedCountEl.text(count-1)
+	}
+
+
+	function updateFeedbackReport(data) {
+		var url = '/start/report/feed';
+		$.ajax({ url: url,
+	        type: 'GET',
+	        dataType: 'html',
+	        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+	        data: data,
+	        success: function(response) {
+	      		$(".feedbackReport").html(response);
+	        }
+	    });
+	}
+	function getMoreSources(append,offset) {
+		var url = '/start/feed.js';
+		$.ajax({ url: url,
+	        type: 'GET',
+	        dataType: 'html',
+	        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+	        data: {more: 1,offset: offset, append: append},
+	        success: function(response) {
+	        	if(append) {
+	        		$(".sources").append(response)
+	        	}
+	        	else {
+	        		//$('.sources').removeClass('animate__animated').removeClass('animate__fadeInRight')
+
+	        		$('.sources').html(response)
+	        		//$('.sources').addClass('animate__animated').addClass('animate__fadeInRight')
+	        	}
+	      		setTimeout(()=>{bindSourceFeedbackList()},200)
+	        }
+	    });
+
+	}
+
+</script>
+<div class="feedbackReport">
+	<%= render partial: "/community/shared/rating_counts", locals: {klass: @data.klass} %>
+</div>
+<div id="debugger">
+	<div class="active"></div>
+	<div class="log"></div>
+
+</div>
+<% if current_user.respond_to?(:badges_unique) %>
+<div class="badges">
+	<%= render partial: "/community/shared/badges", locals: {klass: @data.klass} %>
+</div>
+<% end %>
+<div class="sources">
+	<%= render partial: "/community/feed/sources", locals: {data: @data, otype: @otype, show_all: true} %>
+</div>

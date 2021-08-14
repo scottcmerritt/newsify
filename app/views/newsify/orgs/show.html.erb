@@ -1,4 +1,8 @@
-<h5 class="d-flex">Organization <%= link_to "Back", main_app.orgs_path, class: "ms-auto ml-auto" %> </h5>
+<script>
+alert('test')
+alert($('#orgHead').html())
+</script>
+<h5 id="orgHead" class="d-flex">Organization <%= link_to "Back", main_app.orgs_path, class: "ms-auto ml-auto" %> </h5>
 <%= render partial: "community/orgs/org_header", locals: {org:@org} %>
 <div class="row">
 	<div class="col-6">

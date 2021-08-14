@@ -6,6 +6,33 @@ module Newsify
 		before_action :load_groups, only: [:index,:networks]
 		before_action :load_permissions, only: [:show,:join]
 
+		def new
+			@org = Community::Org.new
+		end
+		
+
+		def create
+			@org = Community::Org.new permitted_parameters
+
+			@org.createdby = current_user.id
+
+			if @org.save
+
+				 flash[:success] = "Org #{@org.name} was created successfully"
+	      
+			      #@user = User.find(1)
+			      #RoomChannel.broadcast_to @user, @user
+
+			      if permitted_parameters[:is_seller] == "1"
+			      	redirect_to controller:"surge_org",action:"seller_setup",org_id:@org.id, welcome:true
+			      else
+			      	redirect_to @org
+			      end
+			else
+				render :new
+			end
+		end
+
 
 		def index
 			@page = params[:page] ? params[:page].to_i : 1

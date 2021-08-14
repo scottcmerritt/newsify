@@ -27,8 +27,24 @@ module Newsify
     end
 
     def admin
+
       redirect_to root_path if current_user.nil?
 
+        # GET /info/sources
+  
+      within_days = 2
+
+      @info = {:rated=>current_user.rated(Source),:ratings=>current_user.ratings(Source)}
+      @info[:raters] = ActsAsVotable::Vote.select("voter_id").where("voter_type = ?","User").distinct(:voter_id).count
+      @info[:sources] = Source.count
+      @info[:sources_recent] = Source.where("created_at > ?",within_days.days.ago).count
+
+      @info[:sources_grouped] = Source.where("NOT group_id is null").count
+      @info[:sources_recent_grouped] = Source.where("created_at > ? AND NOT group_id is null",within_days.days.ago).count
+      @info[:filter] = {within_days: within_days}
+
+
+  
     end
 
     def calc_fame

@@ -1,6 +1,6 @@
 <% data = local_assigns[:data] %>
+<%= render partial: "/community/shared/rating_counts", locals: {klass: data.klass} %>
 <%= my_paginate data, page: @page %>
-
 <% data.each do |row| %>
 <div class="mb-2">
 <%= link_to row.title, newsify.source_path(row) if false %>

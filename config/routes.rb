@@ -8,6 +8,8 @@ Newsify::Engine.routes.draw do
 	match 'admin' => 'news#admin', :as=> :newsify_admin, :via=>:get
 	match 'search' => 'news#search', :as=> :newsify_search, :via=>:get
 
+
+
 	match 'admin/calc/fame' => 'news#calc_fame', :as=> :newsify_calc_fame, :via=>:get
 	match 'admin/calc/interests' => 'news#calc_interests', :as=> :newsify_calc_interests, :via=>:get
 
@@ -15,6 +17,7 @@ Newsify::Engine.routes.draw do
   	match '/profile(/:id)/interests' => 'interests#interests', :as => :profile_interests, :via => :get, order: "desc"
   	match '/profile(/:id)/disinterests' => 'interests#interests', :as => :profile_disinterests, :via => :get
   	
+  	match "/start/scroll/feed" => "feed#scroll", :as => :feed_scroll, :via=>[:get,:post]
   	match "/feed" => "feed#mine", :as => :feed, :via=>:get
   	match "/feed/(:label)" => "feed#labeled", :as => :feed_labeled, :via=>:get
 	

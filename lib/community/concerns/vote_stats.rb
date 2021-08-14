@@ -49,6 +49,7 @@ module Community
       self.find_votes_for_class(Community::VoteAudit).count
     end
 
+    # total ratings (some objects can be rated multiple times, i.e interesting + quality + funny)
     def ratings klass
       self.find_votes_for_class(klass).count
     end
@@ -57,6 +58,7 @@ module Community
       self.find_votes_for_class(klass,filter).count
     end
 
+    # distinct OBJECTS rated
     def rated klass
       self.find_votes_for_class(klass).select("votable_id").distinct.count
     end

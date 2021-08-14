@@ -1,0 +1,14 @@
+<% show_first = true if local_assigns[:show_first].nil? %>
+<% show_all =false if local_assigns[:show_all].nil? %>
+<% animation_css = "animate__animated animate__fadeInRight" %>
+<div><span id="feedCount"><%= data.total_count %></span> results <b><%= @feed_type %></b></div>
+<% data.each_with_index do |source,index| %>
+<div class="sourceWrap card my-3 <%= animation_css if index == 0 %> <% if !show_all && (show_first || index>0) %>d-none<% end %>" source-id="<%= source.id %>">
+	<div class="card-body">
+		<%= render partial: "newsify/sources/source", locals: {source: source,show:{added_by:false,votes:false,moderation:false,scores:false,interesting:false,similar_count:true,classify_button:false}} %>
+	</div>
+	<div class="card-footer justify-content-center">
+	<%= render partial: "community/votes/up_down_vote", locals: {object: source, otype: otype.singularize, vote_scope: Community::Voting::VOTESCOPE_INTERESTING,icons: {up: "check-circle",down:"ban"}, user: current_user, show_count: false,label:"Interested?",size:"lg", wrap_class: "justify-content-center"} %>
+	</div>
+</div>
+<% end %>
