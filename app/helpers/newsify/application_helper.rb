@@ -37,14 +37,28 @@ module Newsify
       "badge #{active ? "badge-#{active_color}" : "badge-#{color} bg-#{color}"} border rounded #{tight ? 'mr-1' : 'mx-1'} #{size == 'sm' ? 'px-1' : 'p-2'}"
     end
 
-    def my_paginate data, page: 12, categories: false, label: nil
-      page = page.nil? ? 1 : page.to_i
+    def my_paginate data, page: 1, categories: false, label: nil
+      page = [1,"1",nil].include?(page) ? 1 : page.to_i
       if label
-        prev_page = newsify.items_labeled_path(page:page-1,label:label)
-        next_page = newsify.items_labeled_path(page:page+1,label:label)
+        if data.klass == Newsify::Source
+          prev_page = newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1}))
+          next_page = newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1}))
+        else
+          prev_page = newsify.items_labeled_path(page:page-1,label:label)
+          next_page = newsify.items_labeled_path(page:page+1,label:label)
+        end
       else
-        prev_page = categories ? newsify.categories_path(page:page-1) : newsify.items_path(page:page-1)
-        next_page = categories ? newsify.categories_path(page:page+1) : newsify.items_path(page:page+1)
+        if data.klass == Newsify::Summary
+          prev_page = categories ? newsify.categories_path(page:page-1) : newsify.summaries_path(page:page-1)
+          next_page = categories ? newsify.categories_path(page:page+1) : newsify.summaries_path(page:page+1)
+        elsif data.klass == Newsify::Source
+          prev_page = newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1})) 
+          next_page = newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1}))
+        else
+          prev_page = categories ? newsify.categories_path(page:page-1) : newsify.items_path(page:page-1)
+          next_page = categories ? newsify.categories_path(page:page+1) : newsify.items_path(page:page+1)
+        end
+
       end
       render(partial:"newsify/util/my_paginate", locals: {data: data, paths: {prev:prev_page,next:next_page}})
     end
@@ -79,6 +93,10 @@ module Newsify
       tag.div(tag.div(text)+tag.div("",style:"width:#{wd}%;height:#{meter_height};background-color:#{meter_color}"))
     end
 
-
+=begin
+    def news_paginate resources, params: nil
+      paginate resources, params: params #{controller: "newsify/summaries", action: "index", page: 1}
+    end
+=end
   end
 end

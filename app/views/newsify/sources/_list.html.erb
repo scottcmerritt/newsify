@@ -1,14 +1,5 @@
 <% data = local_assigns[:data] %>
-<% my_paginate_data = {
-	data:data,
-	paths:
-		{
-			prev: @label.nil? ? newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1})) : newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page-1})),
-			next: @label.nil? ? newsify.sources_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1})) : newsify.sources_labeled_path(request.parameters.except(:controller, :action, :id).merge({page:@page+1}))
-		}
-	} 
-%>
-<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
+<%= my_paginate data, page: @page %>
 
 <% data.each do |row| %>
 <div class="mb-2">
@@ -20,6 +11,4 @@
 <% end %>
 </div>
 <% end %>
-
-<%= render partial: "newsify/util/my_paginate", locals: my_paginate_data %>
-
+<%= my_paginate data, page: @page %>

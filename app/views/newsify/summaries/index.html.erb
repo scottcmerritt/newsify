@@ -1,8 +1,12 @@
 <div class="container">
 	<%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: newsify.summaries_path} %>
-	<%= paginate @summaries %>	
+	<% begin %>
 
-	<%= render partial: "community/shared/labels_nav", locals: {selected: @label} %>
+	<%= my_paginate @summaries, page: @page %>
+	<% rescue Exception => ex %>
+	<%= ex %>
+	<% end %>
+	<%= render partial: "community/shared/labels_nav", locals: {selected: @label} rescue "" %>
 
 <div class="summaries olist vertical">
 <% @summaries.each do |summary| %>
@@ -23,7 +27,7 @@
 	<div class="ml-3 bg-white mt-1">
 		<% summary.summary_sources.each do |summary_source| %>
 		<div class="px-2 py-1">
-			<%= link_to summary_source.source.title, newsify.source_path(summary_source.source) %>
+			<%= link_to summary_source.source.title, [newsify,summary_source.source] %>
 		</div>
 		<% end %>
 	</div>
@@ -34,5 +38,5 @@
 
 <% end %>
 </div>
-<%= paginate @summaries %>
+<%= paginate @summaries rescue "" %>
 </div>

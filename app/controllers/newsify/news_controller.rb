@@ -14,8 +14,11 @@ module Newsify
       @labeled = Source.select("sources.*")
       .where("lower(title) LIKE ?",prepped).page(@page)
 
+      @show_fields = {articles:true,children:true}
+      @items = Item.select("items.*")
+      .where("lower(name) LIKE ?",prepped).page(@page)    
 
-      render "/newsify/sources/index"
+      render "/newsify/shared/search"
 
     end
 

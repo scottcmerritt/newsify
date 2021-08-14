@@ -1,0 +1,15 @@
+<div class="row">
+	<div class="col-7">
+		<h4>News articles</h4>
+<% begin %>
+<%= render partial: "newsify/sources/list", locals: {data: @labeled} %>
+<% rescue Exception => ex %>
+<%= tag.div ex, class: "border p-1" %>
+<% end %>
+</div>
+<div class="col-5">
+<h4>Topics & categories</h4>
+<%= render partial: "community/items/list", locals: {data:@items,show:@show_fields} %>
+
+</div>
+</div>

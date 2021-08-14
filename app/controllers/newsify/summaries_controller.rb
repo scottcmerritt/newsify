@@ -11,6 +11,7 @@ class SummariesController < ApplicationController
   	#end
 
 	def index
+		@page = params[:page]
 		@room = Room.find_by(id:params[:room_id]) if defined?(Room)
 		@summaries = Summary.all
 		@query = "%#{params[:q]}%" if params[:q]

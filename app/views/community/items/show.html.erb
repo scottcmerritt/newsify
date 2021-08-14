@@ -66,6 +66,6 @@
 <%= render partial: "audio/demo", locals: {item: @item} rescue "[No audio]" %>
 
 <% unless @categories.nil? || @categories.length == 0 %>
-<h4>Categories</h4>
+<h4>Categories <%= tag.span @categories.total_count, class: "badge bg-dark text-light" %></h4>
 <%= render partial: "community/items/list", locals: {data:@categories,show:{articles:true}} rescue "[LIST ERROR]" %>
 <% end %>

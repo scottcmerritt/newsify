@@ -107,7 +107,7 @@ module Newsify
 	    @labeled = @labeled.where.not(itype:"CATEGORY") unless params[:itype]
 	    add_order_by
 
-	    @categories = Item.where(parent_id:@item.id,itype:"CATEGORY")
+	    @categories = Item.where(parent_id:@item.id,itype:"CATEGORY").page(params[:cpage])
 
 	  	preview_container = "#waveFormPreview"
 	    @audio_obj = {:id=>'tests',:rowIndex=>'Bottom',:usePreview=>true,:container=>preview_container,:audioUrl=>'https://meritocracy-me.s3-us-west-1.amazonaws.com/sounds/1077c2cd-efeb-4555-b7f9-d66a3234de05/GreatDivide.mp3'}
