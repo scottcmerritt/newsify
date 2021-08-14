@@ -17,8 +17,6 @@ module Newsify
   skip_before_action :verify_authenticity_token, only: [:index,:labeled]
 
 
-
-
     def index
       @labels =  ["saved"] + @labels
       #Newsify::Cache.set_obj "my_test_key", "hello"

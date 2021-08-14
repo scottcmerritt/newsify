@@ -52,3 +52,5 @@ require "newsify/news_manager"
 require "newsify/news_categories"
 require "newsify/entity_row"
 require "newsify/google_analyze"
+
+require "newsify/goog_news_categories"

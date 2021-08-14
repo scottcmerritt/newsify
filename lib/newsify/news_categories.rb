@@ -2,9 +2,13 @@ module Newsify
 	class NewsCategories
 		attr_reader :lines
 		def initialize opts = {}
-
 			parse_categories
 			#add_items top_level
+		end
+
+		def self.setup!
+			nc = NewsCategories.new
+			nc.top_level
 		end
 
 		def top_level
@@ -65,15 +69,16 @@ module Newsify
 		end
 
 		def parse_categories
-			@lines = []
+#			@lines = []
 			#file='import/news_categories.txt'
-			file='newsify/lib/import/news_categories.txt'
+#			file='newsify/lib/import/news_categories.txt'
 
-			f = File.open(file, "r")
-			f.each_line { |line|
-			  @lines.push line
-			}
-			f.close
+#			f = File.open(file, "r")
+#			f.each_line { |line|
+#			  @lines.push line
+#			}
+#			f.close
+			@lines = Newsify::GoogNewsCategories.read_to_array
 		end
 	end
 end
