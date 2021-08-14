@@ -95,7 +95,17 @@ module Newsify
         render "index"
     end
 
+    # recent sources, exclude grouped
+    def grouped
+      @sources = Source.unique_sources import_id: params[:import_id] ? params[:import_id].to_i : nil
+      @excluded = []
 
+      respond_to do |format|
+        format.html {render "grouped"} #{ render "/sounds/browse"}
+        format.js { render "grouped.js" }
+        format.json {render :json => {sources:@sources}}
+      end
+    end
 
     def show
       impression = impressionist(@source, "",{},{})

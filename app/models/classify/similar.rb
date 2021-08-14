@@ -43,13 +43,17 @@ module Classify
 	  		@rows = []
 		end
 
-		def self.group_similar! do_run=true,do_save=true
+		def self.group_similar! do_run=true,do_save=true,import_id=nil
 			similar = Similar.new({})
 	    	neww_group_ids = nil
 
 		    grouped_ids = Newsify::Source.where("created_at > ? AND is_group = ?",7.days.ago,true).pluck(:id)
-		    sources = Newsify::Source.where("(created_at > ? AND is_group = ?) OR id IN (?)",1.days.ago,false,grouped_ids)
-		    .order("created_at DESC")
+		    sources = Newsify::Source.where("((created_at > ? AND is_group = ?) OR id IN (?))",1.days.ago,false,grouped_ids)
+		    
+		    import_source_ids = Newsify::ImportSource.where(import_id:import_id).pluck(:source_id)
+		    sources = sources.or(Newsify::Source.where(id: import_source_ids)) unless import_id.nil?
+
+		    sources = sources.order("created_at DESC")
 
 		    if do_run || do_run == "1"
 			    similar.setup false, sources

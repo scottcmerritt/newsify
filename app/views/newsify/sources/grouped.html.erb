@@ -1,0 +1,18 @@
+<div><%= Newsify::Source.count %> sources</div>
+<div><%= @sources.length %> sources</div>
+<div><%= @excluded.length %> excluded</div>
+
+<% @sources.each do |source| %>
+	<div class="p-1 border m-1">
+		<div>
+		[<%= source.similar_sources.nil? ? 0 : source.similar_sources.count %>] <%= source.title %>
+		</div>
+		<% unless source.similar_sources.nil? %>
+		<div class="fs-7 my-1">
+			<% source.similar_sources.each do |similar_source| %>
+			<%= tag.div similar_source.title, class: "border-top my-1 ms-3" %>
+			<% end %>
+		</div>
+		<% end %>
+	</div>
+<% end %>

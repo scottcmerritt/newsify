@@ -1,14 +1,18 @@
 <% show_default = {votes:true,moderation:true,scores:false,interesting:false,added_by:true,similar_count:true} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
+<% title_fs = "fs-4" if local_assigns[:title_fs].nil? %> 
+<% details_fs = "fs-6" if local_assigns[:details_fs].nil? %>
+<% top_fs = "fs-6" if local_assigns[:top_fs].nil? %>
+<% btm_fs = "fs-6" if local_assigns[:btm_fs].nil? %>
 <% show_count = (params[:debug] && is_admin?) %>
 <div source-id="<%= source.id %>" class="source summaryItem oliWrap oli oprofile border mb-2 p-0 posr d-flex flex-column">
 	
-	<div class="topRow">
+	<div class="topRow <%= top_fs %>">
 		<%= render partial: "community/votes/main", locals: {show_count:show_count,object: source, user: current_user, icon_colors: ["text-success","text-secondary"]} if show[:votes] && !current_user.nil? rescue tag.div("[Voting not enabled") %>
 
 		<div class="oname d-flex bg-white p-1 px-2">
 			<span class="d-flex m-1 me-2 mt-2">
-		<%= render partial: "community/items/parts/connection", locals: {item: source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} unless current_user.nil?  %></span> <%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold fs-4 nodec" %>
+		<%= render partial: "community/items/parts/connection", locals: {item: source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} unless current_user.nil?  %></span> <%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold nodec #{title_fs}" %>
 
 		<%= tag.span source.created_at_wtime, style:"min-width:120px;", class:"text-end fs-7 ms-auto ml-auto text-secondary" %>
 
@@ -20,14 +24,14 @@
 	
 		<div class="row">
 			<% if source.urltoimage.blank? %>
-			<div class="col-12"><div class="px-2"><%= source.description %></div></div>
+			<div class="col-12"><div class="px-2 <%= details_fs %>"><%= source.description %></div></div>
 			<% else %>
 			<div class="col-sm-2 col-3"><img class="img-thumbnail m-1" src="<%= source.urltoimage %>"/></div>
-			<div class="col-sm-10 col-9"><%= source.description %></div>
+			<div class="col-sm-10 col-9 <%= details_fs %>"><%= source.description %></div>
 			<% end %>
 		</div>		
 
-		<div class="snapBtm w-100 bg-light d-flex flex-column border-top">
+		<div class="snapBtm w-100 bg-light d-flex flex-column border-top <%= btm_fs %>">
 			<div class="d-flex align-items-center">
 				<div class="col-5 bg-light d-flex align-items-center">
 				<% if show[:added_by] %>

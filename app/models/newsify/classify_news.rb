@@ -9,10 +9,8 @@ module ClassifyNews
 
   end
 
-
   def similar
-    @similar, @sources, @new_group_ids = Classify::Similar.group_similar! params[:run], params[:save]
-
+    @similar, @sources, @new_group_ids = Classify::Similar.group_similar! params[:run], params[:save], params[:import_id]
     @sources = @sources.page(params[:page]).per(10)
 
     # undoes grouping

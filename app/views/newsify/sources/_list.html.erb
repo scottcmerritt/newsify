@@ -14,7 +14,7 @@
 <div class="mb-2">
 <%= link_to row.title, newsify.source_path(row) if false %>
 <% begin %>
-<%= render partial: "newsify/sources/source", locals:{source:row,show: {:classify_button=>false}} %>
+<%= render partial: "newsify/sources/source", locals:{source:row, btm_fs:"fs-7", show: {:classify_button=>false}} %>
 <% rescue Exception => ex %>
 <%= tag.div ex, class: "border p-1" %>
 <% end %>

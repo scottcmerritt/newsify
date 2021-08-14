@@ -19,43 +19,48 @@
 <% end %>
 </div>
 <% unless @new_group_ids.nil? %>
-<div>New groups: <%= @new_group_ids %></div>
+<div><%= @new_group_ids.length %> new groups:</div>
+<%= tag.div @new_group_ids, class: "fs-7" %>
 <% end %>
 <div class="row">
-<div class="col-6">
+<div class="col-8">
 <% if @similar.nil? %>
 <%= tag.div "Classify::Similar not instantiated!", class: "alert alert-danger" %>
 <% else %>
 
-
+[similar_builder1]
 	<% if @similar.builder.nil? %>
 		<h4>Sources <%= @sources.length %></h4>
 		<%= render partial: "newsify/sources/list", locals: {data:@sources} if false %>
 		
 		<%= paginate @sources if false %>
 		<% @sources.each do |source| %>
-			<%= render partial: "newsify/sources/source",locals: {source: source, show: {similar_count: true}} %>
+			<%= render partial: "newsify/sources/source",locals: {source: source, title_fs:"fs-6",details_fs:"fs-7", top_fs: "fs-7", btm_fs: "fs-7", show: {similar_count: true}} %>
 		<% end %>
-	<% end %>
+	<% else %>
+		<% @similar.builder.rows.each do |row| %>
+		<div class="p-1 border-bottom my-2">
+			<div class="fs-7">
+				<%= tag.span row[:item].title, class: "fw-bold" %> 
+				<div class="text-muted fs-8">
+					<%= row[:pairs].length %>
+				</div>
+			</div>
 
-
-	<% unless @similar.builder.nil? %>
-	<% @similar.builder.rows.each do |row| %>
-	<div class="p-1 border-bottom">
-		<%= row[:item].title %> (<%= row[:pairs].length %>)
-		<% row[:pairs].each do |pair| %>
-		<div class="ml-3 pl-3 border-bottom fsz7">
-			<%= pair[:item].title %>
-			(<%= pair %>)
+			<% row[:pairs].each do |pair| %>
+			<div class="ml-3 pl-3 border-bottom fsz7 my-1">
+				<%= link_to pair[:item].title, newsify.source_path(pair[:item]), class: "fs-7" %>
+				<div class="fs-8 text-muted ms-3 ml-3 ps-3 pl-3"><%= pair %></div>
+			</div>
+			<% end %>
 		</div>
 		<% end %>
-	</div>
-	<% end %>
 	<% end %>
 
 <% end %>
 </div>
-<div class="col-6">
+<div class="col-4">
+	[similar_builder3]
 	<% if @source_groups.nil? %>
 	<%= tag.div "Source groups is nil", class: "alert alert-warning" %>
 	<% else %>
@@ -67,7 +72,7 @@
 	<% else %>
 	<h4>Grouped (<%= @grouped.total_count %>)</h4>
 	<% @grouped.each do |source| %>
-	<%= render partial: "newsify/sources/source", locals: {source:source} %>
+	<%= render partial: "newsify/sources/source", locals: {source:source,title_fs: "fs-6", btm_fs:"fs-7", show:{votes:false,moderation:false,interesting:false}} %>
 	<% end %>
 	<% end %>
 	</div>

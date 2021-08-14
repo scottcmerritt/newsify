@@ -35,6 +35,7 @@ Newsify::Engine.routes.draw do
 
 	match '/profile/:id' => 'news#profile', :as => :user, :via=>[:get]
 
+	match '/grouped/sources' => 'sources#grouped', :as => :sources_grouped, :via=>[:get,:post]
 	match '/similar/sources' => 'sources#similar', :as => :sources_similar, :via=>[:get,:post]
 	match '/import/sources' => 'sources#import', :as => :sources_import, :via=>[:get,:post]
 	match '/imported/sources' => 'sources#imported', :as => :sources_imported, :via=>[:get,:post]

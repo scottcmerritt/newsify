@@ -129,6 +129,20 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 		res
 	end
 
+	# includes unique sources
+	def self.unique_sources created_after: 24.hours.ago, import_id: nil
+
+		data = Source.where(id:SourceGroup.all.pluck(:source_id))
+		data = data.or(Source.where(group_id:nil))
+		data = data.where("created_at > ?",created_after) unless created_after.nil?
+
+		data = data.order(:group_id)
+
+		data = data.where(id:ImportSource.where(import_id:import_id).pluck(:source_id)) unless import_id.nil?
+		
+		data = data.sort_by{|source| source.similar_sources.nil? ? -1 : source.similar_sources.count}.reverse
+	end
+
 	# loops through all words looking for youtube links to convert
   	# if a youtube link is found, it pulls it out
 	#return arr[0] = content, arr[1] = link, arr[2] = yt_key

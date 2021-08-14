@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-6">
-		<h2>Import articles: (<%= Newsify::Source.count %>)</h2>
+		<h4 class="bg-primary text-white p-2 rounded">Import articles <%= tag.span Newsify::Source.count, class: "badge bg-white text-dark" %></h4>
 
 		<div class="row">
 			<div class="col-6">
@@ -27,10 +27,12 @@
 		<% end %>
 	</div>
 	<div class="col-6">
-		<h4>Recent imports</h4>
-		<% @imports.each do |import| %>
-		<div class="bg-white p-1 border-bottom d-flex justify-content-between">
-			<div>
+		<h4 class="d-flex align-items-center fs-6 mt-3">Recent imports <span class="fs-7 ms-auto ml-auto"><%= icon(icon:"star") %> = similar articles grouped</span></h4>
+		<% preview_size = 8 %>
+		<% @imports.each_with_index do |import,index| %>
+		<div class="bg-white border-top border-2 border-dark mb-3">
+		<div class="p-1 d-flex justify-content-between">
+			<div><%= icon(icon:"star") if import.grouped? %>
 				<div style="width:40px;" class="badge badge-info text-dark"><%= import.import_sources.count rescue "Error:import_sources.count" %></div>
 
 			<b><%= link_to import.keyword,newsify.sources_imported_path(import_id: import.id) %></b> by <% if import.user.nil? %>Auto importer<% else %><%= link_to import.user.respond_to?(:username) ? import.user.username : import.user.email, newsify.user_path(import.user) %><% end %>
@@ -43,6 +45,16 @@
 			[<%= import.import_pct %>]
 			<%= import.import_pct.blank? ? "Not started" : (import.import_pct == 100 ? "100%" : "#{num_format(import.import_pct*100,1)}%") rescue "Error.import_pct" %>
 			</div>
+
+		
+		</div>
+			<%= tag.div link_to("Group similar articles",newsify.sources_similar_path(run:1,save:1,import_id:import.id),class:"btn btn-sm bg-success text-light"), class: "text-center" if !import.grouped? && import.import_sources.count > 0 %>
+			<% if preview_size > 0 %>
+			<% import.source_previews.first(preview_size).each do |source| %>
+			<%= tag.div safe_join([tag.span(source.similar_sources.nil? ? 0 : source.similar_sources.count,class:"fs-8 me-1 border badge bg-notice text-dark"),link_to(source.title,newsify.source_path(source), class: "fs-7 text-muted")]), class: "border-top my-1 ms-3 ps-3" %>
+			<% end %>
+			<% end %>
+			<% preview_size-=1 %>
 		</div>
 		<% end %>
 

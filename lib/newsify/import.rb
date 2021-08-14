@@ -24,6 +24,17 @@ module Newsify
 			
 		end
 
+
+		# determine if the articles have been grouped
+		def grouped?
+			ImportSource.joins("LEFT JOIN sources ON sources.id = import_sources.source_id").where("import_sources.import_id = ? AND sources.group_id > 0",self.id).count > 0
+			#self.import_sources.joins("LEFT JOIN sources ON sources.id = import_sources.source_id").exists?(sources: {group_id:!nil}) ? true : false
+		end
+
+		def source_previews
+			Source.unique_sources created_after: nil, import_id: self.id
+		end
+
 		def classify!
 			 ga = GoogleAnalyze.new
 		      self.import_sources.each do |import_source|
