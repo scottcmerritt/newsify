@@ -1,0 +1,10 @@
+<% show_defaults = {remove:false} %>
+<% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
+<% previews.each do |preview| %>
+<% begin %>
+<%= render partial: "community/preview",locals: {preview: preview,show:show} %>
+<% rescue Exception=>ex %>
+<%= ex %>
+<% end %>
+
+<% end %>

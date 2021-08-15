@@ -28,10 +28,9 @@ module Newsify
 	        @bg_color = @order == :desc ? "green" : "red"
 	        
 	        @interests = ItemInterest.by_user @user, limit: 200, order: @order
-	        if @interests.nil? || @interests.length == 0
+	        if @interests.nil? || @interests.length == 0 || (params[:refresh] && is_admin?)
 	          ItemInterest.calc_interests! @user, remove: true
 	          @interests = ItemInterest.by_user(@user, limit: 200, order: @order)
-
 	        end
 
 	        respond_to do |format|

@@ -1,0 +1,13 @@
+<% selected = 0 if local_assigns[:selected].nil? %>
+<% menu_items = [{name:"People",link:newsify.otype_interested_path(user_id:@user.id),icon:"users"},{name:"News",link:newsify.profile_interests_path(id:@user.id),icon:"newspaper"}] %>
+<% theme = 0 if local_assigns[:theme].nil? %>
+<% active = theme == 0 ? "bg-primary text-light" : "bg-contrast text-light"  %>
+<% inactive = "bg-light" %>
+<div class="d-flex">
+	<% menu_items.each_with_index do |mi,index| %>
+	<% is_active = index==selected %>
+	<div class="p-1 px-2 rounded-top <%= is_active ? active : inactive %>">
+		<%= link_to icon_text(mi[:name],mi[:icon]), mi[:link],class:"#{is_active ? "text-light" : "text-muted"}" %>
+	</div>
+	<% end %>
+</div>

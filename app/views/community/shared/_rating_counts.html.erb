@@ -31,7 +31,7 @@
 			<i class="fa fa-arrow-up text-success px-1 fsz4"></i> <%= current_user.ratings_up_votes klass,within_hrs,"interesting" %><i class="fa fa-arrow-down text-danger px-1 fsz4"></i> <%= current_user.ratings_down_votes klass,within_hrs,"interesting" %>
 			<div class="row">
 				<div class="col-6">
-					<%= tag.div "#{@unrated_by_me.count} available", class: "border text-dark badge bg-light badge-light p-1" unless @unrated_by_me.nil? %>
+					<%= tag.div raw("#{@unrated_by_me.count} #{tag.span("new " + otype.pluralize(@unrated_by_me.count),class:"text-muted")}"), class: "border text-success badge bg-light badge-light p-1" unless @unrated_by_me.nil? %>
 				</div>
 				<div class="col-6">
 					
@@ -39,6 +39,7 @@
 			</div>
 
 		</div>
+		
 		<% if false %>
 		<div class="col-3">
 			<% unless @feed_types.nil? %>
@@ -55,13 +56,14 @@
 			<% end %>	
 		</div>
 		<% end %>
+		
 		<div class="col-5">
 			<div class="mb-1">
 			<% if current_user.respond_to?(:rated) %>
 					<%= tag.span current_user.rated(klass), class: "fs-5 fw-bold" %> <%= otype ? otype.pluralize : klass.name.pluralize %> rated <span class="fw-bold fs-6"><%= current_user.ratings klass %></span> times
 			<% end %>
 			<div class="fs-7">
-					<%= tag.span raw("#{tag.span(@unrated.count, class:"fw-bold text-dark")} unrated"), class: "text-muted me-1" unless @unrated.nil? %>
+					<%= tag.span raw("#{tag.span(@unrated_by_all.count, class:"fw-bold text-dark")} rated by nobody"), class: "text-muted me-1" unless @unrated_by_all.nil? %>
 
 					<%= tag.div "Points #{tag.span(num_format(points[:total],0))}", class: "fs-7 mx-1badge bg-primary badge-primary" unless points.nil? %>
 			</div>

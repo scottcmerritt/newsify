@@ -12,6 +12,30 @@ module Newsify
       return num
     end
 
+
+    def date_fmt date, fmt: nil, verbose: false
+      if fmt == "ago"
+        res = time_ago_in_words date #date.strftime("%-m/%-d/%y") +  " at " + date.strftime("%l:%M%P")
+        unless verbose
+          ["day","minute","hour","year"].each do |duration|
+            res = res.sub(duration+"s",duration[0]).sub(duration,duration[0])
+          end
+          res.sub("about","~").delete(" ")
+        end
+        # .gsub(/\s+/, "") # removes ALL white space
+      else
+        date.strftime("%-m/%-d/%y") +  " at " + date.strftime("%l:%M%P")
+      end
+    end
+=begin
+    def created_at_date
+      self.created_at.strftime("%-m/%-d/%y")
+    end
+    def created_at_time
+      self.created_at.strftime("%l:%M%P")
+    end
+=end
+
     def label_w_count lbl, count, with_delim=","
       raw("#{lbl} #{tag.span num_format(count,0,with_delim), class:"badge bg-info badge-info"}")
     end
@@ -31,6 +55,10 @@ module Newsify
       else
         newsify.items_labeled_path(label: label)
       end
+    end
+
+    def guess_otype obj
+      obj.class.name.split("Newsify::")[-1]
     end
 
     def default_badge_css size: 'md', tight: false, active: false, color: 'info', active_color: 'dark'

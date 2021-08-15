@@ -1,0 +1,211 @@
+.olist {
+	border: 1px solid lighten($secondary, 40%);
+	
+	.oliWrap {
+		margin-bottom:10px;
+	}
+
+	.oli {
+		/*position:static;*/
+		position:relative;
+
+
+		.status {font-size:11px;
+		min-height:18px;
+		text-align:right;
+		}
+		.hypo {
+			
+    		
+    		padding: 1px 3px;
+    		font-size:12px;
+		}
+		.hypo.roundBox {
+			position: absolute;
+    		top: -26px;
+		}
+		.hypo.thought {
+
+		}
+		
+	}
+	.oli.mine {
+		.hypo {display:none;}
+	}
+
+
+	.oname {padding:1px;}
+	.oname.std {font-weight:normal;}
+	.oprofile {
+		padding: 2px 4px;
+		background:#e9e9e9;
+	}
+
+	 .oli.active {
+	 	.oprofile {
+			border:solid 1px black;
+			border-bottom:0;
+			background:white;
+		}
+		.oname {font-weight:bold;}
+	}
+	.oli.engaged {
+		.oname {color:green;}
+		.oprofile {border:solid 2px green;
+		border-bottom:0;
+		}
+	}
+
+	.oli.topLayer {
+		.hypo {z-index:1000;}
+	}
+}
+
+.olist.horizontal {
+	padding: 0 4px;
+	height:205px;
+
+	.previewItemWrap {
+		max-width: 40%;
+		min-width: 80px;
+	    border: solid 1px gray;
+	    padding: 5px;
+	    font-size: 0.8em;
+	    
+	}
+	.gameCard {
+		min-width:100px;
+	}
+	.previewItem {
+		width: 100%;
+		height:100%;
+		overflow:hidden;
+	}
+	.oli {
+		display:inline-block;width:150px;		
+	}
+
+	.oprofile {
+	    border: 1px  solid lighten($secondary, 40%);  
+	    border-top-right-radius:8px;
+	    border-top-left-radius:8px;
+	    
+	    overflow:hidden;
+	 }
+	 .oname {height:30px;}
+}
+
+
+.olist.horizontal.smH {
+	height:130px;
+}
+
+.olist.horizontal.tinyH {
+	height:80px;
+}
+.olist.horizontal.microH {
+	height:30px;
+}
+
+
+.olist.vertical.medH {
+	.olistData {
+		height: 300px;
+	}
+}
+.olist.horizontal.gameCards {
+	height:180px;
+}
+
+.olist.vertical.smH {
+	height: 280px;
+    width: 300px;
+}
+
+.olist.vertical.tinyH {
+	height: 180px;
+    width: 300px;
+}
+.olist.vertical {
+	.oprofile {
+		border-bottom: solid 1px lighten($primary,40%);
+	}
+}
+.ovscroll {
+	overflow:hidden;
+	overflow-y:scroll;
+}
+.olist.horizontal.oscroll {
+.olistData {
+	overflow:hidden;
+	overflow-x:scroll;
+	}
+}
+
+.olist.vertical.oscroll {
+	.olistData {
+	overflow:hidden;
+	overflow-y:scroll;
+
+	}
+}
+
+.olist.b-none {
+	border:0;
+}
+
+
+.navOverlap {
+  .chatWrap, .oli.user {
+  top: -120px;
+    position: relative;
+   }
+}
+.navOverlap.mobile {
+	.chatWrap, .oli.user {
+  	top: -100px;
+    position: relative;
+   }
+}
+
+.olist.horizontal .previewItemWrap {
+	border-radius: 0.25rem !important;
+	border: 1px solid #dee2e6 !important;
+	background: $primary-light;
+}
+.olist.horizontal .previewItemWrap.noWrap {
+	white-space: nowrap;
+}
+
+.olist.horizontal .previewItemWrap.noRound {
+	border-radius: 0 !important;
+}
+
+
+
+
+.olist.horizontal .previewItemWrap .previewSelect {
+	color:gray;
+}
+.olist.horizontal .previewItemWrap .previewSelect:hover {
+	color:black;
+	text-decoration:none;
+}
+
+@media (min-width: 600px) {
+	.olist.horizontal .previewItemWrap {
+    	min-width: 160px;
+    	font-size: 1em;
+	}
+}
+
+@media (min-width: 900px) {
+	.olist.horizontal .previewItemWrap {
+    	min-width: 190px;
+    	font-size: 1em;
+	}
+}
+
+
+.badge-med {min-width:20px;}
+

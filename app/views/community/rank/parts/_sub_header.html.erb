@@ -1,0 +1,15 @@
+<% path_to_more = otype_chooser_path if local_assigns[:path_to_more].nil? %>
+<% links = [] if local_assigns[:links].nil? %>
+
+<div class="d-flex justify-content-between mt-1 align-items-center">
+	<%= render partial: "community/rank/parts/types_links", locals: local_assigns %>
+
+	<ul class="nav nav-pills d-flex">
+		<% links.each do |link| %>
+		<li class="nav-item">
+	    <a class="nav-link p-0 px-2 <%= "active" if link[:is_active] %>" href="<%= link[:link] %>"><%= link[:name] %></a>
+	  	</li>
+		<% end %>
+	</ul>
+	<%= tag.span link_to(raw("#{icon_text("","plus")}<span class='ms-1 ml-1 d-none d-md-block'>Choose more</span>"), path_to_more, class: "me-1 mr-1 btn btn-sm btn-contrast d-flex align-items-center fs-7"), class: "pb-1" %>
+</div>

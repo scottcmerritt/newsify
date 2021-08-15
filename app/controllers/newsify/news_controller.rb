@@ -52,7 +52,7 @@ module Newsify
         ItemUtil.calc_fame!
       end
 
-      @items = Item.all.order("relevance DESC").page(params[:page]).per(200)
+      @items = Item.all.order("relevance DESC").page(params[:page]).per(20)
     end
 
     # update all interest scores

@@ -1,0 +1,76 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+$btmPanelHeight: 200px;
+$btmPanelHeightSmall: 130px;
+
+$body-bg-light: #F8F8FF;
+$body-bg: #736b6b;
+$primary-border: #f9d5bc;
+$primary-border-dark: #bf6f09;
+
+$info: #fff2e4; /* #e3edf8; #d9effa; */
+
+$primary: #df7f04;; /* #ac7006; #df8f00; #df7f04; */
+$primary-bright: #ff8f00;
+$primary-dark: #633107;
+$primary-light: #f9d5bc;
+$primary-private: lighten($primary, 25%);
+
+$contrast: #3e61bb;
+$contrast-light: lighten($contrast, 25%);
+$contrast-lighter: lighten($contrast, 15%);
+
+$body-color: #111;
+
+$bg-dark: #034497;
+
+$bg-user-light: #fdf4ea;
+
+
+$speech-border-width: 4px;
+
+.bg-primary-light {
+  background: lighten($primary, 50%);
+}
+
+.btn-tiny, .btn-group-tiny > .btn {
+    padding: 0.10rem 0.3rem;
+    font-size: 0.575rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.btn-mini, .btn-group-mini > .btn {
+    padding: 0.2rem 0.3rem;
+    font-size: 0.75rem;
+    line-height: 1.1;
+    border-radius: 0.2rem;
+}
+
+.listH, .topicH {
+  display: flex;align-items: center;
+}
+.listH {
+  padding: 0.5rem 1rem;margin:0;margin-top: 0.5rem;
+}
+.topicH {
+  padding: 0.25rem 1rem;margin:0;
+}
+
+
+
+@import "ograph/oList";

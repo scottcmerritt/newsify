@@ -37,7 +37,11 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 		#is_group && !similar_sources.nil?
 	end
 	
-
+	# determines if the article has been classified, and the content scanned?
+	# TODO: consider making this process more explicitly logged
+	def classified?
+		!source_topics.empty?
+	end
 
 	# EXAMPLE LEFT OUTER JOIN
 	# https://guides.rubyonrails.org/active_record_querying.html#left-outer-joins
@@ -86,6 +90,12 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	scope :has_summary, -> {where("NOT summaries.id IS NULL")}
 	scope :no_summary, -> {where("summaries.id IS NULL")}
 	
+  def self.unrated within_days: 2, target_type: "Newsify::Source"
+    Source.joins("LEFT OUTER JOIN votes ON votable_id = sources.id AND votable_type = '#{target_type}'")
+    .where("votable_id is NULL")
+    .where("sources.created_at > ?",within_days.days.ago)
+  end
+
 	LABELS = ["spam","clickbait","ad","product","foreign"]
 
 	def voted_value user, vote_scope="interesting"

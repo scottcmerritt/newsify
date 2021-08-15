@@ -8,6 +8,7 @@ Newsify::Engine.routes.draw do
 	match 'admin' => 'news#admin', :as=> :newsify_admin, :via=>:get
 	match 'search' => 'news#search', :as=> :newsify_search, :via=>:get
 
+	match '/browse/:otype(/:oid)' => "items#browse", :as => :browse_otype, :via=> :get
 
 
 	match 'admin/calc/fame' => 'news#calc_fame', :as=> :newsify_calc_fame, :via=>:get
@@ -17,10 +18,14 @@ Newsify::Engine.routes.draw do
   	match '/profile(/:id)/interests' => 'interests#interests', :as => :profile_interests, :via => :get, order: "desc"
   	match '/profile(/:id)/disinterests' => 'interests#interests', :as => :profile_disinterests, :via => :get
   	
-  	match "/start/scroll/feed" => "feed#scroll", :as => :feed_scroll, :via=>[:get,:post]
-  	match "/feed" => "feed#mine", :as => :feed, :via=>:get
+  	#match "/start/scroll/feed" => "feed#scroll", :as => :feed_scroll, :via=>[:get,:post]
+  	match "/start/report/feed" => "feed#report", :as => :feed_report, :via=>:get
+  	match "/start/feed" => "feed#start", :as => :feed_start, :via=>:get
+
+  	match "/feed" => "feed#scroll", :as => :feed, :via=>:get # was feeds#mine
   	match "/feed/(:label)" => "feed#labeled", :as => :feed_labeled, :via=>:get
-	
+
+
 	# next 3 routes not implemented/used
 	match "/recent/feed/(:label)" => "feed#recent", :as => :feed_recent, :via=>:get
 	match "/recent/voted/feed/(:label)" => "feed#recent_voted", :as => :feed_recent_voted, :via=>:get
@@ -33,8 +38,9 @@ Newsify::Engine.routes.draw do
 	match '/vote/:otype(/:oid)(/:vtype)(/:vscope)' => "votes#vote", :as => :vote, :via=> [:post, :get]
 	resources :votes
   	match "/votes/audits" => "votes#audits", :as => :vote_audits, :via=>:get
+  	match "/feedback" => "votes#index", :as => :feedback, :via=>:get
 
-
+  	match '/interested(/:otype)(/:view)' => 'rank#interested', :as => :otype_interested, :via => :get
 
 	match '/profile/:id' => 'news#profile', :as => :user, :via=>[:get]
 

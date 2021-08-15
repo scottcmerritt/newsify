@@ -13,6 +13,22 @@ module Newsify
 	      "community/feed" # sets the path from app/views/... to something else
 	    end
 
+	   # an interface for scrolling past headlines, if skipped then flag as uninterested
+	   # GET /start/scroll/feed
+	   def scroll
+	    @page_size = 100
+	    load_start_feed
+
+	    
+	    @data.each {|source| source.google_classify!(entities:true) unless source.classified?} if params[:classify]
+
+
+	    respond_to do |format|
+	      format.js { render "start"}
+	      format.html
+	    end
+
+	   end
 	     
 	    def debug
 	      @otype = params[:otype]
@@ -24,24 +40,12 @@ module Newsify
 	    object = Community::Preview.get(params[:otype],params[:oid])
 
 	    impression = impressionist(object, "Feed start")
-	    ViewLog.add(current_user, object.otype_guessed, object.id, DateTime.now, nil, params[:extra], impression.request_hash, logger) unless object.nil?
+	    ViewLog.add(current_user, object.otype_guessed, object.id, DateTime.now, nil, params[:extra], impression.request_hash, logger) if defined?(ViewLog) && !object.nil?
 
 	    @data = Source.limit(1)
 	   end
 
-	   # an interface for scrolling past headlines, if skipped then flag as uninterested
-	   # GET /start/scroll/feed
-	   def scroll
 
-	    @page_size = 100
-	    load_start_feed
-
-	    respond_to do |format|
-	      format.js { render "start"}
-	      format.html
-	    end
-
-	   end
 
 	   # /recent/feed
 	   def recent
@@ -147,42 +151,59 @@ module Newsify
 	    end
 	  end
 
+	  def get_some_sources days_ago: 2, page:1, page_size: 20, offset: 0, grouped: true
+	  	@feed_type = "within #{days_ago} days"
+	  	data = custom_unrated_by_me(:nojoin)
+		.where("created_at > ?",days_ago.days.ago)
+		if offset != 0
+			data = data.offset(offset).limit(page_size)
+		else
+			data = data.page(page).per(page_size)
+		end
+		data = data.where(is_group: true) if grouped == true
+		data = data.where(is_group: false) if grouped == false
+		@feed_type+= " (not grouped)" if grouped.nil? || !grouped
+
+		return data
+	  end
+
 	  def load_start_feed
-	      @feed_type = params[:otype]
-	      
-	      @page = params[:page]
-	      @offset = params[:offset] ? params[:offset].to_i : 0
-	      @append = params[:append].to_s == "true" ? true : false
+	    
+		@otype = params[:otype] || "source"
+		@feed_type = @otype
 
-	      @days_ago = 2
-	      
-	      # TODO: exclude votes from current user, 
-	      # do mixture of 1) high interest items from friends and others and 2) un-reviewed headlines
-	     
+		@page = params[:page]
+		@offset = params[:offset] ? params[:offset].to_i : 0
+		@append = params[:append].to_s == "true" ? true : false
 
-	      @data = custom_unrated_by_me(:nojoin)
-	      .where("created_at > ?",@days_ago.days.ago)
-	      if @offset != 0
-	        @data = @data.offset(@offset).limit(@page_size)
-	      else
-	        @data = @data.page(@page).per(@page_size)
-	      end
-	      
-	      
-	      @data = @data.where(is_group: true)
-	       if @data.length == 0
-	        @feed_type = "Interest predicted"
-	        @data = custom_unrated_by_me_guessed(current_user)
-	        .where("created_at > ?",@days_ago.days.ago)
+		@days_ago = 2
+
+		# TODO: exclude votes from current user, 
+		# do mixture of 1) high interest items from friends and others and 2) un-reviewed headlines
+		@data = get_some_sources days_ago: @days_ago, page: @page, page_size: @page_size, offset: @offset, grouped: true
+		@data = get_some_sources days_ago: @days_ago, page: @page, page_size: @page_size, offset: @offset, grouped: nil if @data.total_count < 10
+
+		if @data.total_count < 10
+			@days_ago+=4
+			@data = get_some_sources days_ago: @days_ago, page: @page, page_size: @page_size, offset: @offset, grouped: true
+			@data = get_some_sources days_ago: @days_ago, page: @page, page_size: @page_size, offset: @offset, grouped: nil if @data.total_count < 10	     	
+		end
+
+       	if @data.total_count == 0
+			@feed_type = "Interest predicted"
+			@data = custom_unrated_by_me_guessed(current_user)
+			.where("created_at > ?",@days_ago.days.ago)
 
 	        if @offset != 0
-	          @data = @data.offset(@offset).limit(@page_size)
+	          	@data = @data.offset(@offset).limit(@page_size)
 	        else
-	          @data = @data.page(@page).per(@page_size)
+	          	@data = @data.page(@page).per(@page_size)
 	        end
-	        @data = @data.where(is_group: false)
-	       end
-	      if @data.length == 0
+
+        	@data = @data.where(is_group: false)
+       	end
+
+	      if @data.total_count == 0
 	        @feed_type = "Not grouped"
 	        @data = custom_unrated_by_me(:nojoin).offset(@offset)
 	        .where("created_at > ?",@days_ago.days.ago)

@@ -1,6 +1,6 @@
 <style>
 	.source {height:220px;overflow: hidden;}
-	.sources {height:400px; overflow-y: scroll;}
+	.sources {height:400px; overflow-y: scroll;border: solid 3px black;border-radius: 0.8rem;}
 	.feedbackReport {height:80px;}
 	#debugger {display:none;}
 </style>
@@ -13,10 +13,8 @@
 	var defaultOtype = 'source' //TODO: get this from sourceWrap
 	var defaultVoteScope = 'interesting';
 
-(function() {
-//jQuery(document).ready(function($) {
-$( document ).ready(function() {	
-	alert('loaded')
+
+jQuery(document).ready(function($) {
 	//$(".source").hide()
 	$(".sourceWrap").eq(0).removeClass("d-none")
 	bindSourceFeedbackList()
@@ -42,8 +40,6 @@ $( document ).ready(function() {
 })
 
 
-})
-
 function votePrevious(el) {
 	let found = false
 	let targetSourceId = el.attr('source-id')
@@ -53,7 +49,7 @@ function votePrevious(el) {
 		if(!found) {
 			if(!$(element).hasClass('rated')) {
 				$("#debugger .log").prepend(sourceId + "," )
-				let href = `/vote/${defaultOtype}/${sourceId}/down/${defaultVoteScope}`
+				let href = `/news/vote/${defaultOtype}/${sourceId}/down/${defaultVoteScope}`
 				let voteEl = getVoteElement(element,'.voteBtn',href)
 				$(element).addClass('rated')
 				doVote(voteEl,defaultOtype,sourceId)	
@@ -146,6 +142,8 @@ function processVote(otype,oid,reportDelay) {
 		})
 	}
 
+
+
 	function decrementFeedCount() {
 		let feedCountEl = $("#feedCount")
 		let count = parseInt(feedCountEl.text())
@@ -154,7 +152,7 @@ function processVote(otype,oid,reportDelay) {
 
 
 	function updateFeedbackReport(data) {
-		var url = '/start/report/feed';
+		var url = '<%= newsify.feed_report_path %>';
 		$.ajax({ url: url,
 	        type: 'GET',
 	        dataType: 'html',
@@ -166,7 +164,7 @@ function processVote(otype,oid,reportDelay) {
 	    });
 	}
 	function getMoreSources(append,offset) {
-		var url = '/start/feed.js';
+		var url = '<%= newsify.feed_start_path(format:"js") %>';
 		$.ajax({ url: url,
 	        type: 'GET',
 	        dataType: 'html',
@@ -195,7 +193,6 @@ function processVote(otype,oid,reportDelay) {
 <div id="debugger">
 	<div class="active"></div>
 	<div class="log"></div>
-
 </div>
 <% if current_user.respond_to?(:badges_unique) %>
 <div class="badges">

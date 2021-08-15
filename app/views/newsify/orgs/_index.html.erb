@@ -12,7 +12,10 @@
 	<div class="col-6">
 		<h6 class="mainH listH bg-primary primary-b text-light">Organizations 
 			<span class="mx-1 badge bg-light text-dark badge-light"><%= num_format @orgs.total_count,0,"," %></span>
-			<% if false %><div class="ml-auto ms-auto"><%= page_entries_info @orgs, entry_name: 'org' %></div><% end %></h6>
+			<% if false %><div class="ml-auto ms-auto"><%= page_entries_info @orgs, entry_name: 'org' %></div><% end %>
+
+			<%= link_to raw(icon(icon:"user-lock") + " Calc scores"),"?build_cache=1", class: "btn btn-sm bg-white text-dark ms-auto ml-auto" if is_admin? %>
+		</h6>
 <% require "kaminari" %>
 <% if true %>
 		<%= render(partial:"newsify/util/my_paginate", locals: {data: @orgs, paths: {prev:org_paths[:prev],next:org_paths[:next]}}) rescue tag.div(paginate(@orgs),class:"mt-1") rescue "error" %>
@@ -31,7 +34,7 @@
 			</div>
 			<div style="width:140px;" class="d-flex align-items-center">
 				<span class="badge badge-success ms-1 ml-1"><b>Interest</b></span>
-				<div style="width:80px;" class="px-1 text-center font-weight-bold">Score</div>
+				<div style="width:80px;" class="px-1 text-center font-weight-bold fw-bold">Score</div>
 			</div>
 		</div>
 		<div class="bg-primary-light">
@@ -62,9 +65,6 @@
 		<% @orgs.each do |org| %>
 		<div class="summaryItem oliWrap oli oprofile d-flex justify-content-between">
 			<div class="oname"><%= link_to org.name, org_path(org) %></div>
-
-			
-
 		</div>
 		<% end %>
 	<% end %>

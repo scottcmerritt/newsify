@@ -1,4 +1,5 @@
 <%= render partial: "admin/manage/menu" rescue "no manage menu" %>
 <%= my_paginate @items.page(params[:page]) %>
 
+<%= link_to "Update", "?run=1", class: "btn btn-sm btn-primary text-light my-1" if is_admin? %>
 <%= render partial: "community/items/list", locals: {data:@items,show:{relevance:true}} %>

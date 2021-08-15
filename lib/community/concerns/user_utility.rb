@@ -7,5 +7,12 @@ module UserUtility
     @user.id == current_user.id || is_admin?
   end
 
+  def get_voter_type 
+    current_user.class.name
+  end
+  def get_votable_type 
+    current_user.class.name
+  end
+
 end
 end

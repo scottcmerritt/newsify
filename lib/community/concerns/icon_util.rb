@@ -83,9 +83,9 @@ module IconUtil
         _prefix + "users"
       elsif defined?(RoomMessage) && self.is_a?(RoomMessage)
         _prefix + "comment"
-      elsif self.is_a? Summary
+      elsif self.is_a? Newsify::Summary
         _prefix + "newspaper"
-      elsif self.is_a? Source
+      elsif self.is_a? Newsify::Source
         _prefix + "newspaper"
       elsif self.is_a? Describe
         _prefix + "sticky-note"

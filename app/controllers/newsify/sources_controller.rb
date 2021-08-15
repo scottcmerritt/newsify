@@ -11,11 +11,11 @@ module Newsify
 #      before_action :load_entities, only: [:show,:edit,:update]
 #  before_action :load_feed_report, only: [:info,:index,:mine,:start,:scroll,:report,:labeled,:my_interests]
 
-  before_action :get_links
-  before_action :set_otype
-  before_action :load_feed_report, only: [:index,:labeled,:mine]
+    before_action :get_links
+    before_action :set_otype
+    before_action :load_feed_report, only: [:index,:labeled,:mine,:scroll,:report]
 
-  skip_before_action :verify_authenticity_token, only: [:index,:labeled]
+    skip_before_action :verify_authenticity_token, only: [:index,:labeled]
 
 
     def index
@@ -200,9 +200,9 @@ module Newsify
 
   # MOVE THIS STUFF ELSEWHERE (organize it)
 
-    def load_feed_report
+    def load_feed_report within_days: 2
       @unrated_by_me = unrated_by_me
-      @unrated = unrated
+      @unrated_by_all = Source.unrated within_days: within_days
     end
 
     def recent_votes within_days: 7
@@ -233,16 +233,11 @@ module Newsify
       #.where.not(id: recent_votes)
     end
 
-    def unrated_by_me within_days: 2, votes_within_days: 4
+    def unrated_by_me within_days: 2, votes_within_days: 7
       @data = Source.where.not(id: recent_votes(within_days:votes_within_days))
       .where("created_at > ?",within_days.days.ago)
     end
 
-    def unrated within_days: 2
-      @data = Source.joins("LEFT OUTER JOIN votes ON votable_id = sources.id AND votable_type = '#{target_type}'")
-      .where("votable_id is NULL")
-      .where("sources.created_at > ?",within_days.days.ago)
-    end
 
 
   end

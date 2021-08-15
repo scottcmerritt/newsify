@@ -1,0 +1,45 @@
+<div class="p-2">
+
+<h4 class="topicH bg-primary text-light p-1">Feedback 
+	<%= tag.span "#{current_user.find_voted_items.count} items",class: "ms-2 ml-2 badge bg-light badge-light text-dark" %>
+
+	<%= tag.span "#{current_user.find_liked_items.count} #{"upvote".pluralize(current_user.find_liked_items(vote_scope:nil).count)}",class: "ms-auto ml-auto badge bg-light badge-light text-dark" %>
+	<%= tag.span "#{current_user.find_down_voted_items(vote_scope:nil).count} #{"downvote".pluralize(current_user.find_down_voted_items.count)}",class: "ms-2 ml-2 badge bg-light badge-light text-dark" %>
+</h4>
+<div class="bg-light">
+<% if true %>
+	<h4 class="topicH">Upvoted <%= icon(icon:"heart",icon_css:"text-success ms-1") %></h4>
+	<div class="olist horizontal smH oscroll">
+		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_up_votes(vote_scope:nil).order("created_at DESC")} %>
+		</div>
+	</div>
+
+	<h4 class="topicH">Downvoted  <%= icon(icon:"heart-broken",icon_css:"text-danger ms-1") %></h4>
+	<div class="olist horizontal smH oscroll">
+		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_down_votes(vote_scope:nil).order("created_at DESC")} %>
+		</div>
+	</div>
+<% else %>
+		<h4 class="topicH">Upvoted</h4>
+	<div class="olist horizontal smH oscroll">
+		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_up_voted_items(vote_scope:nil)} %>
+		</div>
+	</div>
+
+	<h4 class="topicH">Downvoted</h4>
+	<div class="olist horizontal smH oscroll">
+		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_down_voted_items(vote_scope:nil)} %>
+		</div>
+	</div>
+<% end %>
+
+	<%= render partial: "community/votes/parts/vote_scopes_group",locals: {title: "Extra feedback",vote_scopes: Community::Voting.votescopes_main } %>
+
+	<%= render partial: "community/votes/parts/vote_scopes_group",locals: {title: "Moderation",vote_scopes: Community::Voting.votescopes_moderation } %>
+</div>
+
+</div>

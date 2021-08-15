@@ -35,6 +35,8 @@ module Newsify
 
 
 		def index
+			Community::Org.all.each {|org| org.cache_content_scores!(min_votes:1) } if params[:build_cache]
+
 			@page = params[:page] ? params[:page].to_i : 1
 			@page = 1 if @page < 1
 

@@ -7,10 +7,12 @@ module Newsify
 
 		# loop through items and calculate relevance based on # of times referenced
 		# TODO: fame should be updated based on impressions?? and relevance??
-		def self.calc_fame!
+		def self.calc_fame! target_type: "Newsify::Source"
 			max_tags = SourceTopic.most_tagged_count
-			max_impressions = Impression.select("COUNT(impressionable_id) as impression_count")
-			.where("impressionable_type = ?","Source").group("impressionable_id").order("impression_count DESC").first.impression_count
+			all_impressions = Impression.select("COUNT(impressionable_id) as impression_count")
+			.where("impressionable_type = ?",target_type).group("impressionable_id").order("impression_count DESC")
+
+			max_impressions = all_impressions.first.nil? ? 0 : all_impressions.first.impression_count
 
 			rel_alpha = 0.05*max_tags
 			rel2_alpha = 0.05*max_impressions

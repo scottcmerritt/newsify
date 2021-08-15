@@ -1,0 +1,33 @@
+<% show_defaults = {remove:false,dates:true} %>
+<% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
+
+<% vote = preview if preview.class.name == "ActsAsVotable::Vote" %>
+<% preview = preview.votable if preview.class.name == "ActsAsVotable::Vote" %>
+
+<% otype = preview.respond_to?(:otype_guessed) ? preview.otype_guessed : guess_otype(preview) %>
+<% if preview.nil? %>
+<div class="d-inline-block mh-100 px-1 mr-1 py-0 previewItemWrap">
+<div class="alert alert-warning">
+Preview not found <%= preview.as_json %>
+</div>
+</div>
+<% else %>
+<div class="d-inline-block mh-100 px-1 mr-1 py-0 previewItemWrap posr" data-oid="<%=preview.id %>" data-otype="<%= otype %>">
+	<a href="<%= newsify.browse_otype_path({otype: otype, oid: preview.id}) %>" data-type='hpanel' data-toggle="tooltip" data-offset="0,5" title="" class="previewSelect nodec pt-3 ">
+	<div class="previewItem">
+	<% if show[:dates] %>
+	<div class="d-flex justify-content-between">
+	<%= tag.span "Voted #{date_fmt(vote.created_at,fmt:"ago").sub("about","~")}", class: "fs-8 bg-success text-light px-1" unless vote.nil? %>
+	<%= tag.span "#{date_fmt(preview.created_at,fmt:"ago").sub("about","~")}", class: "fs-8" %>
+	</div><% end %>
+
+		<span class="font-weight-bold px-1"><i class="<%= preview.respond_to?(:icon_guessed) ? preview.icon_guessed : "fa fa-star" %>"></i></span>
+	<b><%= preview.title %></b>
+	<%= preview.wiki_text if preview.respond_to?(:wiki_text) %>
+	</div>
+	</a>
+	
+	
+	<%= link_to raw(tag.i("",class:"fa fa-times-circle")), room_remove_preview_path(id:@room.id,otype:preview.otype_guessed.capitalize,oid:preview.id), class:"snapTop snapRight", method: :post, remote: true if defined?(Room) && show[:remove] %>
+</div>
+<% end %>

@@ -1,7 +1,12 @@
 <% show_first = true if local_assigns[:show_first].nil? %>
 <% show_all =false if local_assigns[:show_all].nil? %>
 <% animation_css = "animate__animated animate__fadeInRight" %>
-<div><span id="feedCount"><%= data.total_count %></span> results <b><%= @feed_type %></b></div>
+<div class="d-flex justify-content-center">
+	<div><span id="feedCount"><%= data.total_count %></span> <b><%= @otype.blank? ? "result".pluralize(data.total_count) : @otype.pluralize(data.total_count).capitalize %></b>
+
+		<%= tag.span @feed_type, class: "text-muted mx-1" unless @feed_type.blank? %>
+	</div>
+</div>
 <% data.each_with_index do |source,index| %>
 <div class="sourceWrap card my-3 <%= animation_css if index == 0 %> <% if !show_all && (show_first || index>0) %>d-none<% end %>" source-id="<%= source.id %>">
 	<div class="card-body">

@@ -177,13 +177,13 @@ module Community
 			self.is_group
 		end
 
-		def cache_content_scores!
+		def cache_content_scores! min_votes: 30
 			
 			self.cached_content_interesting_up = self.interesting_votes(vote_flag: true).count
 			self.cached_content_interesting_down = self.interesting_votes(vote_flag: false).count
 			self.cached_content_votes_total = self.interesting_votes(vote_flag: nil).count
 			
-			self.cached_content_score = calc_content_score minimum_votes: 30, total_votes: self.cached_content_votes_total
+			self.cached_content_score = calc_content_score minimum_votes: min_votes, total_votes: self.cached_content_votes_total
 
 			self.vote_cache.save
 			#TODO: add 
@@ -191,7 +191,7 @@ module Community
 			# cached_content_voters_total
 		end
 
-		def calc_content_score minimum_votes: 30, total_votes: nil, votable_type:"Source"
+		def calc_content_score minimum_votes: 30, total_votes: nil, votable_type:"Newsify::Source"
 			total_votes = self.cached_content_votes_total if total_votes.nil?
 			if total_votes == 0
 				0
@@ -214,17 +214,17 @@ module Community
 			end
 		end
 
-		def custom_vote_count votable_type: "Source", vote_flag: true, vote_scope: "interesting"
+		def custom_vote_count votable_type: "Newsify::Source", vote_flag: true, vote_scope: "interesting"
 			return nil if !defined?(ActsAsVotable)
 
 			data = ActsAsVotable::Vote.where("votable_type = ? AND votable_id IN (?) AND vote_scope = ?",votable_type,self.sources.pluck(:id),vote_scope)
 			data = data.where("vote_flag = ?",vote_flag) unless vote_flag.nil?
 			data
 		end
-		def interesting_votes votable_type:"Source", vote_flag: true,vote_scope: "interesting"
+		def interesting_votes votable_type:"Newsify::Source", vote_flag: true,vote_scope: "interesting"
 			custom_vote_count votable_type: votable_type, vote_flag: vote_flag, vote_scope: vote_scope
 		end
-		def interesting_vote_pct votable_type = "Source"
+		def interesting_vote_pct votable_type = "Newsify::Source"
 			up = self.interesting_votes({votable_type: votable_type,vote_flag: true}).count
 			down = self.interesting_votes({votable_type: votable_type,vote_flag: false}).count
 			res = (up.to_f / (up + down) *100)

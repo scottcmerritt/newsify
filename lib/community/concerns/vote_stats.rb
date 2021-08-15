@@ -11,14 +11,16 @@ module Community
 
 
     module ClassMethods
-
        def update_all_interest_scores! minutes_ago: 30
         UserCustom.outdated_interests(minutes_ago: minutes_ago).each do |user|
           Newsify::ItemInterest.calc_interests! user, remove: true
         end
       end
+    end
 
-
+    def voting_since
+      first_vote = self.find_votes.order("created_at ASC").first
+      first_vote.created_at unless first_vote.nil?
     end
 
     # creates or gets a record for a user to be audited (i.e. evaluated)

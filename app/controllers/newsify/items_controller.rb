@@ -17,6 +17,13 @@ module Newsify
     		"community/items" # change path from app/views/ideas to app/views/tasks
   		end
 
+		# GET /browse/:otype/:oid
+		def browse
+			if params[:otype] == "source"
+				redirect_to controller: "sources",action:"show",id:params[:oid]
+			end
+		end
+
   		# GET /types/items/:itype
 		def itype
 			@itypes = Item.select("itype").distinct.pluck(:itype)

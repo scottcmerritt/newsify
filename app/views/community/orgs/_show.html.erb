@@ -8,13 +8,12 @@
 	</div>
 	<div style="width:140px;" class="d-flex align-items-center justify-content-end">
 		<% unless votes_interesting.nil? %>
-		<span class="badge badge-success mx-1"><b><%= org.interesting_vote_pct %>%</b></span>
-
+		<%= tag.span "#{org.interesting_vote_pct}%", class: "badge bg-success badge-success mx-1 fw-bold font-weight-bold" unless org.interesting_vote_pct.blank? || org.interesting_vote_pct.to_s == "NaN" %>
 		<div class="border bg-secondary text-light rounded" style="width:80px;">
-			<div class="bg-primary fsz6 px-1 text-center text-white">
+			<div class="bg-primary fsz6 fs-6 px-1 text-center text-white">
 			<%= org.cached_content_score %>
 			</div>
-			<div class="fsz7 px-1 text-center">
+			<div class="fsz7 fs-7 px-1 text-center">
 			<%= votes_interesting.count %> votes
 			</div>
 		</div>

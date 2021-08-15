@@ -4,14 +4,14 @@
 	<%= togglelink_for(vote_scope_label(vote_scope),"#", {expanded: false, no_wrap: false, div_class:"topicH bg-primary text-light mt-1",link_color: "topicH text-light", target: "#feedback_#{vote_scope}",count: current_user.find_up_voted_items(vote_scope: vote_scope).count }) %>
 	<div id="feedback_<%= vote_scope %>" class="olist horizontal smH oscroll collapse">
 		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
-			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_up_voted_items(vote_scope: vote_scope)} %>
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_up_votes(vote_scope: vote_scope).order("created_at DESC")} %>
 		</div>
 	</div>
 
 	<%= togglelink_for(vote_scope_label(vote_scope,false),"#", {expanded: false, no_wrap: false, div_class:"topicH bg-primary text-light mt-1",link_color: "topicH text-light", target: "#feedback_#{vote_scope}2",count: current_user.find_down_voted_items(vote_scope: vote_scope).count }) %>
 	<div id="feedback_<%= vote_scope %>2" class="olist horizontal smH oscroll collapse">
 		<div id="btmPanelScroll" class="olistData d-flex h-100 py-1">
-			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_down_voted_items(vote_scope: vote_scope)} %>
+			<%= render partial: "community/panels/previews",locals: {previews: current_user.find_down_votes(vote_scope: vote_scope).order("created_at DESC")} %>
 		</div>
 	</div>
 <% end %>

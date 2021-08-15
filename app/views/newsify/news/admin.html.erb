@@ -7,5 +7,7 @@
 
 <%= Newsify::ItemInterest.select("user_id").group(:user_id).to_json %>
 
-<%= @info.as_json %>
+<%= link_to "Update items (calc relevance)", newsify.newsify_calc_fame_path %>
 
+
+<%= @info.as_json %>
