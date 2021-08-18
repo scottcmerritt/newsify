@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "aylien_text_api"
   spec.add_dependency "google-cloud-language"
 
+  spec.add_dependency "paper_trail"
   spec.add_dependency "diffy"
   spec.add_dependency "custom_sort"
   # getting WRONG sortify

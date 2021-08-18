@@ -1,0 +1,20 @@
+<div class="row">
+	<div class="col-6">
+<% best_version = PaperTrail::Version.select("versions.*").where("item_type = ? AND item_id = ?","Newsify::Summary",summary.id).sortify("labeled",label: "interesting",sort_order: "DESC").first %>
+<% unless best_version.nil? || best_version.reify.nil? %>
+<div class="border border-2 border-success p-2">
+	<h5>Best summary</h5>
+	<div class="fs-6"><%= best_version.reify.title %></div>
+</div>
+<% end %>
+</div>
+<div class="col-6">
+<% funny_version = PaperTrail::Version.select("versions.*").where("item_type = ? AND item_id = ?","Newsify::Summary",summary.id).sortify("labeled",label: "funny",sort_order: "DESC").first %>
+<% unless funny_version.nil? || funny_version.reify.nil? %>
+<div class="border border-2 border-success p-2">
+	<h5>Funniest summary</h5>
+	<div class="fs-6"><%= funny_version.reify.title %></div>
+</div>
+<% end %>
+</div>
+</div>

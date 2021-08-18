@@ -129,6 +129,7 @@ module Community
 			end
 		end
 
+
 		def process_vote
 			if @vote_type == "remove"
 				vote_params = {:vote_scope => @vote_scope}

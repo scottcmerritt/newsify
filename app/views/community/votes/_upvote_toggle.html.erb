@@ -23,7 +23,7 @@
 <%= link_to(safe_join([text_element,tag.i("",class: "fa fa-#{remove}")]), newsify.vote_path(otype:otype,oid:object.id,vtype:"down",vscope:vote_scope,label:label,vui:vui), remote: true, method: :post, class: "text-success #{link_css}") %>
 <% else %>
 <%= link_to(safe_join([text_element,tag.i("",class: "fa fa-#{up}")]), newsify.vote_path(otype:otype,oid:object.id,vtype:"remove",vscope:vote_scope,label:label,vui:vui), remote: true, method: :post, class: "text-danger #{link_css}") %>
-<% end %> <%= safe_join([tag.span(num_format(object.find_votes_for(vote_scope:vote_scope).count,0,","),class:"fs-8 text-success"),tag.span(num_format(object.get_downvotes(vote_scope:vote_scope).count,0,","),class:"fs-8 text-danger ms-1 ml-1") ]) if show_count %>
+<% end %> <%= safe_join([tag.span(num_format(object.get_upvotes(vote_scope:vote_scope).count,0,","),class:"fs-8 text-success"),tag.span(num_format(object.get_downvotes(vote_scope:vote_scope).count,0,","),class:"fs-8 text-danger ms-1 ml-1") ]) if show_count %>
 <% unless no_wrap %>
 </div>
 <% end %>

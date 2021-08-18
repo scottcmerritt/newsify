@@ -1,0 +1,47 @@
+<h4><%= dbt('News').capitalize %> <%= dbt('admin') %></h4>
+
+<div class="row">
+	<div class="col-3">
+		<%= render partial: "admin/manage/menu", locals: {vertical:true,icon_size:"fs-3"} %>
+	</div>
+	<div class="col-6">
+		<div class="row">
+			<div class="col-6">
+				<%= tag.div raw("#{tag.span(num_format(Newsify::Source.count,0,","), class:"fs-4 fw-bold")} articles") %>
+			</div>
+			<div class="col-6">
+				<%= tag.div raw "#{tag.span num_format(Newsify::Item.count,0,","), class: "fs-4 fw-bold"} topics" %>
+			</div>
+		</div>
+
+		<div class="row">
+			<%= tag.div link_to "#{Newsify::ItemInterest.count} item interests", newsify.profile_interests_path %>
+
+			<%= Newsify::ItemInterest.select("user_id,COUNT(item_id) as interests").group(:user_id).to_json %>
+
+			<%= link_to "Update items (calc relevance)", newsify.newsify_calc_fame_path %>
+
+			<%= link_to "Guess interest (calc relevance)", "?guess=1" %>
+
+			<div class="border p-2 my-3">
+				<h6>We guessed <%= Community::GuessScope.total_guesses current_user %> times for you</h6>
+			<% accuracy = Community::GuessScope.accuracy current_user, true %>
+			<% if accuracy.nil? || accuracy[:accuracy].nil? %>
+				No accuracy report yet
+			<% else %>
+				Guess accuracy: <%= num_format accuracy[:accuracy]*100,2 %>%
+				<div class="fsz7">Yes: <%= accuracy[:true] %>, No: <%= accuracy[:false] %></div>
+			<% end %>
+			</div>
+
+
+
+			<div><%= @info.as_json %></div>
+		</div>
+
+	</div>
+</div>
+
+<%= render partial: "newsify/admin/guess_interest" unless @sources.nil? && @targets.nil? %>
+
+

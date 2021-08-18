@@ -26,7 +26,7 @@ gem 'impressionist', git: 'https://github.com/scottcmerritt/impressionist.git'
 # my gem for sorting with labels
 gem 'custom_sort'
 
-#gem 'paper_trail' # for logging model history
+gem 'paper_trail' # for logging model history
 gem 'diffy'
 
 gem 'wikidata'

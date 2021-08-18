@@ -19,6 +19,7 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	include VoteCacheable
 =end
 	attribute :guess_score
+	attribute :guess_reason
 
 
 	has_many :source_authors
@@ -31,6 +32,10 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	belongs_to :summary_source, optional: true
 	belongs_to :user, optional: true #, :class_name => 'User', foreign_key: 'createdby'
 
+
+	def guess_scope scope: "interesting"
+		Community::GuessScope.select("*").where(target_type:"Newsify::Source",target_id:self.id,scope:scope).first
+	end
 
 	def grouped?
 		!similar_sources.nil?
@@ -316,7 +321,11 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 	end
 
 	# get score based on interests, add item to guess scope
-	def self.guess_interest! user, sources, interests_hash = nil, guesser_id = 0
+	# 1st) Get all user interests (2000 of them)
+	# 2nd) loop through sources, then topics for each source
+	# 3rd) build a score for each source
+	# 4th) generate a reason, which is just a list of TOP ITEMS
+	def self.guess_interest! user, sources, interests_hash = nil, guesser_id = 0, target_type: "Newsify::Source"
 		guesses = {}
 		interests_hash = ItemInterest.by_user user, limit: 2000, as_hash: true if interests_hash.nil?
 		scope_name = "interesting"
@@ -333,10 +342,12 @@ class Source < ActiveRecord::Base #AbstractModel #ActiveRecord::Base
 					end
 				end
 			end
-			source.guess_score = score
-			guesses[source.id] = score
+			
 			reason = top_items.length == 0 ? nil : ({"items":top_items.sort_by{|item,v| -v} }).to_json.to_s
-			Community::GuessScope.create(target_type:"Source",target_id:source.id,user_id:user.id,published_at:source.published_at,score:score,scope:scope_name,guesser_id:guesser_id, reason: reason)
+			source.guess_score = score
+			source.reason = reason
+			guesses[source.id] = score
+			Community::GuessScope.create(target_type:target_type,target_id:source.id,user_id:user.id,published_at:source.published_at,score:score,scope:scope_name,guesser_id:guesser_id, reason: reason)
 		end
 		sources = sources.sort_by {|source| -source.guess_score }
 

@@ -7,6 +7,9 @@ module Community
 		# i.e. we think they will be "interested" or find it "funny"
 			# then they actually label it...and we calculate accuracy
 		
+		def self.total_guesses user
+			 GuessScope.where(user_id:user.id).count
+		end
 		def self.accuracy user, details = false
 			true_vals = GuessScope.where(user_id:user.id,accurate: true).count
 			false_vals = GuessScope.where(user_id:user.id,accurate: false).count

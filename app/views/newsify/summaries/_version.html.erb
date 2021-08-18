@@ -1,0 +1,13 @@
+<div class="bg-white border m-1">
+	<%= render partial: "community/votes/main", locals: {otype:"version", show_count:true,object: version, user: current_user, icon_colors: ["text-success","text-secondary"],wrap_css:"fs-7 bg-primary-light"} if !current_user.nil? %>
+	<%= tag.div summary.title, class: "p-1 fs-6" unless summary.nil? %>
+
+	<div class="fsz7 fs-7 d-flex p-1">
+	<% event_by = User.find_by(id:version.whodunnit) %>
+	<% begin %>
+	<%= past_tense_event version.event %> by <%= link_to event_by.nil? ? "Anonymous" : event_by.display_name_public,version.whodunnit, class: "mx-1" %> <span class="ml-auto"><%= time_ago_in_words prev_updated_at %> ago</span>
+	<% rescue Exception=>ex %>
+		<%= ex %>
+	<% end %>
+	</div>
+</div>

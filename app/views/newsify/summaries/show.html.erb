@@ -3,8 +3,18 @@ jQuery(document).ready(function($) {
 	$("#toggleDiff").on('click',function(e) {
 		e.preventDefault()
 		e.stopPropagation()
-		$(".diff li.del").css({'display':'table-row'}) //show()
-		$(this).hide() 
+		const diffEl = $(".diff li.del")
+
+		if(diffEl.is(":visible")) {
+			diffEl.css({'display':'none'}) //show()
+			$(this).html("Show removed text")
+		}
+		else {
+			diffEl.css({'display':'table-row'}) //show()
+			$(this).html("Hide removed text")
+		}
+		//$(this).hide() 
+		
 	})
 
 })
@@ -18,13 +28,13 @@ jQuery(document).ready(function($) {
 
 
 <% if true %>
-<% if false %>
-<%= render :partial=>"/admin/classifying/js" if false %>
-<%= render :partial=>"/admin/classifying/css" if false %>
-<%= render :partial=>"/search/browse/popups" if false %>
+	<% if false %>
+		<%= render :partial=>"/admin/classifying/js" if false %>
+		<%= render :partial=>"/admin/classifying/css" if false %>
+		<%= render :partial=>"/search/browse/popups" if false %>
 
-<%= render :partial=>"/admin/classifying/timer_reporti",:timer=>@custom_timer %>
-<% end %>
+		<%= render :partial=>"/admin/classifying/timer_reporti",:timer=>@custom_timer %>
+	<% end %>
 
 <div class="admin container main_container" id="classifyPage">
 <%= render :partial=>"newsify/summaries/overview",:locals=>{:links=>@ui[:links][:data],:active=>@ui[:links][:active]} %>
@@ -33,13 +43,39 @@ jQuery(document).ready(function($) {
 Loading...
 </div>
 
+<% unless @summary.nil? %>
+
+<div class="text-center">
+ <a class="btn btn-sm btn-primary py-0 fs-7 my-1" data-bs-toggle="collapse" href="#diffChanges" role="button" aria-expanded="false" aria-controls="diffChanges">Show changes</a>
+</div>
+
+<% unless !@summary.respond_to?(:paper_trail) || @summary.versions.first.nil? %>
+	<style>
+		.diff li.del {display: none;}
+	</style>
+	<div id="diffChanges" class="collapse container my-1 border ms-2">
+		<div class="row">
+			<div class="col-10">
+			<%= tag.div raw(@diffed) %>
+		</div>
+		<div class="col-2">
+		<a id="toggleDiff" href="#" class="fs-7 btn btn-sm">Show removed</a>
+			</div>
+		</div>
+	</div>
+<% end %>
+
 
 <div class="container">
 <%= @summary.createdby if false %>
+	<%= render partial: "community/votes/main", locals: {otype:"summary", show_count:true,object: @summary, user: current_user, icon_colors: ["text-success","text-secondary"],wrap_css:"fs-7 bg-primary-light"} if !current_user.nil? %>
+
 <div class="d-flex bg-white p-2 border-bottom">
-<%= @summary.title %> <%= link_to("Edit",newsify.edit_summary_path(@summary), class: "ms-auto ml-auto") if @summary.can_edit? (current_user) %>
+
+<%= @summary.title %> <%= link_to("Edit",newsify.edit_summary_path(@summary), class: "ms-auto ml-auto") if @summary.can_edit?(current_user) || is_admin? %>
 </div>
 </div>
+
 
 	
 <div class="row">
@@ -65,34 +101,25 @@ Loading...
 	</div>
 	<div class="col-3"></div>
 </div>
+<%= render partial: "newsify/summaries/leaderboard", locals: {summary:@summary} %>
 
-<h4>History</h4>
+	
+<h6 class="bg-primary text-light d-flex align-items-center p-1 mt-2">History <span class="badge bg-info text-dark fs-7 mx-1"><%= @summary.versions.count %> versions</span></h6>
 
 
-<% unless !@summary.respond_to?(:paper_trail) || @summary.paper_trail.previous_version.nil? %>
-	<a id="toggleDiff" href="#">Show removed</a>
-	<style>
-		.diff li.del {display: none;}
-	</style>
-	<%= tag.div raw(@diffed) %>
-<% end %>
-<% unless false && @summary.nil? %>
+
 	<% if !@summary.respond_to?(:versions) || @summary.versions.empty? %>
 	<%= tag.div "No logged changes", class: "alert alert-info" %>
 	<% else %>
-	<% prev_updated_at = @summary.updated_at %>
-	<% @summary.versions.reverse.each do |version| %>
-
-	<div class="bg-white border m-1 px-1">
-		<div class="fsz6 d-flex p-1">
-	<%= past_tense_event version.event %> by <%= link_to User.find_by(id:version.whodunnit).username, version.whodunnit, class: "mx-1" %> <span class="ml-auto"><%= time_ago_in_words prev_updated_at %> ago</span>
-	</div>
-
-	<div><%= version.reify.title unless version.reify.nil? %></div>
-	</div>
-	<% prev_updated_at = version.reify.updated_at unless version.reify.nil? %>
-	<% end %>
+		<div class="border p-1">
+		<% prev_updated_at = @summary.updated_at %>
+		<% @summary.versions.each do |version| %>
+	
+			<% summary = version.reify %>
+			<%= render partial: "newsify/summaries/version", locals: {summary: summary, version: version, prev_updated_at: prev_updated_at} %>
+			<% prev_updated_at = summary.updated_at unless summary.nil? %>
+		<% end %>
+		</div>
 	<% end %>
 <% end %>
-
 <% end %>

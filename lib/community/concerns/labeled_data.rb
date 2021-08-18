@@ -42,6 +42,7 @@ module Community
 	      @labeled = @labeled.where("createdby IN (?)", user_ids) unless params[:all]
 	    end
 
+	    
 	    def add_order_by order_text = nil
 	#      @labeled = @labeled.order("#{order_text.nil? ? @order_text : order_text} #{@sort_order}")
 	      query_name = @no_join ? "nojoin" : (@label == "blended" ? "blended" : "labeled")

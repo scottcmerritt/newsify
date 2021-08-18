@@ -84,7 +84,11 @@ class VotesController < ApplicationController
   	private
 
   	def custom_redirect target
-  		redirect_to target
+  		if params[:otype] == "version"
+  			redirect_to target.reify
+  		else
+	  		redirect_to target
+	  	end
   	end
 
 

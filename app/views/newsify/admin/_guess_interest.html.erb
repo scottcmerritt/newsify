@@ -1,0 +1,31 @@
+<% unless @sources.nil? %>
+<h4>Articles with guessed interest</h4>
+<% @sources.each do |source| %>
+<%= render partial: "newsify/sources/source", locals: {source: source,btm_fs:"fs-7"} %>
+<div class="p-2 fs-7">
+Guess score: <%= tag.span source.guess_score, class: "fw-bold text-success" %>, Reason: <%= tag.span source.guess_reason, class: "fw-bold text-success" %>
+</div>
+<% end %>
+<% else %>
+<%= link_to "Guess", "?run=1", class:"btn btn-success" %>
+<h4>Articles to be rated (<%= @targets.count %>)</h4>
+
+<% @targets.each do |target| %>
+
+<div class="bg-white mb-1 p-1 border <%= "border-success border-3" if current_user.voted_for? target, vote_scope: "interesting" %> ">
+<% if target.is_a?(Newsify::Source) %>
+	<div class="border p-1">
+		<div><%= link_to target.title, [newsify,target] %></div>
+		<div class="fsz7 fs-7"><%= time_ago_in_words target.created_at %> ago</div>
+
+		<% unless target.guess_scope.nil? %>
+		<div class="p-2 fs-7">
+Guess score: <%= tag.span target.guess_scope.score, class: "fw-bold text-success" %>, Reason: <%= tag.span target.guess_scope.reason_text, class: "fw-bold text-success" %>, Accuracy: <%= tag.span target.guess_scope.accurate, class: "fw-bold text-success" %>
+</div>
+		<% end %>
+
+	</div>
+<% end %>
+</div>
+<% end %>
+<% end %>

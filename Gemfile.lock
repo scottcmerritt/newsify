@@ -19,6 +19,7 @@ PATH
       google-cloud-language
       kaminari
       narray
+      paper_trail
       rails (~> 6.1.4)
       tactful_tokenizer
       tf-idf-similarity
@@ -206,6 +207,9 @@ GEM
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     os (1.1.1)
+    paper_trail (12.0.0)
+      activerecord (>= 5.2)
+      request_store (~> 1.1)
     public_suffix (4.0.6)
     racc (1.5.2)
     rack (2.2.3)
@@ -238,6 +242,8 @@ GEM
       rake (>= 0.13)
       thor (~> 1.0)
     rake (13.0.6)
+    request_store (1.5.0)
+      rack (>= 1.4)
     ruby2_keywords (0.0.5)
     signet (0.15.0)
       addressable (~> 2.3)
@@ -287,6 +293,7 @@ DEPENDENCIES
   kaminari
   narray
   newsify!
+  paper_trail
   sqlite3
   tactful_tokenizer
   tf-idf-similarity

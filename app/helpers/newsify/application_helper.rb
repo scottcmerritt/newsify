@@ -1,5 +1,18 @@
 module Newsify
   module ApplicationHelper
+      def past_tense_event event
+        case event
+        when "update"
+          "updated"
+        when "create"
+          "added"
+        when "destroy"
+          "removed"
+        else
+          event
+        end
+      end
+      
     def num_comma num, decimal_places = 0, with_delim = ","
       num_format num, decimal_places, with_delim
     end

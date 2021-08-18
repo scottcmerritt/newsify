@@ -53,7 +53,8 @@ class SummariesController < ApplicationController
 		
 		# :include_diff_info=>false
 
-		@diffed = Diffy::Diff.new(@summary.paper_trail.previous_version.title, @summary.title,:include_diff_info=>false).to_s(:html) unless !@summary.respond_to?(:paper_trail) || @summary.paper_trail.previous_version.nil?
+#		@diffed = Diffy::Diff.new(@summary.paper_trail.previous_version.title, @summary.title,:include_diff_info=>false).to_s(:html) unless !@summary.respond_to?(:paper_trail) || @summary.paper_trail.previous_version.nil?
+		@diffed = Diffy::Diff.new(@summary.versions.first.reify.title, @summary.title,:include_diff_info=>false).to_s(:html) unless !@summary.respond_to?(:versions) || @summary.versions.first.nil?
 
 		@custom_timer = {}
 		st = Time.now
@@ -68,6 +69,10 @@ class SummariesController < ApplicationController
 
 	def update
 		if @summary.update(permitted_parameters)
+			#edited_summary = Newsify::Summary.find(@summary.id).manual_version_create!
+			@summary.move_votes_to_version!
+			#@summary.manual_version_create!
+
 	      flash[:success] = "Summary #{@summary.title} was updated successfully"
 	      redirect_to @summary
 	    else
@@ -84,20 +89,23 @@ class SummariesController < ApplicationController
 
 
 	def create
-		@summary = Summary.new permitted_parameters
+		#@summary = Summary.new permitted_parameters
 
-		@summary.createdby = current_user.id
+		#@summary.createdby = current_user.id
+		PaperTrail.request(enabled: false) do
+			if @summary = Summary.create(permitted_paramters.merge({createdby:current_user.id})) #@summary.save
+				#@summary.paper_trail.save_with_version
 
-		if @summary.save
-			 flash[:success] = "Summary #{@summary.title} was created successfully"
-      
-		      #@user = User.find(1)
-		      #RoomChannel.broadcast_to @user, @user
+				 flash[:success] = "Summary #{@summary.title} was created successfully"
+	      
+			      #@user = User.find(1)
+			      #RoomChannel.broadcast_to @user, @user
 
-		      redirect_to summaries_path
+			      redirect_to summaries_path
 
-		else
-			render :new
+			else
+				render :new
+			end
 		end
 	end
 

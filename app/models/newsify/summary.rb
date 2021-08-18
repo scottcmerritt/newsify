@@ -1,7 +1,14 @@
 module Newsify
 class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did not work with acts_as_votable
 	self.table_name = "summaries"
-	#has_paper_trail
+	has_paper_trail on: [:update,:destroy], versions: {
+    scope: -> { order("created_at desc") }
+  }
+
+  # look at https://www.bacancytechnology.com/blog/paper-trail-gem-to-version-your-models-data
+
+
+ # on: [:create,:update,:destroy]
 	acts_as_votable
 	include Newsify::GenericObj, Newsify::TextUtil, Newsify::NewsManager
 	include Community::IconUtil, Community::VoteCacheable
@@ -10,7 +17,11 @@ class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did
 	#include VoteCacheable
 
 	after_create :save_source_ids
-	
+	#after_create :manual_version_create
+	#after_update :manual_version_create
+
+	# move this to the config, and set a model by model config for determining if the votes are moved??
+	#after_update :move_votes_to_version!
 
 	attribute :source_ids
 
@@ -21,7 +32,28 @@ class Summary < ActiveRecord::Base #AbstractModel # adding an abstract class did
 	scope :with_summary_items, -> {joins("LEFT JOIN summary_items ON summaries.id=summary_items.summary_id")}
 	
 	TOKEN_REGEXP = /^[a-z]+$|^\w+\-\w+|^[a-z]+[0-9]+[a-z]+$|^[0-9]+[a-z]+|^[a-z]+[0-9]+$/ 
-   	
+  
+  # manually creates a version so we can RATE it
+  # TODO: alternative would be to create a version upon ATTEMPT to rate the SUMMARY
+  # and/or allow rating to the summary, and then transfer those ratings to the version if a new summary edit is created 
+  def manual_version_create!
+  	self.paper_trail.save_with_version #if self.needs_new_version?
+  	self.move_votes_to_version!
+  end
+
+  def needs_new_version?
+  	v = (self.id.nil? || self.versions.last.nil?) ? true : (self.versions.last.reify.title != self.title ? true : false)
+  end
+
+  def move_votes_to_version! refresh: true
+  	self.reload if refresh
+
+  	v = self.versions.first
+  	#TODO: maybe make sure the title of the retrieved version matches
+  	ActsAsVotable::Vote.where(votable_type:"Newsify::Summary",votable_id:self.id).update_all(votable_type:"PaperTrail::Version",votable_id:v.id)
+  	Community::VoteCache.where(resource_type:"Newsify::Summary",resource_id:self.id).update_all(resource_type:"PaperTrail::Version",resource_id:v.id)
+  end
+
 	def save_source_ids
 		unless self.source_ids.nil?
 			self.source_ids = [self.source_ids.to_i] if self.source_ids.is_a?(String)

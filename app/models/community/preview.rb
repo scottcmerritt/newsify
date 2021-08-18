@@ -158,6 +158,8 @@ module Community
 				output = Room.all
 			when "user"
 				output = User.all
+			when "version"
+				output = PaperTrail::Version.all
 			else
 				nil
 			end
