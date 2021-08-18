@@ -134,6 +134,8 @@ module Newsify
       #:page, :q
       @terms = Newsify.article_import_terms
 
+      @error_count = 0
+
       if params[:news] && params[:news][:term]
         terms = [params[:news][:term]] #["dating"] #["tech"] #["dating"] #[nil,"tennis","soccer","summer","open source","software","dating","startup","acquired","music","entrepreneur","tech","business","education","fullerton","orange county","california"]
         terms.each do |term|
@@ -212,7 +214,7 @@ module Newsify
 
     def custom_unrated_by_me_guessed user #, label = nil, recency_key = 0
       
-      guessed_interest = GuessScope.where(user_id:user.id,target_type:target_type,accurate:nil)
+      guessed_interest = Community::GuessScope.where(user_id:user.id,target_type:target_type,accurate:nil)
       .order("score DESC").limit(100)
       .where("score > ?",5)
       .pluck(:target_id)

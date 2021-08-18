@@ -1,4 +1,14 @@
 module Newsify
+	# newsapi.org, free = 100/day (100 articles/request)
+	# gnews.io, free = 100/day (10 articles/request)
+	# Newsdata.io, free = 500 requests/day (10 articles/request)
+	# media stack, 500 requests/mo, $25 = 19k requests/mo, $100 = 50k, $250 = 250k
+	# News Catcher newscatcherapi.com, 1 req/sec, 1k/mo (if personal email), 10k/mo if work
+
+	# Bing , free = 100/day, .005/request after, cc required
+
+	# Yahoo News Api $1.80/1000 requests
+
 	class Import < ActiveRecord::Base
 		self.table_name = "imports"
 
@@ -75,7 +85,6 @@ module Newsify
 			search_param = (search_term.nil? || search_term == "headlines") ? nil : "q="+search_term #+"&"
 
 			
-
 	url = 'https://newsapi.org/v2/top-headlines?'\
 	      'sources=bbc-news&'\
 	      'apiKey='
