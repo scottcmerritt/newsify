@@ -81,51 +81,28 @@ module Newsify
 		end
 
 
-
+		# EXAMPLES: 
+		# 'https://newsapi.org/v2/everything?q=bitcoin&from=2019-02-20&sortBy=popularity&language=en&page=1&apiKey='
+		# https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=
+		# https://newsapi.org/v2/everything?q=bitcoin&page=1&apiKey=
+		# sortBy = popularity or publishedAt  #'from=2019-03-06&'\
 		def self.news_from_api search_term = nil, params={}, logger=nil, use_proxy:true, api_key:
 			require 'open-uri'
-			
+			page_num = params[:page] ? params[:page].to_i : 1
+
 			search_path = (search_term.nil? || search_term == "headlines") ? "top-headlines" : "everything" #unless search_term.nil?
 			search_param = (search_term.nil? || search_term == "headlines") ? nil : "q="+search_term #+"&"
 
+			url = 'https://newsapi.org/v2/'+search_path
+			url+=search_term.nil? ? '?country=us' : '?sortBy=publishedAt&language=en'
 			
-	url = 'https://newsapi.org/v2/top-headlines?'\
-	      'sources=bbc-news&'\
-	      'apiKey='
-	# https://newsapi.org/v2/everything?q=bitcoin&page=1&apiKey=2866f6092de941d892f46a570d821daa
-	url = 'https://newsapi.org/v2/'+search_path
-	      
-	      if search_term.nil?
-	      	url+='?country=us'
-	      else
-	      	#url+='?sortBy=popularity&language=en'
-	      	url+='?sortBy=publishedAt&language=en'
-	      end
-	      #'from=2019-03-06&'\
+			url+="&page=#{page_num}"
+			url+="&#{search_param}" unless search_param.nil?
+			url+='&pageSize=100'
+			url+="&apiKey=#{api_key}" #Import::NEWS_API_KEY}"
+			logger.debug "NEWS_FROM_API\n #{url}" unless logger.nil?
 
-	      page_num = params[:page] ? params[:page].to_i : 1
-	      url+="&page=#{page_num}"
 
-	      unless search_param.nil?
-	   		url+="&#{search_param}"
-	  	  end
-	      url+="&apiKey=#{api_key}" #Import::NEWS_API_KEY}"
-	      url+='&pageSize=100'
-
-	      # this line works if uncommented
-	      #url = 'https://newsapi.org/v2/everything?q=bitcoin&from=2019-02-20&sortBy=popularity&language=en&page=1&apiKey=2866f6092de941d892f46a570d821daa'
-
-	      logger.debug "NEWS_FROM_API" unless logger.nil?
-	      logger.debug url unless logger.nil?
-=begin
-url = 'https://newsapi.org/v2/top-headlines?country=us&page=1&apiKey='
-
-			url_to_site = "http://localhost:3000"
-			path_to_api = "/api/proxy" #/nocode/api/build"
-
-			proxy_full_url = url_to_site+path_to_api+"?api_key=#{ENV["NOCODE_API"]}&url=#{url}"
-	      	
-=end
 			if use_proxy
 			    url_to_site = ENV["NOCODE_PROXY"] || "http://localhost:3000"
 			    path_to_api = ENV["NOCODE_PROXY_PATH"] || "/api/proxy"
