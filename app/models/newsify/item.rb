@@ -71,6 +71,12 @@ class Item < ActiveRecord::Base #AbstractModel  #ActiveRecord::Base Labeled
 	scope :all_people, -> { where("items.itype = ?", "PERSON")}
 	scope :by_itype, -> (itype) { where("items.itype = ?", itype)}
 	
+	def self.categories_loaded?
+		#k2 = "Fun & Trivia"
+		!Newsify::Item.where(itype:"CATEGORY").first.nil?
+	end
+
+
 	def has_org?
 		Community::Org.exists?(item_id:self.id)
 	end

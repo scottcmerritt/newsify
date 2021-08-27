@@ -1,14 +1,18 @@
 <% data = local_assigns[:data] %>
 <%= render partial: "/community/shared/rating_counts", locals: {klass: data.klass} %>
+<% if data.empty? %>
+<%= tag.div "No reults", class: "alert alert-warning" %>
+<% else %>
 <%= my_paginate data, page: @page %>
 <% data.each do |row| %>
 <div class="mb-2">
 <%= link_to row.title, newsify.source_path(row) if false %>
 <% begin %>
-<%= render partial: "newsify/sources/source", locals:{source:row, btm_fs:"fs-7", show: {:classify_button=>false}} %>
+<%= render partial: "newsify/sources/source", locals:{source:row, top_fs:"fs-7",btm_fs:"fs-7",title_fs:"fs-6",details_fs:"fs-7", show: {:classify_button=>false}} %>
 <% rescue Exception => ex %>
 <%= tag.div ex, class: "border p-1" %>
 <% end %>
 </div>
 <% end %>
 <%= my_paginate data, page: @page %>
+<% end %>

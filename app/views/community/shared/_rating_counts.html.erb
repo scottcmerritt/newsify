@@ -4,10 +4,10 @@
 <% otype = @otype == "feed" ? "source" : @otype %>
 
 <div class="container bg-white border border-2 rounded my-1">
-	<div class="row border-bottom fw-bold font-weight-bold fs-6 text-dark">
+	<div class="row border-bottom fw-bold font-weight-bold fs-6 text-dark g-0">
 		<div class="col-5">
 			<div class="d-flex flex-wrap align-items-center">
-			<div>Within <%= within_hrs %> hours</div>
+			<div class="px-1">Within <%= within_hrs %> hours</div>
 
 			<div class="mx-1 text-muted ms-3 fs-7">
 				<%= tag.span current_user.rated_within(klass, within_hrs), class: "fs-6 fw-bold text-primary" %> <%= otype ? otype.pluralize : klass.name.pluralize %> rated <span class="fw-bold fs-7 text-primary"><%= current_user.ratings_within(klass, within_hrs) %></span> times
@@ -15,7 +15,7 @@
 
 			</div>
 		</div>
-		<div class="col-5">
+		<div class="col-5 px-1">
 			Total
 		</div>
 		<div class="col-2 text-center">
@@ -27,7 +27,7 @@
 
 	<div class="row">
 		<div class="col-5">
-			<b>Interesting</b>
+			<span class="px-1 fw-bold font-weight-bold">Interesting</span>
 			<i class="fa fa-arrow-up text-success px-1 fsz4"></i> <%= current_user.ratings_up_votes klass,within_hrs,"interesting" %><i class="fa fa-arrow-down text-danger px-1 fsz4"></i> <%= current_user.ratings_down_votes klass,within_hrs,"interesting" %>
 			<div class="row">
 				<div class="col-6">

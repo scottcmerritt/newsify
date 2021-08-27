@@ -11,8 +11,8 @@
 		<%= render partial: "community/votes/main", locals: {show_count:show_count,object: source, user: current_user, icon_colors: ["text-success","text-secondary"]} if show[:votes] && !current_user.nil? rescue tag.div("[Voting not enabled") %>
 
 		<div class="oname d-flex bg-white p-1 px-2">
-			<span class="d-flex m-1 me-2 mt-2">
-		<%= render partial: "community/items/parts/connection", locals: {item: source, otype: "source", wrap: false,span_css:"mx-1 fsz3"} unless current_user.nil?  %></span> <%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold nodec #{title_fs}" %>
+			<span class="d-flex m-1 me-2 mt-1">
+		<%= render partial: "community/items/parts/connection", locals: {item: source, otype: "source", wrap: false,span_css:"mx-1 fsz5 fs-5"} unless current_user.nil?  %></span> <%= link_to source.title, newsify.source_path(source), class:"text-dark font-weight-bold nodec #{title_fs}" %>
 
 
 		<%= tag.span source.created_at_wtime, style:"min-width:120px;", class:"text-end fs-7 ms-auto ml-auto text-secondary" if false %>
@@ -20,9 +20,19 @@
 
 		<%= tag.div date_fmt(source.published_at.nil? ? source.created_at : [source.created_at,source.published_at].min,fmt:"ago") + " ago", class:"text-dark fw-bold mt-2 mx-1" %>
 		<%= render partial: "newsify/sources/parts/similar_count", locals: {source:source,wrap_css:"mx-1"} if show[:similar_count] %>
+
+		<% summarized = source.is_summarized? user: current_user %>
+
+		<% if summarized[:summarized] %>
+		<div class="text-center my-1">
+		<%= link_to "#{summarized[:by_you] ? 'You ' : ''}Summarized".capitalize, newsify.source_path(source), class:"btn btn-sm btn-tiny fs-7 border" %>
+		</div>
+		<% end %>
+
 		</span>
 
 		</div>
+
 	</div>
 
 
@@ -37,28 +47,20 @@
 			<% end %>
 		</div>		
 
-		<div class="snapBtm w-100 bg-light d-flex flex-column border-top <%= btm_fs %>">
-			<div class="d-flex align-items-center">
-				<div class="col-5 bg-light d-flex align-items-center">
-				<% if show[:added_by] %>
-				<div class="px-2">
-				<% user = User.find_by(id:source.createdby) %>
-				Added by <%= user.nil? ? "Auto importer" : link_to(user.respond_to?(:username) ? user.username : user.email, newsify.user_path(user)) %>
-						
-				<%= tag.span raw("#{date_fmt(source.created_at,fmt:"ago")} ago"), class: "ms-1 ml-1 border px-1 fs-8 bg-white" if !source.published_at.nil? && (source.created_at > source.published_at) && (source.created_at > 24.hours.ago) %>
+		<div class="snapBtm w-100 bg-light d-flex flex-column border-top <%= btm_fs %> g-0">
+			<div class="d-flex align-items-center justify-content-between">
+				<div class="bg-light d-flex align-items-center">
+					<% if show[:added_by] %>
+					<div class="px-2">
+					<% user = User.find_by(id:source.createdby) %>
+					by <%= user.nil? ? "Auto importer" : link_to(user.respond_to?(:username) ? user.username : user.email, newsify.user_path(user)) %>
+							
+					<%= tag.span raw("#{date_fmt(source.created_at,fmt:"ago")} ago"), class: "ms-1 ml-1 border px-1 fs-8 bg-white" if !source.published_at.nil? && (source.created_at > source.published_at) && (source.created_at > 24.hours.ago) %>
 
-				</div>
-				<% end %>
-				
-				</div>
-				<div class="col-2">
-					<% summarized = source.is_summarized? user: current_user %>
-
-					<% if summarized[:summarized] %>
-					<%= link_to "Summarized #{summarized[:by_you] ? '(by you)' : ''}", newsify.source_path(source) %>
+					</div>
 					<% end %>
 				</div>
-				<div class="col-5 text-right text-end">
+				<div class="text-right text-end">
 					<div class="bg-light">
 					<% begin %>
 					<%= render partial: "community/votes/moderation", locals: {object: source, user: current_user,labels:Community::Voting::VOTESCOPE_LABELS} if show[:moderation] && !current_user.nil? %>

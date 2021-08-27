@@ -26,14 +26,16 @@ module Newsify
 
 		# TODO: get this working in the background
 
-		def self.auto_import! logger = nil, api_key:
+		def self.auto_import! logger = nil, api_key:, use_proxy: Import.use_proxy?
 			user_id = -1
 			@terms = ["headlines","dating", "tech","tennis","soccer","summer","open source software","software","dating","startup","acquired","music","entrepreneur","tech","business","education","fullerton","orange county","california"]
 			term = @terms[0]
-			Import.start_import({:max_pages=>1,:page=>1,:q=>term},user_id, logger)
-			
+			Import.start_import({:max_pages=>1,:page=>1,:q=>term},user_id, logger,use_proxy:use_proxy)
 		end
 
+		def self.use_proxy?
+			(ENV['NEWSIFY_USE_PROXY'] && [true,"true"].include?(ENV['NEWSIFY_USE_PROXY'])) ? true : false
+		end
 
 		# determine if the articles have been grouped
 		def grouped?
@@ -78,7 +80,9 @@ module Newsify
 			end
 		end
 
-		def self.news_from_api search_term = nil, params={}, logger=nil, api_key:
+
+
+		def self.news_from_api search_term = nil, params={}, logger=nil, use_proxy:true, api_key:
 			require 'open-uri'
 			
 			search_path = (search_term.nil? || search_term == "headlines") ? "top-headlines" : "everything" #unless search_term.nil?
@@ -113,7 +117,21 @@ module Newsify
 
 	      logger.debug "NEWS_FROM_API" unless logger.nil?
 	      logger.debug url unless logger.nil?
+=begin
+url = 'https://newsapi.org/v2/top-headlines?country=us&page=1&apiKey='
 
+			url_to_site = "http://localhost:3000"
+			path_to_api = "/api/proxy" #/nocode/api/build"
+
+			proxy_full_url = url_to_site+path_to_api+"?api_key=#{ENV["NOCODE_API"]}&url=#{url}"
+	      	
+=end
+			if use_proxy
+			    url_to_site = ENV["NOCODE_PROXY"] || "http://localhost:3000"
+			    path_to_api = ENV["NOCODE_PROXY_PATH"] || "/api/proxy"
+
+			    url = url_to_site+path_to_api+"?api_key=#{ENV["NOCODE_KEY"]}&" + {url: url}.to_query 
+			end
 			req = URI.open(url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
 			result_json = req.read
 
@@ -141,7 +159,7 @@ module Newsify
 			end
 		end
 		# get articles from news_api, add them to the DATABASE
-		def self.start_import params, createdby, logger, api_key:
+		def self.start_import params, createdby, logger, api_key:, use_proxy: Import.use_proxy?
 
 
 
@@ -163,7 +181,7 @@ module Newsify
 	  		options[:dryrun] = params[:dryrun] ? true : false
 	  		options[:fields] = ["org","date","topic","source"] #"author","source"
 
-		  	news_data = Import.news_from_api(search_topic, options,logger, api_key: api_key)
+		  	news_data = Import.news_from_api(search_topic, options,logger, api_key: api_key,use_proxy:use_proxy)
 		  	imported = JSON.parse(news_data)
 		  	
 		  	# add data from news api to DATABASE
@@ -186,7 +204,7 @@ module Newsify
 		  		(2..pages).each do |page_num|
 		  			options[:page] = page_num
 
-			  		news_data = Import.news_from_api(search_topic, options,logger)
+			  		news_data = Import.news_from_api(search_topic, options,logger,use_proxy:use_proxy)
 			  		
 			  		imported = JSON.parse(news_data)
 			  		unless options[:dryrun]

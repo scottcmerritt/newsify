@@ -1,13 +1,3 @@
 <h4>The news relevant to your community!</h4>
 
-<% k2 = "Fun & Trivia" %>
-<% i1 = Newsify::Item.where(name: k2,itype:"CATEGORY").first %>
-<%= tag.span(tag.i "",class:"fa fa-check-circle") unless i1.nil? %>
-
-<% if i1.nil? %>
-<div>
-	<%= link_to "Import categories", newsify.categories_import_path %>
-</div>
-<% end %>
-
-<%= newsify_widget_sources show:{tabs:true} %>
+<%= newsify_widget_sources show:{tabs:true,importer:true} %>

@@ -19,9 +19,7 @@ module Newsify
 	    @page_size = 100
 	    load_start_feed
 
-	    
 	    @data.each {|source| source.google_classify!(entities:true) unless source.classified?} if params[:classify]
-
 
 	    respond_to do |format|
 	      format.js { render "start"}

@@ -6,7 +6,7 @@ module Newsify
     include Community::LabeledData
 
     before_action :setup_pager
-    before_action :set_source, only: [:show, :opinions]
+    before_action :set_source, only: [:show,:edit,:opinions]
 
 #      before_action :load_entities, only: [:show,:edit,:update]
 #  before_action :load_feed_report, only: [:info,:index,:mine,:start,:scroll,:report,:labeled,:my_interests]
@@ -17,7 +17,14 @@ module Newsify
 
     skip_before_action :verify_authenticity_token, only: [:index,:labeled]
 
+    def new
+      @source = Source.new
+    end
 
+    def edit
+
+    end
+    
     def index
       @labels =  ["saved"] + @labels
       #Newsify::Cache.set_obj "my_test_key", "hello"

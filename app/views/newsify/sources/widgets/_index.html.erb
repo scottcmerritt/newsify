@@ -1,9 +1,8 @@
-<% show_default = {tabs:false} %>
+<% show_default = {tabs:false,importer:false} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
 
 <% if show[:tabs] %>
 <div class="d-flex justify-content-between">
-<%= link_to "Topics", newsify.items_path, class: "mx-3" %>
 
 <div class="text-center p-1 my-1">
 <%= tag.span "Recent articles", class: "btn btn-sm bg-white border rounded text-dark fs-6" %>
@@ -11,7 +10,20 @@
 <%= link_to "View more", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded" %>
 </div>
 
-<%= link_to "Admin", newsify.newsify_admin_path, class: "mx-3" if is_admin? %>
+<div class="ms-auto ml-auto">
+<% if show[:importer] %>
+<% if Newsify::Item.categories_loaded? %>
+	<%= link_to raw("Categories #{tag.span(tag.i "",class:"fa fa-check-circle")}"),newsify.categories_path %>
+<% else %>
+<span class="mx-2">
+	<%= link_to "Import categories", newsify.categories_import_path, class: "btn btn-sm btn-primary bg-primary text-light m-1" %>
+</span>
+<% end %>
+<% end %>
+<%= link_to "Topics", newsify.items_path, class: "mx-2" %>
+
+<%= link_to "Admin", newsify.newsify_admin_path, class: "mx-2" if is_admin? %>
+</div>
 </div>
 <% end %>
 

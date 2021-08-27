@@ -5,6 +5,7 @@ module Newsify
 		has_many :author_orgs
 		has_many :sources, through: :source_authors
 
+		
 		def self.add_from_api raw_names, api_name="newsapi",org_id=nil, createdby=nil
 
 			if raw_names.nil? || raw_names == "null"
