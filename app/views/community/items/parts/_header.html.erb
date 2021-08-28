@@ -33,9 +33,7 @@
 	
 	<div class="justify-content-end ms-auto ml-auto mx-1">
 		<%= @item.iptc_subject_code %>
-		<% if @item.parent.nil? %>
-		<%= link_to "Categories", newsify.categories_path %>
-		<% else %>
+		<% unless @item.parent.nil? %>
 		<%= link_to @item.parent.name, newsify.item_path(@item.parent) %>
 		<% end %>
 	</div>

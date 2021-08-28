@@ -32,18 +32,18 @@
 <div class="row">
 	<div class="col-7 py-2 images-xlg">
 		<p class="d-flex bg-light px-2">
-			<div class="pb-2"><%= @item.wd_descr %></div>
-			<div class="py-1">
-				<% unless @item.wiki_img_url.blank? %>
-				<div class="float-left mr-2 col-4">
-				<img src="<%= @item.wiki_img_url %>" class="img-fluid images-md img-circle border border-2">
-				</div>
-				<% end %>
-				<%= @item.wiki_text %>
+			<div class="pb-2"><%= @item.wd_descr %></div>		
+			<div class="my-2">
+			<%= @item.wiki_text %>
 			</div>
+			
 		</p>
 </div>
 	<div class="col-5">
+		<% unless @item.wiki_img_url.blank? %>
+				<img src="<%= @item.wiki_img_url %>" class="mr-2 img-fluid img-circle border border-2">
+				<% end %>
+
 		<% if defined?(Room) %>
 			<%= render partial: "rooms/rooms",locals:{rooms: @item.rooms} rescue "[No rooms]" %>
 			<div id="discussedWithin">

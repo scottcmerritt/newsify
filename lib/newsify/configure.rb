@@ -14,6 +14,8 @@ module Newsify
 
     @@article_import_terms = ["headlines","news","education"]
 
+    @@service_upgrades = []
+
     def configure(*settings)
       return if !sanity_check(settings)
       yield self if block_given?
@@ -48,14 +50,25 @@ module Newsify
     def use_defaults
       configure do |config|
         config.article_import_terms = ["headlines","dating", "tech","tennis","soccer"] #,"summer","open source software","software","dating","startup","acquired","music","entrepreneur","tech","business","education","fullerton","orange county","california"]
-        
+            
         config.dynamic_shortcuts = false
         config.orm = "active_record"
         config.default_list_ui = "list"
         config.theme = 0
         config.languages = ["en","es"]
         config.default_language = "en"
+
+        # info for updating the provided service (i.e. # of db rows etc...)
+        # an array of hash service tiers, example_tier = {name:"Tier 1",rows:100000,price:"$1 billion/month",info:"Some db rows and great customer service"}
+        config.service_upgrades = [] 
       end
+    end
+
+    def service_upgrades=(upgrades)
+      @@service_upgrades = upgrades
+    end
+    def service_upgrades
+      @@service_upgrades
     end
 
     def article_import_terms=(article_terms)

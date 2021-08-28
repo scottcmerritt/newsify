@@ -1,4 +1,5 @@
-<% show_default = {tabs:false,importer:false} %>
+<% title = "Posts" if local_assigns[:title].nil? %>
+<% show_default = {tabs:false,importer:false,title:false} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
 
 <% if show[:tabs] %>
@@ -25,6 +26,14 @@
 <%= link_to "Admin", newsify.newsify_admin_path, class: "mx-2" if is_admin? %>
 </div>
 </div>
+<% end %>
+
+
+
+
+<% if show[:title] %>
+<h5 class="mainH listH bg-primary primary-b text-light mb-1">
+		<%= icon_text dbt(title),"newspaper", true %></h5>
 <% end %>
 
 <% data = local_assigns[:data] || Newsify::Source.limit(5) %>

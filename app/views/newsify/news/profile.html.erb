@@ -1,1 +1,11 @@
-<h4><%= @user.email %></h4>
+<%= render partial: "users/profiles/header", locals: {user:@user,user_link:[main_app,@user],profile: :newsify} %>
+
+<div class="row">
+	<div class="col-4">
+		<%= render partial: "posts/widgets/index", locals: {data:@user.posts.order("created_at DESC").limit(10)} %>
+	</div>
+	<div class="col-4">
+		<%= render partial: "newsify/sources/widgets/index", locals: {title:dbt("articles").capitalize,data:@user.sources.order("created_at DESC").limit(10),show: {votes:false,moderation:false,interesting:false,added_by:false,title:true}} %>
+	</div>
+	<div class="col-4"><%= render partial: "users/feedbacker/comments", locals: {user: @user,title:"Comments",comments:@user.comments.order("created_at DESC")} %></div>
+</div>

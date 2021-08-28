@@ -1,8 +1,9 @@
 <% force_show = false if local_assigns[:force_show].nil? %>
 <% show_main = true if local_assigns[:show_main].nil? %>
 <% show_moderation = true if local_assigns[:show_moderation].nil? %>
+<% wrap_css = "d-flex align-items-center justify-content-between" if local_assigns[:wrap_css].nil? %>
 <% if force_show || !(@labels.nil? && @mod_labels.nil?) %>
-<div class="d-flex align-items-center justify-content-between">
+<div class="<%= wrap_css %>">
 	<% if show_main %>
 	<div class="navbar navbar-sub bg-white p-1 mb-1">
 	<% @labels.each do |label| %>
@@ -19,7 +20,7 @@
 	<div class="navbar navbar-sub bg-white p-1 mb-1">
 	<% @mod_labels.each do |label| %>
 		<% text = Community::Voting::VOTESCOPE_LABELS[label]||= label %>
-		<%= tag.div(link_to(text,otype_labeled_href(@otype, label), class:"nav-link p-1 fs-7"),class:"nav-item #{default_badge_css(size:'sm',tight:true,active:label == selected )}") %>
+		<%= tag.div(link_to(text,otype_labeled_href(@otype, label), class:"nav-link p-1 fs-7"),class:"nav-item #{default_badge_css2(size:'sm',tight:true,active:label == selected )}") %>
 	<% end %>
 	</div>
 	<% end %>

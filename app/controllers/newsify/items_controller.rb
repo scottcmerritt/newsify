@@ -17,6 +17,22 @@ module Newsify
     		"community/items" # change path from app/views/ideas to app/views/tasks
   		end
 
+  		def new
+  			@item = Newsify::Item.new
+  		end
+
+  		def create
+  			@item = Newsify::Item.new permitted_parameters
+			@item.createdby = current_user.id
+
+			if @item.save
+				flash[:success] = "Item #{@item.name} was created successfully"
+			    redirect_to @item
+			else
+				render :new
+			end
+  		end
+
 		# GET /browse/:otype/:oid
 		def browse
 			if params[:otype] == "source"

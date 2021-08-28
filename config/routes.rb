@@ -5,8 +5,11 @@ Newsify::Engine.routes.draw do
 	resources :items
 	resources :sources, :summaries, :authors, :summary_sources
 
+	resources :stats
+	
 	match 'admin' => 'news#admin', :as=> :newsify_admin, :via=>:get
 	match 'search' => 'news#search', :as=> :newsify_search, :via=>:get
+	match 'activity' => 'news#activity', :as=> :newsify_activity, :via=>:get
 
 	match '/browse/:otype(/:oid)' => "items#browse", :as => :browse_otype, :via=> :get
 

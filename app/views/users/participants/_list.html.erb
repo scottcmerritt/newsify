@@ -53,7 +53,7 @@
 			<% end %>
 			<span><%= tag.i "", class: "fa fa-circle text-success fsz7" if user.is_a?(User) && user.online? %></span>
 			<% if user.is_a? User %>
-					<%= switch_to ? link_to(user.display_name_public, switch_user_path(id: user.id)) : link_to(user.display_name_public, user) %>
+					<%= switch_to ? link_to(user.display_name_public, switch_user_path(id: user.id)) : link_to(user.display_name_public, [main_app,user]) %>
 			<% end %>
 		</div>
 

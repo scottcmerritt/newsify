@@ -19,6 +19,10 @@ module Newsify
       .where("lower(name) LIKE ?",prepped).page(@page)    
 
       render "/newsify/shared/search"
+    end
+
+    # LOG OF their activity within the newsify engine/plugin
+    def activity
 
     end
 

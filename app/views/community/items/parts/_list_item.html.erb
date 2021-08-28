@@ -1,16 +1,12 @@
+<% parent_pos = :btm %>
 <% children_scrollable = true if local_assigns[:children_scrollable].nil? %>
+
+<% votes_el = tag.div(render(partial: "community/votes/main", locals: {object: item, user: current_user}), class: "fs-7") if show[:votes] %>
+
+<% parent_el = render(partial:"community/items/parts/list_parent",locals:{item:item,show:show}) %>
+
 <div class="bg-white border mb-2">
-	<% grand_parent = item.parent.parent unless item.parent.nil? %>
-	<div class="d-flex px-1 pt-1 fsz6">
-		<% unless item.parent.nil? %>
-		<div>
-			<%= tag.span(safe_join([link_to(grand_parent.name, newsify.item_path(grand_parent), class: "text-dark"),tag.span("/",class:"mx-1")])) unless grand_parent.nil? %> <%= link_to item.parent.name, newsify.item_path(item.parent), class: "ms-1 fs-7 nodec text-dark" unless item.parent.nil? %>
-		</div>
-		<% end %>
-		<div class="mx-2 fsz7 ms-auto ml-auto">
-			<%= link_to "edit", newsify.edit_item_path(item), class: "mx-2" if show[:edit] %>
-		</div>
-	</div>
+<%= parent_pos == :top ? parent_el : votes_el %>
 
 <div class="bg-white p-1 d-flex align-items-center">
 	<%= render partial: "community/items/parts/connection", locals: {item:item,wrap: false,span_css:"mx-1 fsz5 fs-5 me-2"} unless current_user.nil? %>
@@ -29,7 +25,9 @@
 	</div>
 
 </div>
-<%= tag.div render(partial: "community/votes/main", locals: {object: item, user: current_user}), class: "fs-7" if show[:votes] %>
+<%= parent_pos == :top ? votes_el : parent_el %>
+
+
 <% if show[:relevance] %>
 <div>Relevance: <%= item.relevance %>, Impressions: <%= item.impressionist_count %>, Tags: <%= item.source_topics.count %></div>
 <% end %>

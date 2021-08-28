@@ -26,19 +26,44 @@ module Newsify
     end
 
 
+    #TODO: add condensed mode for OTHER languages
     def date_fmt date, fmt: nil, verbose: false
+
+      lang = I18n.locale.to_s
+
+      lookup = {
+        "en" => {:about => "about",:less => "less than a", :durations => ["day","minute","hour","year"]},
+        "es" => {:about => "alrededor de",:less => "menos de", :durations =>["día","minuto","hora","año"]}
+        }
+
+      logger.debug "LOCALE::: #{I18n.locale.to_s}"
+      if !(I18n.locale.to_s == "en")
+        logger.debug "LOCALE1::: HIT"
+      else
+        logger.debug "LOCALE1::: MISS"
+      end
+      #verbose = true if !(I18n.locale.to_s == "en")
+
       if fmt == "ago"
         res = time_ago_in_words date #date.strftime("%-m/%-d/%y") +  " at " + date.strftime("%l:%M%P")
+        
         unless verbose
-          ["day","minute","hour","year"].each do |duration|
+
+          lookup[lang][:durations].each do |duration|
             res = res.sub(duration+"s",duration[0]).sub(duration,duration[0])
           end
-          res.sub("about","~").delete(" ")
+          res = res.sub(lookup[lang][:about],"~")
+          res = res.sub(lookup[lang][:less], lang == "en" ? "~1" : "~")
+          res = res.delete(" ")
         end
         # .gsub(/\s+/, "") # removes ALL white space
+
       else
-        date.strftime("%-m/%-d/%y") +  " at " + date.strftime("%l:%M%P")
+        res = date.strftime("%-m/%-d/%y") +  " at " + date.strftime("%l:%M%P")
       end
+
+
+      res
     end
 =begin
     def created_at_date
@@ -74,7 +99,13 @@ module Newsify
       obj.class.name.split("Newsify::")[-1]
     end
 
-    def default_badge_css size: 'md', tight: false, active: false, color: 'info', active_color: 'dark'
+    # bg-secondary.bg-gradient
+    def default_badge_css size: 'md', tight: false, active: false, color: 'secondary', active_color: 'dark', text_color: 'light', text_color_active: 'light'
+      "badge #{active ? "badge-#{active_color} bg-#{active_color} text-#{text_color_active}" : "badge-#{color} bg-#{color} text-#{text_color}"} bg-gradient border rounded #{tight ? 'mr-1' : 'mx-1'} #{size == 'sm' ? 'px-1' : 'p-2'}"
+    end
+
+    # used for moderation
+    def default_badge_css2 size: 'md', tight: false, active: false, color: 'info', active_color: 'dark'
       "badge #{active ? "badge-#{active_color}" : "badge-#{color} bg-#{color}"} border rounded #{tight ? 'mr-1' : 'mx-1'} #{size == 'sm' ? 'px-1' : 'p-2'}"
     end
 

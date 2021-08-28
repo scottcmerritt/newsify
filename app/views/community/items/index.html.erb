@@ -3,7 +3,8 @@
 	<form action="<%= newsify.items_path %>" method="get">
 		<input type="text" name="q" value="<%= @query %>" class="mx-2 fsz4 p-1"/>
 	</form>
-	<span class="ms-auto ml-auto badge bg-light text-dark badge-light"><%= Newsify::Item.count %></span>
+	<span class="ms-auto ml-auto badge bg-light text-dark badge-light"><%= num_comma Newsify::Item.count %></span>
+	<%= link_to icon(icon:"plus"),newsify.new_item_path, class: "btn btn-sm ms-1 btn-light text-success" if is_admin? %>
 </h2>
 <%= render partial: "newsify/shared/menu",locals: {links: @menu_links,active_href: params[:itype] == "CATEGORY" ? newsify.categories_path : newsify.items_path} %>
 

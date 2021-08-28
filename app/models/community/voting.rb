@@ -9,7 +9,7 @@ module Community
 		VOTESCOPES_MODERATE = ["spam","ad","clickbait","english"]
 		VOTESCOPES_EXTRA = ["attracted","intrigued"]
 
-		VOTESCOPE_LABELS = {"learnedfrom" => "Learned","clickbait"=>"Click bait"}
+		VOTESCOPE_LABELS = {"learnedfrom" => "learned","clickbait"=>"click bait"}
 		
 		def initialize params: params = {}, user: nil, is_admin:false,logger: nil, show_count: true
 			@params = params
