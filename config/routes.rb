@@ -6,7 +6,7 @@ Newsify::Engine.routes.draw do
 	resources :sources, :summaries, :authors, :summary_sources
 
 	resources :stats
-	
+
 	match 'admin' => 'news#admin', :as=> :newsify_admin, :via=>:get
 	match 'search' => 'news#search', :as=> :newsify_search, :via=>:get
 	match 'activity' => 'news#activity', :as=> :newsify_activity, :via=>:get
@@ -49,6 +49,10 @@ Newsify::Engine.routes.draw do
 
 	match '/grouped/sources' => 'sources#grouped', :as => :sources_grouped, :via=>[:get,:post]
 	match '/similar/sources' => 'sources#similar', :as => :sources_similar, :via=>[:get,:post]
+	
+
+	match '/import/start' => 'news#import_start', :as => :news_import, :via=>[:get,:post]
+
 	match '/import/sources' => 'sources#import', :as => :sources_import, :via=>[:get,:post]
 	match '/imported/sources' => 'sources#imported', :as => :sources_imported, :via=>[:get,:post]
 	match '/import/sources/classify/:import_id' => 'sources#import_classify', :as => :sources_import_classify, :via=>[:get,:post]

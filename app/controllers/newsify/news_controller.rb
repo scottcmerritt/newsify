@@ -1,6 +1,31 @@
 module Newsify
   class NewsController < ApplicationController
 
+    skip_before_action :authenticate_user!, only: [:start_import]
+
+    # this is a public url to permit background processes to trigger imports via GET
+    # TODO: consider adding throttling, caching and authentication
+    def import_start
+
+      terms = ["headlines"] # Newsify.article_import_terms
+      terms.each do |term|
+        Import.start_import({:max_pages=>1,:page=>1,:q=>term},0, logger, api_key:ENV["NEWS_API_KEY"])
+      end
+
+=begin
+      similar, sources, new_group_ids = Classify::Similar.group_similar! true, true
+      puts "#{new_group_ids.length} new article groups"
+
+      # TODO: get unique articles, those grouped (just get 1)
+      Newsify::Source.unique_sources.each_with_index do |source,index|
+        puts "Classifying and summarizing article ##{index}"
+        Classify::Summarize.from_sources source
+        source.google_classify!(entities:true,full_scan:true)
+      end
+=end
+      render json:{status:true, terms: terms}
+    end
+
     def index
 
     end

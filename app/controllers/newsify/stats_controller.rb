@@ -1,6 +1,6 @@
 module Newsify
   class StatsController < ApplicationController
-    # THIS IS A PUBLIC controller (or now)
+    # THIS IS A PUBLIC controller (for now)
     skip_before_action :authenticate_user!
 
     def index
@@ -10,7 +10,7 @@ module Newsify
     private
 
     def site_info
-      {name:"My site name",created_at:site_stat(:created_at),rows:site_stat(:rows)}
+      {name: translated_site_name,created_at:site_stat(:created_at),rows:site_stat(:rows)}
     end
     def site_stats
       {
@@ -35,7 +35,7 @@ module Newsify
       when :created_at
         User.order("created_at ASC").first.created_at
       when :rows
-
+        Feedbacker::Stats.database_info[:rows][:used] if defined?(Feedbacker::Stats)
       end
     end
 

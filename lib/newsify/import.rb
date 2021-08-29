@@ -137,11 +137,7 @@ module Newsify
 		end
 		# get articles from news_api, add them to the DATABASE
 		def self.start_import params, createdby, logger, api_key:, use_proxy: Import.use_proxy?
-
-
-
 			import = Import.create(keyword: params[:q],user_id:createdby,api_id:1)
-
 
 			options = {}
 	  		options[:results_per_page] = 100
