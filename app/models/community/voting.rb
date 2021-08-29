@@ -80,6 +80,8 @@ module Community
 			VOTESCOPES_MODERATE
 		end
 		def log_vote!
+			self.logger.debug "\n\nINSIDE LOG_VOTE!\n\n" unless self.logger.nil?
+
 			current_user.auditable
 			
 

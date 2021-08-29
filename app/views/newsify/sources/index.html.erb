@@ -9,6 +9,7 @@
 	<%= link_to "Import", newsify.sources_import_path, class: "btn btn-sm btn-primary bg-primary" %>
 </h2>
 
+<%= @labeled.to_sql if params[:debug] && is_admin? %>
 <%= paginate @labeled if false %>
 <%= page_entries_info @labeled if false %>
 <% if @recent_relevance %>

@@ -71,6 +71,7 @@ module Community
 
 	    end
 
+	    # sets label and sort_order
 	    def setup_label_sort
 	      @label = (@mod_labels+@labels).include?(params[:label]) ? params[:label] : nil
 	      #@sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
@@ -78,10 +79,12 @@ module Community
 	            
 	      #@order_text = @no_join ? "id" : @sort_by[0]
 	      #@order_text = "(cached_weighted_#{@label}_average * cached_weighted_#{@label}_total)" unless @label.nil? #  "cached_weighted_score"
+	    	return @label, @sort_order
 	    end
 
-	    def setup_time_decay
-	    	require 'custom_sort' # phasing out
+	    # sets @time_decay_text, @recent_relevance and updates current_user.settings(:filter)[:recency]=> @recent_relevance
+	    def setup_time_decay model_name: "sources"
+	    	#require 'custom_sort' # phasing out
 	    	require 'sortify'
 	       # recency = 0 = High, Med, Low, None
 
@@ -93,7 +96,7 @@ module Community
 	        end
 	#      @recent_relevance = params[:recency] ? params[:recency].to_i :  2 
 
-	      @time_decay_text = Sortify::SortFields.time_decay_adjusted("sources",@recent_relevance)
+	      @time_decay_text = Sortify::SortFields.time_decay_adjusted(model_name,@recent_relevance)
 
 	    end
 

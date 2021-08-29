@@ -30,75 +30,29 @@ module Newsify
       #Newsify::Cache.set_obj "my_test_key", "hello"
       #@cache_result = Newsify::Cache.get_obj "my_test_key"
 
-      if params[:oid]
-        @labeled = Source.select("sources.*").joins(:source_topics) 
-        @labeled = @labeled.where(source_topics: {item_id: params[:oid]})
-      elsif params[:author_id]
-        @labeled = Source.select("sources.*").joins("LEFT JOIN source_authors ON source_authors.source_id=sources.id")
-        @labeled = @labeled.where("source_authors.author_id = ?",params[:author_id])
-      elsif params[:import_id]
-        @labeled = Source.select("sources.*").joins("LEFT JOIN import_sources ON sources.id = import_sources.source_id")
-        .where("import_id = ?",params[:import_id])
-      else
-        @labeled = Source.select("sources.*")
-      end
-      @labeled = @labeled.where(org_id:params[:org_id]) if params[:org_id]
-
-      @labeled = @labeled.order("sources.created_at DESC")
-      @labeled = @labeled.page(@page).per(20)
+      news_feed = Newsify::Feed.new(model:Newsify::Source,params:params,load:true,defaults:false)
+      @labeled = news_feed.data
     end
 
+    # TODO: implement add_friend_filter
+    # TODO: debug this A LOT MORE
     def labeled
       @labels =  ["saved"] + @labels
 
+      @sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
+      news_feed = Newsify::Feed.new(model:Newsify::Source,params:params,load:false,sort_by:@sort_by)
+
       @otype = "source"
-      if params[:label] == "saved"
-        @label = "saved"
-        @labeled =  current_user.favorited_by_type(target_type).page(params[:page])
+      if params[:label] == "saved" && @label = params[:label]
+        @labeled = news_feed.saved_data current_user
       else
-        @sort_by = ["cached_weighted_score","cached_weighted_average","cached_weighted_quality_average"]    
-        @sort_order = "DESC"
-
-
-        setup_label_sort
-        setup_time_decay
+        @recent_relevance, @label, @sort_order = news_feed.filter!
         @js_url = "/labeled/sources/#{@label}.js"
 
-        #Source.where("title = ?","Dated test article").destroy_all
+        @labeled = news_feed.data
 
-        setup_labeled_data
-        #add_friend_filter
-        add_order_by
-=begin
-        @label = (@mod_labels+@labels).include?(params[:label]) ? params[:label] : nil
-
-        @order_text = @sort_by[0]
-
-        @order_text = "cached_weighted_#{@label}_average" unless @label.nil? #  "cached_weighted_score"
-
-        @labeled = Source.joins("LEFT JOIN vote_caches ON vote_caches.resource_id = sources.id")
-        .where("vote_caches.resource_type = ?","Newsify::Source")
-        .order("#{@order_text} #{@sort_order}").page(params[:page]).per(10)
-=end
       end
       render "index"
-    end
-
-     def labeled_old
-        @otype = "source"
-        setup_label_sort
-        setup_time_decay
-        @js_url = "/labeled/sources/#{@label}.js"
-
-        #Source.where("title = ?","Dated test article").destroy_all
-
-        setup_labeled_data
-        #add_friend_filter
-        add_order_by
-
-        classify_sources @labeled if params[:classify]
-
-        render "index"
     end
 
     # recent sources, exclude grouped
@@ -114,6 +68,11 @@ module Newsify
     end
 
     def show
+
+      # do fake votes from 20 users
+      do_fakevote! if params[:fakevote] && is_admin?
+
+
       impression = impressionist(@source, "",{},{})
       do_summarization! if params[:summarize]
 
@@ -246,6 +205,25 @@ module Newsify
       @data = Source.where.not(id: recent_votes(within_days:votes_within_days))
       .where("created_at > ?",within_days.days.ago)
     end
+
+    def do_fakevote! default_vscope: "learnedfrom"
+
+      User.select("*").limit(20).each do |user|
+
+        if true #rand(0..1) == 0
+          vparams = {user: user,otype:"source",oid:@source.id}
+          #@voting = Community::Voting.new(params:vparams,user:user,is_admin:false,logger:logger)
+          #@voting.log_vote! if rand(0..3) == 0
+
+          vparams[:vscope] = params[:label] || default_vscope
+          @voting = Community::Voting.new(params:vparams,user:user,is_admin:false,logger:logger)
+
+          @voting.log_vote! if true #rand(0..3) == 0
+        end
+
+      end
+
+      end
 
 
 

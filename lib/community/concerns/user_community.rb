@@ -17,8 +17,6 @@ module Community
    end
 
 
-
-
     def display_name_public
       email
     end
