@@ -1,13 +1,11 @@
 module Newsify
   class NewsController < ApplicationController
-
-    skip_before_action :authenticate_user!, only: [:start_import]
-
     # this is a public url to permit background processes to trigger imports via GET
     # TODO: consider adding throttling, caching and authentication
     def import_start
 
-      terms = ["headlines"] # Newsify.article_import_terms
+      terms = Newsify.article_import_terms.sample(2)
+      terms.push "headlines" unless terms.include? "headlines"
       terms.each do |term|
         Import.start_import({:max_pages=>1,:page=>1,:q=>term},0, logger, api_key:ENV["NEWS_API_KEY"])
       end
