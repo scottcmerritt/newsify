@@ -1,6 +1,7 @@
 <% title = "Posts" if local_assigns[:title].nil? %>
 <% show_default = {tabs:false,importer:false,title:false} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
+<% data = local_assigns[:data] || Newsify::Source.limit(5) %>
 
 <% if show[:tabs] %>
 
@@ -40,7 +41,7 @@
 		<%= icon_text dbt(title),"newspaper", true %></h5>
 <% end %>
 
-<% data = local_assigns[:data] || Newsify::Source.limit(5) %>
+
 
 <% unless data.nil? || data.empty? %>
 <% data.each do |row| %>
