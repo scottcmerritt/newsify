@@ -1,8 +1,7 @@
-<% title = "Posts" if local_assigns[:title].nil? %>
+<% title = "Articles" if local_assigns[:title].nil? %>
 <% show_default = {tabs:false,importer:false,title:false} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
 <% data = local_assigns[:data] || Newsify::Source.limit(5) %>
-[testing here]
 <% if show[:tabs] %>
 
 <div class="d-flex justify-content-between">
@@ -11,7 +10,7 @@
 <%= tag.span "Recent articles", class: "btn btn-sm bg-white border rounded text-dark fs-6" %>
 <%= link_to "Your feed", newsify.feed_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded" %>
 
-<%= (data.nil? || data.empty?) ? link_to("Import articles", newsify.sources_import_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") : link_to("View more", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") %>
+<%= (data.nil? || data.empty?) ? link_to("Import articles", newsify.sources_import_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") : link_to("View more1", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") %>
 </div>
 
 <div class="ms-auto ml-auto">

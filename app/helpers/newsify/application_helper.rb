@@ -151,8 +151,8 @@ module Newsify
     end
 
     # widget on home page
-    def newsify_widget_sources show: nil
-      data = Newsify::Source.order("created_at DESC").limit(5)
+    def newsify_widget_sources show: nil, data: nil
+      data = Newsify::Source.order("created_at DESC").limit(5) if data.nil? 
       render(partial:"newsify/sources/widgets/index", locals: {data:data,show:show})
 
     end
