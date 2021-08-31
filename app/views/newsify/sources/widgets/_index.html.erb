@@ -2,7 +2,7 @@
 <% show_default = {tabs:false,importer:false,title:false} %>
 <% show = local_assigns[:show].nil? ? show_default : show_default.merge(local_assigns[:show]) %>
 <% data = local_assigns[:data] || Newsify::Source.limit(5) %>
-
+[testing here]
 <% if show[:tabs] %>
 
 <div class="d-flex justify-content-between">
@@ -11,7 +11,7 @@
 <%= tag.span "Recent articles", class: "btn btn-sm bg-white border rounded text-dark fs-6" %>
 <%= link_to "Your feed", newsify.feed_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded" %>
 
-<%= data.nil? || data.empty? ? link_to("Import articles", newsify.sources_import_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") : link_to("View more", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") %>
+<%= (data.nil? || data.empty?) ? link_to("Import articles", newsify.sources_import_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") : link_to("View more", newsify.sources_path, class: "btn btn-sm bg-primary text-light fs-6 p-1 border rounded") %>
 </div>
 
 <div class="ms-auto ml-auto">
@@ -41,14 +41,12 @@
 		<%= icon_text dbt(title),"newspaper", true %></h5>
 <% end %>
 
-
-
 <% unless data.nil? || data.empty? %>
-<% data.each do |row| %>
-<div class="my-1">
-<%= render partial: "newsify/sources/source", locals:{source:row,show:show,title_fs:"fs-6",details_fs:"fs-7"} %>
-</div>
-<% end %>
+	<% data.each do |row| %>
+	<div class="my-1">
+	<%= render partial: "newsify/sources/source", locals:{source:row,show:show,title_fs:"fs-6",details_fs:"fs-7"} %>
+	</div>
+	<% end %>
 <% end %>
 
 <% if data.empty? %>
