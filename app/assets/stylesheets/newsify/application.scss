@@ -71,6 +71,9 @@ $speech-border-width: 4px;
   padding: 0.25rem 1rem;margin:0;
 }
 
-
-
 @import "ograph/oList";
+
+
+.text-contrast {color:$contrast;}
+.text-blue {color:blue;}
+.text-pink {color:pink;}

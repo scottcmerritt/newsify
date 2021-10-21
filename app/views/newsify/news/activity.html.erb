@@ -1,3 +1,11 @@
 <% title = "Activity" %>
 <%= tag.h5 icon_text(title,"newspaper",true), class: "mainH listH bg-primary primary-b text-light" unless title.nil? %>
-<%= tag.div "Log of site activity (not yet working)", class:"my-2 alert alert-warning" %>
+
+<div class="row">
+	<div class="col-sm-6">
+		<%= tag.div "Personal activity not yet implemented", class:"my-2 alert alert-warning" %>
+	</div>
+	<div class="col-sm-6">
+		<%= render partial: "newsify/news/parts/source_imports_charts" %>
+	</div>
+</div>

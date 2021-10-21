@@ -1,0 +1,38 @@
+<% show_defaults = {add:true,collapsed:false,minimized:true} %>
+<% show = local_assigns[:show].nil? ? show_defaults : show_defaults.merge(show) %>
+<h5 class="d-flex align-items-center p-1 px-2 border my-1 bg-primary-light text-contrast fw-bold">New news articles 
+	<div class="ms-auto ml-auto">
+	<%= link_to icon(icon:"plus"), newsify.sources_import_path, class: "mx-1 btn btn-sm btn-contrast border-light text-light" if show[:add] %>
+	<% if show[:minimized] %>
+	<button class="btn btn-sm btn-primary" data-bs-target="#extraImported" data-bs-toggle="collapse" aria-expanded="false" aria-controls="extraImported">Show more</button>
+	<% end %>
+	</div>
+</h5>
+<div class="border p-2 my-3">
+<h6 class="my-2">Previous 48 hours</h6>
+<%= line_chart Newsify::Source.where("created_at > ?",48.hours.ago).group_by_hour(:created_at).count, height: "80px" %>
+</div>
+
+<div class="collapse" id="extraImported">
+<div class="border p-2 my-3">
+<h6 class="my-2">Previous Week</h6>
+<%= line_chart Newsify::Source.where("created_at > ?",7.days.ago).group_by_day(:created_at).count, height: "80px" %>
+</div>
+
+
+
+
+<% if Newsify::Source.order("created_at ASC").first.created_at < 1.weeks.ago %>
+<div class="border p-2 my-3">
+<h6 class="my-2">Previous Month</h6>
+<%= line_chart Newsify::Source.where("created_at > ?",1.months.ago).group_by_day(:created_at).count, height: "80px" %>
+</div>
+<% end %>
+
+<% if Newsify::Source.order("created_at ASC").first.created_at < 1.months.ago %>
+<div class="border p-2 my-3">
+<h6 class="my-2">Previous Year</h6>
+<%= line_chart Newsify::Source.where("created_at > ?",1.years.ago).group_by_week(:created_at).count, height: "80px" %>
+</div>
+<% end %>
+</div>

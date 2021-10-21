@@ -23,11 +23,21 @@
 	</div>
 
 	<div class="col-6">
-		<% unless @org.author_orgs.count == 0 %>
+		<% unless @org.authors.count == 0 %>
 		<div class="alert alert-success">
-		<h4 class="d-flex">Authors <span class="badge badge-primary"><%= @org.author_orgs.count %></span>
+		<h4 class="d-flex">Authors <span class="badge badge-primary"><%= @org.authors.count %></span>
 			<span class="ms-auto ml-auto">Articles</span>
 		</h4>
+		<h6>Cache and DB</h6>
+		<% @org.authors.each do |author| %>
+		<div class="bg-white p-1 m-1">
+		<%= link_to author.name, [newsify,author] %>
+		<%= tag.span author.sources.count, class: "ms-auto ml-auto" %>
+		</div>
+
+		<% end %>
+
+		<h6>From db</h6>
 		<% @org.author_orgs.each do |author_org| %>
 		<div class="bg-white p-1 m-1">
 		<%= link_to author_org.author.name, newsify.author_path(author_org.author) %>

@@ -82,6 +82,12 @@ module Newsify
       link_to label_w_count(lbl,count), href, class: "nav-link#{" active" if is_active} #{css}"
     end
 
+    def nav_item lbl, href, count, is_active = false, css = "", icon:nil
+      custom_css = "nav-item py-1 border d-flex #{ is_active ? "bg-light text-dark" : "bg-dark text-light"}"
+      #tag.li link_to(label_w_count(lbl,count), href, class: "nav-link#{" active" if is_active} #{css}"), class: custom_css
+      tag.li link_to(icon.nil? ? lbl : icon(lbl:lbl,icon:icon), href, class: "nav-link#{" active" if is_active} #{css}"), class: custom_css
+    end
+
 
     def otype_labeled_href otype, label
       if ["source","sources"].include? otype

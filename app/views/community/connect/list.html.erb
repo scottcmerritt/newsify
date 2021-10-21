@@ -1,9 +1,18 @@
-<%= render partial: "games/menu",locals: {index:-1} rescue "[no games menu]" %>
+<%= render partial: "games/menu",locals: {index:-1} rescue nil %>
 
 <% custom_locals = {connections:@connections,connections_requested:@requested,connections_pending:@pending} %>
 
 
-<h6 class="bg-primary text-light p-1 mt-1">Public interests <%= tag.span @items.length, class: "badge bg-info badge-info mx-1" %></h6>
+<h6 class="bg-primary-light border border-contrast text-contrast fw-bold font-weight-bold p-1 px-2 mt-1 d-flex align-items-center">Interests <span class="text-muted fs-8 fw-normal mx-1">(Filter by public or private interests)</span>
+
+	<div class="ms-auto ml-auto d-flex align-items-center">
+	<a href="#" class="border bg-white p-1 mx-1 nodec d-flex align-items-center">Public <%= tag.span @items.length, class: "badge bg-dark text-light mx-1" %></a>
+
+	<a href="#" class="border bg-white p-1 mx-1 nodec d-flex align-items-center">Private <%= tag.span @items.length, class: "badge bg-dark text-light mx-1" %></a>
+
+	</div>
+
+</h6>
 <div class="d-flex flex-wrap">
 <% @items.each do |item| %>
 <div class="mx-1 bg-white border rounded p-1">

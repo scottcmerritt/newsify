@@ -3,7 +3,8 @@ module Community
 		def self.model_name
       		ActiveModel::Name.new("Community::Org", nil, "Org")
     	end
-
+    	store_accessor :authors_cached, :active, :inactive
+    	include Newsify::CachedOrgs
     	include Community::IconUtil, Community::VoteCacheable, Community::Membership
 #		include IconUtil, VoteCacheable, Membership
 #		include HasBadge
@@ -13,11 +14,10 @@ module Community
 		has_many :sources, class_name: "Newsify::Source"
 		belongs_to :item, optional: true, class_name: "Newsify::Item"
 
-
 		attribute :applicant
 		attribute :applicant_relationship
-
 		attribute :is_seller
+
 
 		def round_to_half num
 		    (num * 2.0).round / 2.0
@@ -251,12 +251,7 @@ module Community
 			end
 		end
 
-		def authors
-			return Author.select("authors.*")
-			.joins("LEFT JOIN author_orgs ON author_orgs.author_id = authors.id")
-			.where("org_id = ?",self.id)
-		end
-
+	
 		def members
 			return User.select("users.*,org_users.is_active")
 			.joins("LEFT JOIN org_users ON org_users.user_id = users.id")

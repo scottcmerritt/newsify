@@ -20,6 +20,15 @@ module Community
     def display_name_public
       email
     end
+=begin
+    def display_name_default
+      "User #{self.id}"
+    end
+    def display_name_public
+      res = self.settings(:prefs).is_public ? self.settings(:profile).full_name : display_name_default
+      res.blank? ? display_name_default : res
+    end
+=end
 
 
     def post_count
@@ -32,9 +41,10 @@ module Community
       user.accept_request(self)
     end
 
-
+    # NOTE: requires the Feedbacker::UserInfo is included BEFORE (to use online_via_impression?)
     def online?
-      return nil if !defined? Newsify::Cache
+      return self.online_via_impression? if !defined?(Newsify::Cache) && self.respond_to?(:online_via_impression?)
+      return nil if !defined?(Newsify::Cache)
       online_key = "online::#{self.id}"
       #Cache.exists? online_key
       Newsify::Cache.time_to_live(online_key) > 0 

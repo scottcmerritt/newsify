@@ -16,7 +16,40 @@
 	</div>
 
 	<div class="col-6">
+		<% if params[:debug] && is_admin? %>
+		authors_cached, <%= @org.authors_cached %>
+		<% end %>
+
+		<% unless @org.authors_count == 0 %>
+		<div class="alert alert-success">
+		<h4 class="d-flex">Authors <span class="badge badge-primary"><%= @org.authors.count %></span>
+			<span class="ms-auto ml-auto">Articles</span>
+		</h4>
+		<h6>Cache and DB</h6>
+		<div>
+			Info: <%= @org.cache_info %>
+		</div>
+		<% @org.authors(both:true)[:active].each do |author| %>
+		<div class="bg-white p-1 m-1 d-flex">
+		<%= link_to author.name, [newsify,author] %>
+		<%= tag.span author.sources.count, class: "ms-auto ml-auto px-2" %>
+		</div>
+		<% end %>
+
+		<h6>Inactive</h6>
+		<% @org.authors(both:true)[:inactive].each do |author| %>
+		<div class="bg-white p-1 m-1 d-flex">
+		<%= link_to author.name, [newsify,author] %>
+		<%= tag.span author.sources.count, class: "ms-auto ml-auto px-2" %>
+		</div>
+
+		<% end %>
+		<% end %>
+
+		
+
 		<% unless @org.author_orgs.count == 0 %>
+		<h6>From db</h6>
 		<div class="alert alert-success">
 		<h4 class="d-flex align-items-center">Authors <span class="mx-1 badge bg-primary badge-primary fs-6"><%= @org.author_orgs.count %></span>
 			<span class="ms-auto ml-auto fs-6 px-2">Articles</span>

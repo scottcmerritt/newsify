@@ -57,7 +57,7 @@ module Newsify
         name: "Members", count: User.count
       },
       {
-        name: "Active members", count: User.where("last_sign_in_at > ?",7.days.ago).count
+        name: "Active members", count: User.where("last_sign_in_at > ? OR current_sign_in_at > ?",7.days.ago,7.days.ago).count
       },
       {
         name: 'Recent views', count: Impression.where("created_at > ?", 7.days.ago).count

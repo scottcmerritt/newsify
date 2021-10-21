@@ -42,6 +42,9 @@ require "community/concerns/labeled_data"
 #%i[VoteLabelSpam VoteLabelQuality VoteLabelInteresting VoteLabelLearnedfrom VoteLabelFun VoteLabelFunny VoteLabelAd VoteLabelClickbait VoteLabelEnglish]
 
 
+require "newsify/concerns/cached_authors"
+require "newsify/concerns/cached_orgs"
+
 require "newsify/text_util"
 require "newsify/stats/org_custom"
 require "newsify/import_source"

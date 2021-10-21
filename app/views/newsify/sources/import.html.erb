@@ -1,22 +1,42 @@
+<h4 class="bg-primary text-white p-2 rounded">Import articles <%= tag.span Newsify::Source.count, class: "badge bg-white text-dark" %></h4>
+
 <div class="row">
 	<div class="col-6">
-		<h4 class="bg-primary text-white p-2 rounded">Import articles <%= tag.span Newsify::Source.count, class: "badge bg-white text-dark" %></h4>
-
+		<div class="border mt-1 mb-2 p-2 rounded mb-5 bg-primary-light">
+			<h6 class="text-center fw-bold font-weight-bold">Import news by keyword</h6>
 		<div class="row">
 			<div class="col-6">
-				<h6>Select a pre-saved term</h6>
-				<%= form_for :news, url:newsify.sources_import_path, method: :get do |f| %>
-				<%= f.select(:term, @terms) %>
-				<%= f.submit %>
+				<h6 class="text-contrast fw-bold px-1 fs-7">Select a pre-saved term</h6>
+				<%= simple_form_for :news, url:newsify.sources_import_path, method: :get do |f| %>
+				<%= f.input :term, :collection => @terms,:input_html => { :class => 'form-control'} if false %>
+				<%= f.submit "Import" if false %>
+
+				<div class="input-group input-group-sm">
+				  <select class="form-select" id="saved_terms" name="news[term]" aria-label="Select a pre-saved term">
+				    <option selected>Choose...</option>
+				    <% @terms.each do |term| %>
+				     <%= tag.option term, value: term %>
+				    <% end %>
+
+				  </select>
+				  <button class="btn btn-sm btn-success text-light btn-outline-secondary" type="submit">Import</button>
+				</div>
+
+
 				<% end %>
 			</div>
 			<div class="col-6">
-				<h6>Or enter a custom term</h6>
-				<%= form_for :news, url:newsify.sources_import_path, method: :get do |f| %>
-				<%= f.text_field :term %>
-				<%= f.submit %>
+				<h6 class="text-contrast fw-bold px-1 fs-7">Or enter a custom term</h6>
+				<%= simple_form_for :news, url:newsify.sources_import_path, method: :get do |f| %>
+				<div class="input-group input-group-sm">
+					<input type="text" name="news[term]" class="form-control">
+				<%= f.input :term, :input_html => { :class => 'form-control'} if false%>
+				<%= f.submit "Import", :class => 'btn btn-sm btn-success text-light btn-outline-secondary' %>
+				</div>
+
 				<% end %>
 			</div>
+		</div>
 		</div>
 
 		<% if @step == 2 %>
@@ -24,9 +44,20 @@
 				News sources successfuly imported
 				<%= link_to "Group similar stories",newsify.sources_similar_path, class: "btn btn-primary btn-sm mx-1" rescue "Similar stories link error" %>
 			</div>
+		<% else %>
+		<div class="border my-2 p-2 rounded mb-5 bg-primary-light">
+			<h6 class="text-center fw-bold font-weight-bold">Automatically imported daily</h6>
+			<div class="d-flex flex-wrap">
+			<% Newsify.article_import_terms.each do |term| %>
+			<%= link_to term, main_app.global_search_path(q:term), class:"mx-1 p-1 border bg-white mb-1 fs-7" %>
+			<% end %>
+			</div>
+		</div>
+		
 		<% end %>
 	</div>
 	<div class="col-6">
+		<%= render partial: "newsify/news/parts/source_imports_charts", locals: {show: {add:false}} %>
 		<h4 class="d-flex align-items-center fs-6 mt-3">Recent imports <span class="fs-7 ms-auto ml-auto"><%= icon(icon:"star") %> = similar articles grouped</span></h4>
 		<% preview_size = 8 %>
 		<% @imports.each_with_index do |import,index| %>

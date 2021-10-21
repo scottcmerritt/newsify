@@ -1,4 +1,7 @@
-<h2 class="d-flex align-items-center justify-content-between"><%= ENV['NEWS_APP_NAME'] || 'Custom NEWS site' %>
+<% if false %>
+<h2 class="d-flex align-items-center justify-content-between">
+
+	<%= ENV['NEWS_APP_NAME'] || 'Custom NEWS site' %>
 	<div class="d-flex align-items-center fs-6">
 		<span class="fs-7">Feeds</span> 
 		<%= link_to "News", newsify.feed_path, class: "badge rounded-pill border border-success ms-1 #{controller_name == "feed" ? "bg-success text-light" : "bg-white text-dark"}" %>
@@ -8,6 +11,7 @@
 
 	<%= link_to "Import", newsify.sources_import_path, class: "btn btn-sm btn-primary bg-primary" %>
 </h2>
+<% end %>
 
 <%= @labeled.to_sql if params[:debug] && is_admin? %>
 <%= paginate @labeled if false %>

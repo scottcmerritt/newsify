@@ -33,7 +33,6 @@ module Newsify
 			end
 		end
 
-
 		def index
 			Community::Org.all.each {|org| org.cache_content_scores!(min_votes:1) } if params[:build_cache]
 
@@ -66,6 +65,14 @@ module Newsify
 
 			@orgs = @orgs.page(params[:page])
 
+		end
+
+		def show
+			#@org.cache_author! active_id: @org.author_orgs[0].author.id
+
+			if params[:cache]
+				@org.cache_authors!(archive: (params[:fullcache] ? true : false),undo:(params[:undo] ? true : false) )
+			end
 		end
 
 		def join

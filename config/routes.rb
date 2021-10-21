@@ -13,6 +13,7 @@ Newsify::Engine.routes.draw do
 
 	match '/browse/:otype(/:oid)' => "items#browse", :as => :browse_otype, :via=> :get
 
+	
 
 	match 'admin/calc/fame' => 'news#calc_fame', :as=> :newsify_calc_fame, :via=>:get
 	match 'admin/calc/interests' => 'news#calc_interests', :as=> :newsify_calc_interests, :via=>:get

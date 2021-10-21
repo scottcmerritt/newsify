@@ -1,6 +1,20 @@
 <% unless links.nil? %>
 <% active_href = nil if local_assigns[:active_href].nil? %>
 <div class="mx-auto col-md-8">
+<ul class="newsify nav nav-justified bg-light my-1">
+	<% links.each do |link| %>
+  		<%= nav_item link[:label],link[:href],link[:count],link[:href] == active_href,"rounded-0 fs-4",icon: link[:icon] rescue "[invalid link]" %>
+  		<%= link_to icon(icon:"plus"), newsify.sources_import_path, class: "btn btn-sm btn-primary bg-primary" if false %>
+  	
+	<% end %>
+ </ul>
+</div>
+<% end %>
+
+<% if false %>
+<% unless links.nil? %>
+<% active_href = nil if local_assigns[:active_href].nil? %>
+<div class="mx-auto col-md-8">
 <ul class="newsify nav nav-pills nav-justified bg-light my-1">
 	<% links.each do |link| %>
 	<li class="nav-item">
@@ -9,4 +23,5 @@
 	<% end %>
  </ul>
 </div>
+<% end %>
 <% end %>

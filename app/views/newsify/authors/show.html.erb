@@ -2,11 +2,53 @@
 <div class="bg-white m-2 p-1">
 <%= @author.name %>
 </div>
-<% @author.author_orgs.each do |author_org| %>
-<div class="bg-white p-1 m-1">
-<%= link_to author_org.org.name, author_org.org %>
-</div>
+
+[
+<% Newsify::Author.where("orgs_cached -> 'inactive' ? :org_id",org_id: "2").each do |author| %>
+[[<%= author.name %>]]
 <% end %>
+]
+<div class="row mb-2">
+	<div class="col-6">
+	<div class="border rounded bg-light pb-3">
+
+		<h6 class="mainH bg-dark text-light p-1 px-2">Organizations <%= @from_cache ? "[from cache]" : "[from db]" %></h6>
+
+		<div class="fs-7 px-2 border-bottom">
+			cache info: <%= @author.cache_info %>
+		</div>
+
+
+		<% @orgs.each do |author_org| %>
+		<div class="bg-white p-1 px-2 border-bottom">
+		<% if author_org.kind_of?(Community::Org) %>
+		<%= link_to author_org.name, author_org %>
+		<% else %>
+		<%= link_to author_org.org.name, author_org.org %>
+		<% end %>
+		</div>
+		<% end %>
+	
+
+	</div>
+
+	</div>
+	<div class="col-6">
+
+		<h6 class="mainH bg-dark text-light p-1 px-2">Inactive</h6>
+		
+		<% @orgs_inactive.each do |author_org| %>
+		<div class="bg-white p-1 m-1">
+		<% if author_org.kind_of?(Community::Org) %>
+		<%= link_to author_org.name, author_org %>
+		<% else %>
+		<%= link_to author_org.org.name, author_org.org %>
+		<% end %>
+		</div>
+		<% end %>
+	</div>
+</div>
+
 
 <h5 class="bg-light border p-1 d-flex align-items-center">Sources
 <%= tag.span @author.sources.count, class: "mx-1 badge bg-info text-dark" %>

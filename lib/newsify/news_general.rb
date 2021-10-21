@@ -105,7 +105,7 @@ module NewsGeneral
     # (see the btn-group demo for clickable split buttons)
     @menu_links = []
     @menu_links.push({label:"About",href:"/news",count:Room.count}) if defined?(Room)
-    @menu_links.push({label:"Sources",href:newsify.sources_path,count:Newsify::Source.count}) #if defined?(Source) #defined?(newsify.sources_path) && defined?(Source)
+    @menu_links.push({label:"Sources",href:newsify.sources_path,count:Newsify::Source.count,icon:"newspaper"}) #if defined?(Source) #defined?(newsify.sources_path) && defined?(Source)
     @menu_links.push({label:"Categories",href:newsify.categories_path,count:Newsify::Item.where(itype:"CATEGORY").count})
     @menu_links.push({label:"Summaries",href:newsify.summaries_path,count:Newsify::Summary.count})
     @menu_links.push({label:"Topics",href:newsify.items_path,count:Newsify::Item.count})

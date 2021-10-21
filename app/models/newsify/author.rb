@@ -1,10 +1,13 @@
 module Newsify
 	class Author < ActiveRecord::Base
 		self.table_name = "authors"
+		#serialize :orgs_cached, HashSerializer # so 'quotes' are :symbols too
+		store_accessor :orgs_cached, :active, :inactive #, :twitter
+		include Newsify::CachedAuthors
+		
 		has_many :source_authors
 		has_many :author_orgs
 		has_many :sources, through: :source_authors
-
 		
 		def self.add_from_api raw_names, api_name="newsapi",org_id=nil, createdby=nil
 
