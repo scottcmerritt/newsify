@@ -30,6 +30,7 @@ class AddOrgs < ActiveRecord::Migration[5.2]
   create_table "orgs", force: :cascade do |t|
     t.bigint "item_id"
     t.text "name"
+    t.string "name_slug"
     t.text "url"
     t.text "urltoimage"
     t.bigint "image_id"

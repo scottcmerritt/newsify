@@ -4,6 +4,7 @@ class AddSourcesTable < ActiveRecord::Migration[6.1]
   create_table "sources", force: :cascade do |t|
     t.bigint "org_id"
     t.text "title"
+    t.string "name_slug"
     t.text "description"
     t.text "url"
     t.bigint "url_blocked"

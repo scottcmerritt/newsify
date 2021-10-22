@@ -6,6 +6,7 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
     t.integer "mc_id"
     t.string "mc_guid", limit: 255
     t.string "name", limit: 255
+    t.string "name_slug"
     t.string "icon_css"
 
     # used for sorting
@@ -85,6 +86,7 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
 
     create_table "authors", force: :cascade do |t|
       t.text "name"
+      t.string "name_slug"
       t.bigint "user_id"
       t.bigint "createdby"
       t.datetime "created_at"
@@ -104,6 +106,7 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
 
     create_table "summaries", force: :cascade do |t|
       t.text "title"
+      t.string "name_slug"
       t.string "icon_css"
       t.bigint "item_id"
       t.datetime "date"
@@ -207,6 +210,7 @@ class AddNewsTables < ActiveRecord::Migration[5.2]
     create_table "contents", force: :cascade do |t|
       t.bigint "source_id"
       t.text "title"
+      t.string "name_slug"
       t.text "article"
       t.text "misc"
       t.boolean "edited"
