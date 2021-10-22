@@ -21,18 +21,21 @@
 
 
 
+<% first_source = Newsify::Source.order("created_at ASC").first %>
+<% unless first_source.nil? %>
+	<% if first_source.created_at < 1.weeks.ago %>
+	<div class="border p-2 my-3">
+	<h6 class="my-2">Previous Month</h6>
+	<%= line_chart Newsify::Source.where("created_at > ?",1.months.ago).group_by_day(:created_at).count, height: "80px" %>
+	</div>
+	<% end %>
 
-<% if Newsify::Source.order("created_at ASC").first.created_at < 1.weeks.ago %>
-<div class="border p-2 my-3">
-<h6 class="my-2">Previous Month</h6>
-<%= line_chart Newsify::Source.where("created_at > ?",1.months.ago).group_by_day(:created_at).count, height: "80px" %>
-</div>
+	<% if first_source.created_at < 1.months.ago %>
+	<div class="border p-2 my-3">
+	<h6 class="my-2">Previous Year</h6>
+	<%= line_chart Newsify::Source.where("created_at > ?",1.years.ago).group_by_week(:created_at).count, height: "80px" %>
+	</div>
+	<% end %>
 <% end %>
 
-<% if Newsify::Source.order("created_at ASC").first.created_at < 1.months.ago %>
-<div class="border p-2 my-3">
-<h6 class="my-2">Previous Year</h6>
-<%= line_chart Newsify::Source.where("created_at > ?",1.years.ago).group_by_week(:created_at).count, height: "80px" %>
-</div>
-<% end %>
 </div>
