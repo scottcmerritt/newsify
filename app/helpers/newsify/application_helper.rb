@@ -27,13 +27,11 @@ module Newsify
 
 
     #TODO: add condensed mode for OTHER languages
-    def date_fmt date, fmt: nil, verbose: false
-
-      lang = I18n.locale.to_s
+    def date_fmt date, fmt: nil, verbose: false, lang: I18n.locale.to_s
 
       lookup = {
-        "en" => {:about => "about",:less => "less than a", :durations => ["day","minute","hour","year"]},
-        "es" => {:about => "alrededor de",:less => "menos de", :durations =>["día","minuto","hora","año"]}
+        "en" => {:about => "about",:less => "less than a", :durations => ["day","minute","hour","year","month"],:abbrevs => {"month"=>"mo","minute"=>"min"}},
+        "es" => {:about => "alrededor de",:less => "menos de", :durations =>["día","minuto","hora","año"],:abbrevs => {}}
         }
 
       logger.debug "LOCALE::: #{I18n.locale.to_s}"
@@ -50,7 +48,9 @@ module Newsify
         unless verbose
 
           lookup[lang][:durations].each do |duration|
-            res = res.sub(duration+"s",duration[0]).sub(duration,duration[0])
+            replace_with = lookup[lang][:abbrevs].key?(duration) ? lookup[lang][:abbrevs][duration] : duration[0]
+            res = res.sub(duration+"s",replace_with).sub(duration,replace_with)
+#            res = res.sub(duration+"s",duration[0]).sub(duration,duration[0])
           end
           res = res.sub(lookup[lang][:about],"~")
           res = res.sub(lookup[lang][:less], lang == "en" ? "~1" : "~")
@@ -65,6 +65,7 @@ module Newsify
 
       res
     end
+
 =begin
     def created_at_date
       self.created_at.strftime("%-m/%-d/%y")
